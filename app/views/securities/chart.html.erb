@@ -1,0 +1,19 @@
+<%= javascript_include_tag 'swfobject' %>
+
+<div class="chart">
+<%= @graph %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Security', @security %></li>
+<li><%= link_to 'Back to Securities', securities_path %></li>
+<li><%= link_to '5D', chart_security_url_days(@security, 7) %></li>
+<li><%= link_to '1M', chart_security_url_months(@security, 1) %></li>
+<li><%= link_to '3M', chart_security_url_months(@security, 3) %></li>
+<li><%= link_to '6M', chart_security_url_months(@security, 6) %></li>
+<li><%= link_to '1Y', chart_security_url_years(@security, 1) %></li>
+<li><%= link_to '2Y', chart_security_url_years(@security, 2) %></li>
+<li><%= link_to '5Y', chart_security_url_years(@security, 5) %></li>
+<li><%= link_to 'YTD', chart_security_url_days(@security, 0) %></li>
+
+</ul>

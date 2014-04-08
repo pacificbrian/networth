@@ -1,0 +1,37 @@
+<div class="edit">
+<h2>Edit Security</h2>
+
+<%= error_messages_for 'security' %>
+
+<%= form_for @security do |f| %>
+<table>
+<tr/>
+<td>Symbol:</td>
+<td><%= f.text_field :symbol %></td>
+<tr/>
+<td>Name:</td>
+<td><%= f.text_field :name %></td>
+<tr/>
+<td>Security Type:</td>
+<td><%= f.collection_select :security_type_id, @security_types, :id, :name %> </td>
+<tr/>
+<td>Basis Type:</td>
+<td><%= f.collection_select :security_basis_type_id, @security_basis_types, :id, :name %> </td>
+<tr/>
+<td>Basis:</td>
+<td><%= f.text_field :basis %></td>
+<tr/>
+<td>Value:</td>
+<td><%= f.text_field :value %></td>
+</table>
+<p>
+  <%= submit_tag 'Update' %>
+</p>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Security', @security %></li>
+<li><%= link_to 'Back to Account', @security.account %></li>
+<li><%= link_to 'Back to Securities', securities_path %></li>
+</ul>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NetWorth</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+
+<body>
+<div id="header">
+  <h1 id="title"><%= link_to 'NetWorth', home_path %></h1>
+  <ul id="topmenu">
+    <li><%= link_to 'Accounts', accounts_path %></li>
+    <li><%= link_to 'Payees', payees_path %></li>
+    <li><%= link_to 'Securities', securities_path %></li>
+  </ul>
+</div>
+
+<div class="notice"><%= notice %></div>
+<div class="alert"><%= alert %></div>
+<div id="flash"><%= flash[:notice] %></div>
+
+<div id="content">
+  <%= yield %>
+</div>
+</body>
+</html>

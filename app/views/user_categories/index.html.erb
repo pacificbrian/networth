@@ -1,0 +1,49 @@
+<div class="listing">
+<%= error_messages_for 'category' %>
+
+<h2>Custom Categories</h2>
+<table>
+<% for c in @user_categories %>
+<tr>
+<td><%= c.name %></td>
+<% if @account %>
+<% if c.use_count > 0 %>
+<td><%= link_to c.use_count, account_category_path(@account, c) %></td>
+<% else %>
+<td><%= c.use_count %></td>
+<% end %>
+<td><%= link_to 'Edit', edit_account_user_category_path(@account, c) %></td>
+<% else %>
+<td><%= c.use_count %></td>
+<td><%= link_to 'Edit', edit_user_category_path(c) %></td>
+<% end %>
+<% if c.use_count.zero? %>
+<td><%= link_to 'Delete', user_category_path(c), :method => :delete %></td>
+<% else %>
+<td></td>
+<% end %>
+</tr>
+<% end %>
+</table>
+
+<%= form_for @category, :url=>user_categories_path do |f| %>
+<fieldset class="last">
+<label>Category Name</label>
+<%= f.text_field :name %>
+<%= f.collection_select :category_type_id, @category_types, :id, :name %>
+</fieldset>
+<fieldset class="submit">
+<%= submit_tag 'Add Category'%>
+</fieldset>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<% if @account %>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<li><%= link_to 'Back to Categories', account_categories_path(@account) %></li>
+<% else %>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+<li><%= link_to 'Back to Categories', categories_path %></li>
+<% end %>
+</ul>

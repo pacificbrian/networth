@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  account_id: 1
+  s_type: 1
+  basis: 9.99
+  shares: 9.99
+
+two:
+  account_id: 1
+  s_type: 1
+  basis: 9.99
+  shares: 9.99

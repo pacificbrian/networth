@@ -1,0 +1,125 @@
+<div class="show">
+<h2><%= @account.name %></h2>
+
+<table>
+<tr>
+<td>
+Type:
+<td>
+<%= @account.account_type.name %>
+</tr>
+<tr>
+<td>
+Balance:
+<td>
+<%= number_to_currency(@account.balance) %>
+<%= @account.currency_type.name %>
+</tr>
+<% if (@account.show_transfers_sum?) %>
+<tr>
+<td>
+Transfers:
+<td>
+<%= number_to_currency(@account.transfer_sum) %>
+<%= @account.currency_type.name %>
+</tr>
+<% end %>
+</table>
+
+<% if (@account.investment?) %>
+<% if @securities %>
+<div id="securities">
+<%= render :partial => 'securities/security',
+           :locals  => {:account => @account,
+                        :securities => @securities} %>
+</div>
+<% end %>
+<% end %>
+
+<div id="cash_flows">
+<%= render :partial => 'cash_flows/cash_flow',
+	   :locals  => {:cash_flows => @account.ordered_cash_flows_by_year(@year), :account => @account,
+			:balance => @account.cash_balance, :inplace_categories => @inplace_categories} %> 
+</div>
+
+<div id="total">
+<%= render :partial => 'accounts/total',
+	   :locals  => {:account => @account} %> 
+</div>
+
+<div id="r_cash_flows">
+<%= render :partial => 'r_cash_flows/r_cash_flow',
+	   :locals  => {:r_cash_flows => @account.ordered_r_cash_flows} %> 
+</div>
+
+<% if @account.investment? %>
+<%= form_for [ @account, @trade ], :remote => true do |f| %>
+<table>
+<tr>
+<td><br> <%= f.collection_select :trade_type_id, @trade_types, :id, :name %></td>
+<tr>
+<td><br> <%= f.date_select :date %></td>
+<tr>
+<td>Symbol:<br> <%= f.text_field :symbol %></td>
+<tr>
+<td>Shares:<br> <%= f.text_field :shares %></td>
+<tr>
+<td>Price:<br> <%= f.text_field :price %></td>
+<tr>
+<td>Foreign Tax:<br> <%= f.text_field :foreign_tax %></td>
+<tr>
+<td>Amount:<br> <%= f.text_field :amount %></td>
+</table>
+<p>
+  <%= submit_tag 'Add' %>
+</p>
+<% end %>
+<% else %> 
+<%= form_for [ @account, @cash_flow ], :remote => true do |f| %>
+<table>
+<tr>
+<td><br> <%= f.collection_select :cash_flow_type_id, @cash_flow_types, :id, :name %></td>
+<tr>
+<td><br> <%= f.date_select :date %></td>
+<td>Check/Number:<br> <%= f.text_field :transnum %></td>
+<tr>
+<td>Payee:<br> <%= f.text_field :payee_name %></td>
+<td>Amount:<br> <%= f.text_field :amount %></td>
+<tr>
+<td>Category:<br> <%= f.collection_select :category_id, @categories, :id, :name %></td>
+<td>Memo:<br> <%= f.text_field :memo %></td>
+</table>
+<%= f.hidden_field :account_id %>
+<p>
+  <%= submit_tag 'Add' %>
+</p>
+<% end %>
+<% end %> 
+</div>
+
+<ul id="footmenu">
+<% if @year %>
+<li><%= link_to 'Back to Accounts', year_accounts_path(@year) %></li>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<% else %>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+<li><%= link_to 'YTD Account', year_account_path(Date.today.year) %></li>
+<% end %>
+<li><%= link_to 'Edit Account', edit_account_path(@account) %></li>
+<li><%= link_to 'Account Payees', account_payees_path(@account) %></li>
+<li><%= link_to 'CashFlow by Category', account_categories_url(@account, :days => 0) %></li>
+<% if @year %>
+<li><%= link_to 'Import CashFlows', year_account_import_index_path(@year, @account) %></li>
+<% else %>
+<li><%= link_to 'Import CashFlows', account_import_index_path(@account) %></li>
+<% end %>
+<li><%= link_to 'New CashFlow', new_account_cash_flow_path(@account) %></li>
+<li><%= link_to 'Schedule CashFlow', account_r_cash_flows_path(@account) %></li>
+<li><%= link_to 'Last Year Taxes', year_account_taxes_path(Date.today.year - 1, @account) %></li>
+<li><%= link_to 'Current Year Taxes', year_account_taxes_path(Date.today.year, @account) %></li>
+<% if (@account.investment?) %>
+<li><%= link_to 'Last Year Gains', year_account_gains_url(Date.today.year - 1, @account) %></li>
+<li><%= link_to 'Current Year Gains', year_account_gains_url(Date.today.year, @account) %></li>
+<% end %>
+<li><%= link_to 'Year to Date Chart', account_charts_url(@account, :days => 0) %></li>
+</ul>

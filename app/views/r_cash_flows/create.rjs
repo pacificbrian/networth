@@ -1,0 +1,2 @@
+page[:r_cash_flows].replace_html :partial => 'r_cash_flows/r_cash_flow',
+			       :locals  => {:account => @account}

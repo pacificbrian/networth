@@ -1,0 +1,26 @@
+<div class="edit">
+<h2>Edit Quote Settings</h2>
+
+<%= form_for @quote_setting do |f| %>
+<fieldset>
+<label>Symbol</label>
+<%= @quote_setting.symbol %>
+</fieldset>
+<fieldset>
+<label>Date Range</label>
+<%= (@quote_setting.begin..@quote_setting.last).to_s %>
+</fieldset>
+<fieldset class="last">
+<label>Auto</label>
+<%= f.check_box :auto %>
+</fieldset>
+<fieldset class="submit">
+<%= submit_tag 'Update' %>
+</fieldset>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Quote Settings', quotes_path %></li>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+</ul>

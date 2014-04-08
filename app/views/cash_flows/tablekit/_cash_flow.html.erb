@@ -1,0 +1,48 @@
+<%= error_messages_for 'cash_flow' %>
+<% if !cash_flows.empty? %>
+<div class="dynamic">
+<table id="tk_cash_flows" class="ledger resizable editable">
+<thead>
+<tr>
+<th id="date">Date</th>
+<th id="transnum">#</th>
+<th id="payee_name">Payee</th>
+<th id="category_id">Category</th>
+<th id="amount">Amount</th>
+<th id="balance" class="noedit">Balance</th>
+<th class="noedit"></th>
+<th class="noedit"></th>
+</tr>
+</thead>
+<tbody>
+<% n =  0 %>
+<% for c in cash_flows %>
+<% if (n % 2) == 0 %>
+<tr id="<%= c.id %>">
+<% else %>
+<tr id="<%= c.id %>" class="even">
+<% end %>
+<% n = n + 1 %>
+<td><%= c.date %></td>
+<td><%= c.short_transnum %></td>
+<td><%= c.get_payee_name %></td>
+<td><%= c.get_cat_name %></td>
+<td class="currency"><%= number_to_currency(c.amount) %></td>
+<td class="currency"><%= number_to_currency(c.balance) %></td>
+<% if c.trade? %>
+<td><%= link_to 'Edit', edit_trade_path(c.trade) %></td>
+<td><%= link_to 'Info', security_path(c.trade.security) %></td>
+<% else %>
+<td><%= link_to 'Edit', edit_cash_flow_path(c) %></td>
+<td><%= link_to 'Delete', cash_flow_path(c), :method => :delete %></td>
+<% end %>
+</tr>
+<% end %>
+</tbody>
+</table>
+</div>
+<% end %>
+
+<script type="text/javascript" charset="utf-8">
+    var cf_table = new TableKit('tk_cash_flows', { editAjaxURI: '/cash_flows/tkupdate' });
+</script>

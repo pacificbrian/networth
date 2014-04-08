@@ -1,0 +1,96 @@
+<%= javascript_include_tag 'prototype' %>
+<%= javascript_include_tag 'ProtoChart' %>
+
+<script>
+	Event.observe(window, 'load', function() {
+<% if @compare_points.count > 0 %>
+		new Proto.Chart($('comparechart'), 
+			[
+<% @compare_points.each do |c| %>
+				{
+					label: "<%= c[0] %>",
+				        data: <%= c[1].to_json %>,
+					lines: {show: true, fill: false}
+				},
+<% end %>
+			],
+			{
+				legend: {show: true, noColumns: 2},
+				xaxis: {mode: "time", minTickSize: [1,"day"]},
+				yaxis: {minTickSize: 0.2, autoscaleMargin: 0.1}
+			});		
+<% end %>
+		new Proto.Chart($('linechart'), 
+			[
+				{
+					label: "<%= @name %>", color: "cadetblue",
+				        data: <%= @points.to_json %>,
+					lines: {show: true, fill: true, fillColor: "lightgrey"}
+				}
+			],
+			{
+				legend: {show: true},
+				xaxis: {mode: "time", minTickSize: [1,"day"]},
+				yaxis: {minTickSize: 1, autoscaleMargin: 0.1}
+			});		
+	});
+</script>
+
+<div class="chart">
+<h2><%= @name %></h2>
+<div id="linechart" style="width:700px;height:480px"></div>
+<p>
+<div id="comparechart" style="width:700px;height:480px"></div>
+</div>
+
+<ul id="footmenu">
+<% if @account %>
+<% if @year %>
+<li><%= link_to 'Back to Account', year_account_path(@year, @account) %></li>
+<li><%= link_to 'Back to Accounts', year_accounts_path(@year) %></li>
+<% else %>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+<% end %>
+<li><%= link_to '5D', account_charts_url_days(@account, 5, @normalize) %></li>
+<li><%= link_to '1M', account_charts_url_months(@account, 1, @normalize) %></li>
+<li><%= link_to '3M', account_charts_url_months(@account, 3, @normalize) %></li>
+<li><%= link_to '6M', account_charts_url_months(@account, 6, @normalize) %></li>
+<li><%= link_to '1Y', account_charts_url_years(@account, 1, @normalize) %></li>
+<li><%= link_to '2Y', account_charts_url_years(@account, 2, @normalize) %></li>
+<li><%= link_to '5Y', account_charts_url_years(@account, 5, @normalize) %></li>
+<li><%= link_to 'YTD', account_charts_url_days(@account, 0, @normalize) %></li>
+<% if @normalize %>
+<li><%= link_to 'Undo Normalize', account_charts_url_days(@account, @days, false) %></li>
+<% else %>
+<li><%= link_to 'Normalize', account_charts_url_days(@account, @days, true) %></li>
+<% end %>
+
+<% elsif @security %>
+<li><%= link_to 'Back to Security', security_path(@security) %></li>
+<li><%= link_to 'Back to Securities', securities_path %></li>
+<li><%= link_to 'Download Quotes', company_quotes_path(@security.company), :method => :post %></li>
+<li><%= link_to '5D', security_charts_url_days(@security, 5) %></li>
+<li><%= link_to '1M', security_charts_url_months(@security, 1) %></li>
+<li><%= link_to '3M', security_charts_url_months(@security, 3) %></li>
+<li><%= link_to '6M', security_charts_url_months(@security, 6) %></li>
+<li><%= link_to '1Y', security_charts_url_years(@security, 1) %></li>
+<li><%= link_to '2Y', security_charts_url_years(@security, 2) %></li>
+<li><%= link_to '5Y', security_charts_url_years(@security, 5) %></li>
+<li><%= link_to 'YTD', security_charts_url_days(@security, 0) %></li>
+<li><%= link_to 'Total', security_charts_url_days(@security, nil) %></li>
+
+<% elsif @company %>
+<li><%= link_to 'Back to Company', company_path(@company) %></li>
+<li><%= link_to 'Back to Companies', companies_path %></li>
+<li><%= link_to 'Download Quotes', company_quotes_path(@company), :method => :post %></li>
+<li><%= link_to '5D', company_charts_url_days(@company, 5) %></li>
+<li><%= link_to '1M', company_charts_url_months(@company, 1) %></li>
+<li><%= link_to '3M', company_charts_url_months(@company, 3) %></li>
+<li><%= link_to '6M', company_charts_url_months(@company, 6) %></li>
+<li><%= link_to '1Y', company_charts_url_years(@company, 1) %></li>
+<li><%= link_to '2Y', company_charts_url_years(@company, 2) %></li>
+<li><%= link_to '5Y', company_charts_url_years(@company, 5) %></li>
+<li><%= link_to 'YTD', company_charts_url_days(@company, 0) %></li>
+<% end %>
+</ul>

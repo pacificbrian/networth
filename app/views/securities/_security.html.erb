@@ -1,0 +1,44 @@
+<%= error_messages_for 'trade' %>
+
+<% if !securities.empty? %>
+<table class="standard">
+<th>Company Name</th>
+<th>Symbol</th>
+<th>Shares</th>
+<th>Price</th>
+<th>Avg. Price</th>
+<th>Value</th>
+<th>Basis</th>
+<th>ROC</th>
+<th></th>
+<th></th>
+<% for s in securities %>
+<% if s.shares.nonzero? %>
+<tr>
+<td><%= s.company.name %></td>
+<td><%= link_to s.company.symbol, security_charts_path(s) %></td>
+<td><%= s.shares %></td>
+<td class="currency"><%= number_to_currency(s.value/s.shares) %></td>
+<td class="currency"><%= number_to_currency(s.basis / s.shares) %></td>
+<td class="currency"><%= number_to_currency(s.value) %></td>
+<td class="currency"><%= number_to_currency(s.basis) %></td>
+<td class ="percentage"><%= s.return_simple %>%</td>
+<td><%= link_to 'Info', account_security_path(account, s) %></td>
+<td><%= link_to 'Alert', new_security_security_alert_path(s) %></td>
+</tr>
+<% end %>
+<% end %>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="currency"><%= number_to_currency(account.portfolio.value) %></td>
+<td class="currency"><%= number_to_currency(account.portfolio.basis) %></td>
+<td class="percentage"><%= account.portfolio.return_simple %>%</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<% end %>

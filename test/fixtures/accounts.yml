@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  ctype: 1
+  name: MyString
+  holder: 1
+  number: MyString
+  routing: 1
+  balance: 9.99
+  currency: 1
+  taxable: false
+
+two:
+  ctype: 1
+  name: MyString
+  holder: 1
+  number: MyString
+  routing: 1
+  balance: 9.99
+  currency: 1
+  taxable: false

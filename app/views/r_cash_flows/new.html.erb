@@ -1,0 +1,45 @@
+<div class="new">
+<h2>Schedule Recurring Transaction</h2>
+
+<%= error_messages_for 'r_cash_flow' %>
+
+<%= form_for @r_cash_flow do |f| %>
+<table>
+<tr>
+<td><label>Account: </label></td>
+<td><%= f.collection_select :account_id, @accounts, :id, :name %></td>
+</tr>
+<tr>
+<td>Type: </td>
+<td><%= f.collection_select :cash_flow_type_id, @cash_flow_types, :id, :name %></td>
+</tr>
+<tr>
+<td>Reoccurance: </td>
+<td><%= f.collection_select :repeat_interval_type_id, @repeat_interval_types, :id, :name %></td>
+<td>Repeats: </td>
+<td><%= f.text_field :repeats_left %></td>
+</tr>
+</table>
+<table>
+<tr>
+<td><%= f.date_select :date %></td>
+<td>Next Transnum?: <%= f.check_box :transnum %></td>
+</tr>
+<tr>
+<td>Payee:<br> <%= f.text_field :payee_name %></td>
+<td>Amount:<br> <%= f.text_field :amount %></td>
+</tr>
+<tr>
+<td>Category:<br> <%= f.collection_select :category_id, @categories, :id, :name %></td>
+<td>Memo:<br> <%= f.text_field :memo %></td>
+</tr>
+</table>
+<p>
+  <%= submit_tag 'Add Scheduled Transaction' %>
+</p>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+</ul>

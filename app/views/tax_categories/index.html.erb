@@ -1,0 +1,48 @@
+<div class="listing">
+<%= error_messages_for 'tax_category' %>
+
+<h2>Tax Categories</h2>
+<table>
+<% for t in @tax_categories %>
+<tr>
+<td><%= t.tax_item.name %></td>
+<% if t.trade_type %>
+<td><%= t.trade_type.name %></td>
+<% elsif t.category %>
+<td><%= t.category.name %></td>
+<% else %>
+<td></td>
+<% end %>
+<td><%= link_to 'Edit', edit_tax_category_path(t) %></td>
+<td><%= link_to 'Delete', tax_category_path(t), :method => :delete %></td>
+</tr>
+<% end %>
+</table>
+
+<%= form_for @tax_category do |f| %>
+<fieldset class="last">
+<label>Tax Category</label>
+<%= f.collection_select :tax_item_id, @tax_items, :id, :name %>
+<%= f.collection_select :category_id, @categories, :id, :name %>
+</fieldset>
+<fieldset class="submit">
+<%= submit_tag 'Add Tax Category'%>
+</fieldset>
+<% end %>
+
+<%= form_for @tax_category do |f| %>
+<fieldset class="last">
+<label>Tax Category for Trades</label>
+<%= f.collection_select :tax_item_id, @tax_items, :id, :name %>
+<%= f.collection_select :trade_type_id, @trade_types, :id, :name %>
+</fieldset>
+<fieldset class="submit">
+<%= submit_tag 'Add Tax Category'%>
+</fieldset>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'To Taxes', taxes_path %></li>
+<li><%= link_to 'To Categories', categories_path %></li>
+</ul>

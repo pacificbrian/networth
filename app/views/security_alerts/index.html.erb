@@ -1,0 +1,19 @@
+<div class="listing">
+
+<h2>Security Price Alerts</h2>
+<table>
+<% for a in @alerts %>
+<tr>
+<td></td> 
+<td><%= link_to a.security.company.name, security_path(a.security) %></td>
+<td class="currency"><%= number_to_currency(a.price) %></td>
+<td>
+<%= link_to 'Edit', edit_security_alert_path(a) %>
+</td>
+<td>
+<%= link_to 'Delete', security_alert_path(a), :method => :delete  %>
+</td>
+</tr>
+<% end %>
+</table>
+</div>

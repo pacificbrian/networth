@@ -1,0 +1,18 @@
+<div class="show">
+<h2><%= @trade_type.name %>s</h2>
+
+<div id="trades">
+<%= render :partial => 'trades/trade',
+           :locals  => {:account => @account, :security => nil, :trades => @trades, :allow_delete => false} %>
+</div>
+</div>
+
+<ul id="footmenu">
+<% if @year %>
+<% if @account %>
+<li><%= link_to 'Back to Gains', year_account_gains_path(@year, @account) %></li>
+<% else %>
+<li><%= link_to 'Back to Gains', year_gains_path(@year) %></li>
+<% end %>
+<% end %>
+</ul>

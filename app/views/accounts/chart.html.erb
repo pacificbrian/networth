@@ -1,0 +1,20 @@
+<%= javascript_include_tag 'swfobject' %>
+
+<div class="chart">
+<%= @graph %>
+</div>
+
+<ul id="footmenu">
+<% if @account %>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<% end %>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+<li><%= link_to '5D', chart_account_url_days(@account, 5) %></li>
+<li><%= link_to '1M', chart_account_url_months(@account, 1) %></li>
+<li><%= link_to '3M', chart_account_url_months(@account, 3) %></li>
+<li><%= link_to '6M', chart_account_url_months(@account, 6) %></li>
+<li><%= link_to '1Y', chart_account_url_years(@account, 1) %></li>
+<li><%= link_to '2Y', chart_account_url_years(@account, 2) %></li>
+<li><%= link_to '5Y', chart_account_url_years(@account, 5) %></li>
+<li><%= link_to 'YTD', chart_account_url_days(@account, 0) %></li>
+</ul>

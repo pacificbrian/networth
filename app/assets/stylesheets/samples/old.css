@@ -1,0 +1,83 @@
+body {
+  background-color: #666;
+  margin: 0;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+div#errorExplanation {
+  border: 3px solid #f66;
+  padding: 5px 10px;
+  margin: 20px 10px;
+  width: 400px;
+}
+
+#flash {
+  color: green;
+}
+
+#content {
+  background-color: #fff;
+  margin: 0;
+  border: 5px solid #ccc;
+  padding: 10px 10px 20px 10px;
+}
+
+.fieldWithErrors {
+  border: 3px solid #f66;
+}
+
+div {
+  margin: 20px 0px;
+}
+
+div.nwtrans {
+	width: 680px;
+	max-height: 20em;
+	overflow: auto;
+}
+
+.nwtrans table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.nwtrans td,th {
+	font-family: "Century Gothic", Arial, sans-serif;
+	border: 1px solid #73afb7;
+	padding: 2px 5px 2px 5px;
+	font-size: 1em;
+}
+
+.nwtrans th {
+	background: maroon;
+	color: white;
+	text-align: left;
+}
+
+td.currency, td.percentage {
+	text-align: right;
+}
+
+td.noborder {
+	border-style: hidden;
+	border-top-style: solid;
+}
+
+#navigation {
+  list-style: none;
+  padding: 5px 0;
+  margin: 0;
+  text-align: center;
+}
+
+
+#navigation li {
+  display: inline;
+  padding: 0 5px;
+}
+
+#navigation li a {
+  color: gray;
+}
+
+

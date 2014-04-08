@@ -1,0 +1,35 @@
+<div class="new">
+<h2>New Transaction</h2>
+
+<%= error_messages_for 'cash_flow' %>
+
+<%= form_for @cash_flow do |f| %>
+<table>
+<tr>
+<td>Account: <%= f.collection_select :account_id, @accounts, :id, :name %></td>
+</tr>
+<tr>
+<td><p><%= f.collection_select :cash_flow_type_id, @cash_flow_types, :id, :name %></td>
+</tr>
+<tr>
+<td><br><%= f.date_select :date %></td>
+<td>Check/Number:<br> <%= f.text_field :transnum %></td>
+</tr>
+<tr>
+<td>Payee:<br> <%= f.text_field :payee_name %></td>
+<td>Amount:<br> <%= f.text_field :amount %></td>
+</tr>
+<tr>
+<td>Category:<br> <%= f.collection_select :category_id, @categories, :id, :name %></td>
+<td>Memo:<br> <%= f.text_field :memo %></td>
+</tr>
+</table>
+<p>
+  <%= submit_tag 'Add New Transaction' %>
+</p>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+</ul>

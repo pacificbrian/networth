@@ -1,0 +1,43 @@
+<div class="show">
+<h2><%= @security.company.name %></h2>
+<br>Type: <%= @security.security_type.name %>
+<br>Basis: <%= number_to_currency(@security.basis) %>
+<br>Value: <%= number_to_currency(@security.value) %>
+<br>Return: <%= @security.get_simple_roc %>%
+
+<p>
+<div id="trades">
+<%= render :partial => 'trades/trade',
+           :locals  => {:security => @security, :trades => @security.trades.ordered_by_date} %>
+</div>
+
+<%= form_for [ @security, @trade ],:remote => true do |f| %>
+
+<table>
+<tr>
+<td><br> <%= f.collection_select :trade_type_id, @trade_types, :id, :name %></td>
+<tr>
+<td><br> <%= f.date_select :date %></td>
+<tr>
+<td>Shares:<br> <%= f.text_field :shares %></td>
+<tr>
+<td>Price:<br> <%= f.text_field :price %></td>
+<tr>
+<td>Foreign Tax:<br> <%= f.text_field :foreign_tax %></td>
+<tr>
+<td>Amount:<br> <%= f.text_field :amount %></td>
+</table>
+
+<p>
+  <%= submit_tag 'Add' %>
+</p>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Account', account_path(@security.account) %></li>
+<li><%= link_to 'Back to Securities', securities_path %></li>
+<li><%= link_to 'Edit Security', edit_security_path(@security) %></li>
+<li><%= link_to 'Chart Security', security_charts_path(@security) %></li>
+<li><%= link_to 'Download Quotes', company_quotes_path(@security.company), :method => :post %></li>
+</ul>

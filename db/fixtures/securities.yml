@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  id: 1
+  account_id: 3
+  company_id: 1
+  basis: 2000
+  shares: 10
+

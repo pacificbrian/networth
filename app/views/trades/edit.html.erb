@@ -1,0 +1,32 @@
+<div class="edit">
+<h2>Edit Transaction</h2>
+
+<%= error_messages_for 'trade' %>
+
+<label>Account:</label> <strong><%= @account.name %></strong>
+<br>
+<label>Security:</label> <strong><%= @security.company.name %></strong>
+
+<%= form_for [ @security, @trade ] do |f| %>
+
+<table>
+<tr><td><br> <%= f.collection_select :trade_type_id, @trade_types, :id, :name %></td>
+<tr><td><br> <%= f.date_select :date %></td>
+<tr><td>Shares:<br> <%= f.text_field :shares %></td>
+<tr><td>Price:<br> <%= f.text_field :price %></td>
+<tr><td>Amount:<br> <%= f.text_field :amount %></td>
+<tr><td>Basis:<br> <%= f.text_field :basis %></td>
+<tr><td>Closed:<br> <%= f.check_box :closed %></td>
+<tr><td>Tax Year:<br> <%= f.text_field :tax_year %></td>
+</table>
+
+<p>
+  <%= submit_tag 'Update' %>
+</p>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Security', security_path(@security) %></li>
+<li><%= link_to 'Delete Trade', security_trade_path(@security, @trade), :method => :delete %></li>
+</ul>

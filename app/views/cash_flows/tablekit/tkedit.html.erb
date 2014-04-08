@@ -1,0 +1,29 @@
+<table id="cash_flows" class="sortable resizable editable">
+    <thead>
+        <tr>
+            <th id="id" class="sortfirstasc noedit">Id</th>
+            <th id="date">Date</th>
+            <th id="amount">Amount</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Amount</th>
+        </tr>
+    </tfoot>
+    <tbody>
+        <% for c in @split_cash_flows %>
+        <tr id="<%= c.id %>" class="CashFlow" test1="CashFlow">
+            <td><%= c.id %></td>
+            <td><%= c.date %></td>
+            <td><%= c.amount %></td>
+        </tr>
+	<% end %>
+    </tbody>
+</table>
+
+<script type="text/javascript" charset="utf-8">
+    var comments_table = new TableKit('cash_flows', { editAjaxURI: '/cash_flows/tkupdate' });
+</script>

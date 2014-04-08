@@ -1,0 +1,58 @@
+<div class="listing">
+<h2>Account Listing</h2>
+
+<table>
+<% for a in @accounts %>
+<% if a.hidden then next end %>
+<tr>
+<% if a.get_icon_path %>
+<td class="left"><%= image_tag "icons/"+a.get_icon_path %></td>
+<% else  %>
+<td></td> 
+<% end  %>
+<% if @year %>
+<td><%= link_to a.name, year_account_path(@year, a) %></td>
+<% else %>
+<td><%= link_to a.name, account_path(a) %></td>
+<% end %>
+<td class="currency"><%= number_to_currency(a.balance) %></td>
+<td>
+<%= link_to 'Edit', edit_account_path(a) %>
+</td>
+<td>
+<%= link_to 'Chart', account_charts_url(a, :days => 0) %>
+</td>
+</tr>
+<% end %>
+<tr>
+<td></td> 
+<td></td> 
+<td class="currency"><%= number_to_currency(@user.balance) %></td>
+</tr>
+</table>
+</div>
+
+<ul id="footmenu">
+<% if @year %>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+<% else %>
+<li><%= link_to 'YTD Accounts', year_accounts_path(Date.today.year) %></li>
+<% end %>
+<li><%= link_to 'New Account', new_account_path %></li>
+<li><%= link_to 'All Payees', payees_path %></li>
+<li><%= link_to 'CashFlow by Category', categories_url(:days => 0)  %></li>
+<li><%= link_to 'Custom Categories', user_categories_path %></li>
+<% if @year %>
+<li><%= link_to 'Import CashFlows', year_import_index_path(@year) %></li>
+<% else %>
+<li><%= link_to 'Import CashFlows', import_index_path %></li>
+<% end %>
+<li><%= link_to 'New CashFlow', new_cash_flow_path %></li>
+<li><%= link_to 'Schedule CashFlow', r_cash_flows_path %></li>
+<li><%= link_to 'Last Year Taxes', year_taxes_path(Date.today.year - 1) %></li>
+<li><%= link_to 'Current Year Taxes', year_taxes_path(Date.today.year) %></li>
+<li><%= link_to 'Last Year Gains', year_gains_url(Date.today.year - 1) %></li>
+<li><%= link_to 'Current Year Gains', year_gains_url(Date.today.year) %></li>
+<li><%= link_to 'Year to Date Chart', charts_url(:days => 0) %></li>
+<li><%= link_to 'Download/Refresh', refresh_accounts_path %></li>
+</ul>

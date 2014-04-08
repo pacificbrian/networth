@@ -1,0 +1,20 @@
+<%= javascript_include_tag 'swfobject' %>
+
+<strong>Chart for <%= @symbol %></strong>
+
+<div id="quote_chart" class='chart'>
+<strong>You need to upgrade your Flash Player</strong>
+</div>
+
+<div>
+<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("/amstock/amstock.swf", "quote_chart", "98%", "450", "8", "#FFFFFF");
+
+		so.addVariable("path", "/quotes/<%= @symbol %>");
+		so.addVariable("settings_file", escape("/amstock/quotes_settings.xml"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("quote_chart");
+		// ]]>
+</script>
+</div>

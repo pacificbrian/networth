@@ -1,0 +1,56 @@
+<%= javascript_include_tag 'best_in_place' %>
+<%= javascript_include_tag 'best_in_place.purr' %>
+
+<%= error_messages_for 'cash_flow' %>
+<% if !cash_flows.empty? %>
+<div class="dynamic">
+<table class="ledger">
+<tr>
+<th>Account</th>
+<th>Date</th>
+<th>Payee</th>
+<th>Category</th>
+<th>Memo</th>
+<th>Amount</th>
+</tr>
+<% n =  0 %>
+<% total_amount = 0 %>
+<% for c in cash_flows %>
+<% if (n % 2) == 0 %>
+<tr>
+<% else %>
+<tr class="even">
+<% end %>
+<% n = n + 1 %>
+<td><%= link_to c.account.name, account_payee_path(c.account, c.payee) %></td>
+<td><%= c.date %></td>
+<td><%= c.get_payee_name %></td>
+<td>
+<% if c.is_editable? %>
+<%= best_in_place c, :category_id, :type => :select, :collection => @inplace_categories %>
+<% else %>
+<%= c.get_cat_name %>
+<% end %>
+</td>
+<td><%= c.memo %></td>
+<% total_amount += c.amount %>
+<td class="currency"><%= number_to_currency(c.amount) %></td>
+<% if c.trade? %>
+<td><%= link_to 'Edit', edit_security_trade_path(c.trade.security, c.trade) %></td>
+<% else %>
+<td><%= link_to 'Edit', edit_cash_flow_path(c) %></td>
+<% end %>
+</tr>
+<% end %>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="currency"><%= number_to_currency total_amount %></td>
+<td></td>
+</tr>
+</table>
+</div>
+<% end %>

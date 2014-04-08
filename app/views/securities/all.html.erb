@@ -1,0 +1,19 @@
+<div class="listing">
+<h2>Securities Listing</h2>
+
+<table>
+<% for s in @securities %>
+<tr>
+<td><%= link_to s.company.name, security_path(s) %></td>
+<td><%= link_to s.company.symbol, security_charts_path(s) %></td>
+<td><%= link_to s.account.name, account_path(s.account) %></td>
+<td align="right"><%= s.get_simple_roc %>%</td>
+<td><%= link_to 'Edit', edit_security_path(s) %></td>
+</tr>
+<% end %>
+</table>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Securities', securities_path %></li>
+</ul>

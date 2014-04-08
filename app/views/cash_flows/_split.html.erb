@@ -1,0 +1,56 @@
+<%= javascript_include_tag 'best_in_place' %>
+<%= javascript_include_tag 'best_in_place.purr' %>
+
+<%= error_messages_for 'split_cash_flow' %>
+<% cfs = cash_flow.split_cash_flows %>
+<% if !cfs.empty? %>
+<table class="ledger resizable editable">
+<thead>
+<tr>
+<th id="date">Date</th>
+<th id="transnum">#</th>
+<th id="payee_name">Payee</th>
+<th id="category_id">Category</th>
+<th id="amount">Amount</th>
+<th class="noedit"></th>
+<th class="noedit"></th>
+</tr>
+</thead>
+<tbody>
+<% @split_amount = 0 %>
+<% for c in cfs %>
+<tr id="<%= c.id %>">
+<td><%= c.date %></td>
+<td><%= c.short_transnum %></td>
+<td><%= c.get_payee_name %></td>
+<td>
+<% if c.is_editable? %>
+<%= best_in_place c, :category_id, :type => :select, :collection => @inplace_categories %>
+<% else %>
+<%= c.get_cat_name %>
+<% end %>
+</td>
+<td class="currency">
+<% @split_amount += c.amount %>
+<% if c.is_editable? %>
+<%= number_to_currency best_in_place c, :amount, :display_as => :amount_to_f %>
+<% else %>
+<%= number_to_currency c.amount %>
+<% end %>
+</td>
+<td><%= link_to 'Edit', edit_cash_flow_path(c) %></td>
+<td><%= link_to 'Delete', cash_flow_path(c), :method => :delete %></td>
+</tr>
+<% end %>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><%= number_to_currency @split_amount %></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<% end %>

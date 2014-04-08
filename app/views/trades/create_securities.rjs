@@ -1,0 +1,7 @@
+page[:cash_flows].replace_html :partial => 'cash_flows/cash_flow',
+                               :locals  => {:cash_flows => @account.ordered_cash_flows_by_year(@year),
+                                            :balance => @account.cash_balance}
+page[:securities].replace_html :partial => 'securities/security',
+                               :locals  => {:account => @account, :securities => @account.securities}
+page[:total].replace_html :partial => 'accounts/total',
+                          :locals  => {:account => @account}

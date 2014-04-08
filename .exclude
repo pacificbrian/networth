@@ -1,0 +1,12 @@
+*~*
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.log
+*.dbf
+*.sql
+*.o
+*.exe
+*.bin
+*.des3

@@ -1,0 +1,77 @@
+<div class="new">
+<h2>Account - Import Transactions</h2>
+
+<table>
+<%= form_for :import,
+	     :html => { :multipart => true } do |f| %>
+<tr>
+<td><label> Choose Account: </label></td>
+<% if @account %>
+<td><%= @account.name %></td>
+<%= f.hidden_field :account_id, :value => @account.id %>
+<% else %>
+<td><%= f.collection_select :account_id, @accounts, :id, :name %></td>
+<% end %>
+</tr>
+<tr>
+<td><label for="dump_file"> Select a CSV File: </label></td>
+<td><%= f.file_field :csv_file %></td>
+<td> <%= submit_tag 'Import CSV' %> </td>
+</tr>
+<tr>
+<td><label for="dump_file"> Select a QIF File: </label></td>
+<td><%= f.file_field :qif_file %></td>
+<td> <%= submit_tag 'Import QIF' %> </td>
+<% if not @account or (@account and @account.institution) %>
+<tr>
+<td><label>OFX ID, Password: </label></td>
+<td>
+<%= f.text_field :ofx_name, :size => 12 %>
+<%= f.text_field :ofx_pass, :size => 15 %>
+</td>
+<td> <%= submit_tag 'Import OFX' %> </td>
+</tr>
+<% end %>
+<% end %>
+</table>
+
+<% if @account && !@recent_imports.empty? %>
+<p>
+<h2>Recent Imports</h2>
+<table class="ledger">
+<th>Date</th>
+<th># CashFlows</th>
+<% if @account.investment? %>
+<th># Trades</th>
+<% end %>
+<% for i in @recent_imports %>
+<tr>
+<% if @year %>
+<td><%= link_to i.date, year_account_import_path(@year, @account, i) %></td>
+<% else %>
+<td><%= link_to i.date, account_import_path(@account, i) %></td>
+<% end %>
+<td><%= i.cash_flows.size %></td>
+<% if @account.investment? %>
+<td><%= i.trades.size %></td>
+<% end %>
+</tr>
+<% end %>
+</table>
+<% end %>
+
+</div>
+
+<ul id="footmenu">
+<% if @year %>
+<% if @account %>
+<li><%= link_to 'Back to Account', year_account_path(@year, @account) %></li>
+<% end %>
+<li><%= link_to 'Back to Accounts', year_accounts_path(@year) %></li>
+<% else %>
+<% if @account %>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<% end %>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+<% end %>
+</ul>

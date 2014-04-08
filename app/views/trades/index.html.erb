@@ -1,0 +1,23 @@
+<div class="listing">
+<% if @account %>
+<h2><%= @account.name %> Trades</h2>
+
+<p>
+<div id="trades">
+<%= render :partial => 'trades/trade',
+	:locals  => {:account => @account, :security => nil, :trades => @trades} %>
+</div>
+<% end %>
+
+</div>
+
+<ul id="footmenu">
+<% if @account %>
+<% if @year %>
+<li><%= link_to 'All Account Trades', account_trades_url(@account) %></li>
+<li><%= link_to 'Back to Account', year_account_path(@year, @account) %></li>
+<% else %>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<% end %>
+<% end %>
+</ul>

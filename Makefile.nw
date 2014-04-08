@@ -1,0 +1,91 @@
+
+#MV=mv -b
+MV=mv
+#CIPHER="des3"
+CIPHER="aes256"
+PASSW="networth"
+
+all:
+
+setup:
+	ln -sf /usr/lib/ruby/vendor_ruby/rails vendor/rails
+#	ln -sf /usr/share/rails-ruby1.8 vendor/rails
+#	ln -sf /usr/share/rails-ruby1.8/railties vendor/railties
+
+routes:
+	rake routes
+
+upgrade:
+	rake rails:update
+
+scaffold:
+	ruby script/generate scaffold $(NAME)
+
+db:	db_migrate
+
+db_migrate:
+	rake db:migrate
+
+db_create:
+	rake db:create
+
+db_clear:
+	rake db:migrate VERSION=0
+
+db_load:
+	rake db:schema:load
+
+db_reset:
+	rake db:migrate:reset
+
+db_reload:
+	rake db:reset
+
+db_seed: db_create db_reset
+	rake db:seed
+
+db_demo:
+	env RAILS_ENV=demo ${MAKE} db_seed
+
+distclean: db_clear 
+
+archive: archive-encrypt
+archive-fast: archive-more
+archive-encrypt: archive-more-encrypt
+archive-upload: archive-less-encrypt
+
+archive-less:
+	tar --exclude-from=./.exclude --exclude="*.sqlite3" -cf .nw-less.tar .
+	gzip .nw-less.tar
+	$(MV) .nw-less.tar.gz nw-less.tgz
+
+archive-less-encrypt:
+	tar --exclude-from=./.exclude --exclude="*.sqlite3" -cf - . | openssl enc -e -${CIPHER} -salt -k ${PASSW} | dd of=.nw-less.bin
+	$(MV) .nw-less.bin nw-less.bin
+
+archive-more:
+	tar --exclude-from=./.exclude --exclude="sipro.sql*" -cf .nw.tar .
+	gzip .nw.tar
+	$(MV) .nw.tar.gz nw.tgz
+
+archive-more-encrypt:
+	tar --exclude-from=./.exclude --exclude="sipro.sql*" -cf - . | openssl enc -e -${CIPHER} -salt -k ${PASSW} | dd of=.nw.bin
+	$(MV) .nw.bin nw.bin
+
+archive-most:
+	tar --exclude-from=./.exclude -cf .nw-most.tar .
+	gzip .nw-most.tar
+	$(MV) .nw-most.tar.gz nw-most.tgz
+
+git-set-origin:
+	git remote set-url origin ${USER}@${GITSERVER}:/opt/git/nw.git
+
+git-remove-file:
+	git filter-branch --force --index-filter \
+	  'git rm --cached --ignore-unmatch Makefile' \
+	  --prune-empty --tag-name-filter cat -- --all
+
+install_plugins:
+	script/plugin install git://github.com/rails/in_place_editing.git
+
+.PHONY: db demo

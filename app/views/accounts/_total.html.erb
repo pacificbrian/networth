@@ -1,0 +1,14 @@
+<table>
+<tr>
+<td>
+<strong>Total Balance</strong>: <%= number_to_currency(@account.balance) %>
+</td>
+</tr>
+<% if (@account.investment?) %>
+<tr>
+<td>
+<strong>Cash Balance</strong>: <%= number_to_currency(@account.cash_balance) %>
+</td>
+</tr>
+<% end %>
+</table>

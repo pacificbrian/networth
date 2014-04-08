@@ -1,0 +1,50 @@
+<div class="edit">
+<h2>Edit Payee</h2>
+
+<%= error_messages_for 'payee' %>
+
+<%= form_for @payee do |f| %>
+<fieldset>
+<label>Payee Name</label>
+<%= f.text_field :name %>
+</fieldset>
+<fieldset>
+<label>Payee Location</label>
+<%= f.text_field :address %>
+</fieldset>
+<fieldset class="last">
+<table>
+<tr>
+<td>
+<label>Default Category</label>
+<%= f.collection_select :category_id, @categories, :id, :name %>
+</td>
+<td>
+<label>Skip On Import</label>
+<%= f.check_box :skip_on_import %>
+</td>
+</tr>
+</table>
+</fieldset>
+<fieldset class="submit">
+<%= submit_tag 'Update'%>
+</fieldset>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<% if @account %>
+<li><%= link_to 'Back to Payee', account_payee_path(@account, @payee) %></li>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<li><%= link_to 'Back to Payees', account_payees_path(@account) %></li>
+<% if !@payee.in_use? %>
+<li><%= link_to 'Delete Payee', account_payee_path(@account, @payee), :method => :delete %></li>
+<% end %>
+<% else %>
+<li><%= link_to 'Back to Payee', payee_path(@payee) %></li>
+<li><%= link_to 'Back to Payees', payees_path %></li>
+<% if !@payee.in_use? %>
+<li><%= link_to 'Delete Payee', payee_path(@payee), :method => :delete %></li>
+<% end %>
+<% end %>
+</ul>

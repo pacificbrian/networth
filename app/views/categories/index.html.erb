@@ -1,0 +1,148 @@
+<%= javascript_include_tag 'prototype' %>
+<%= javascript_include_tag 'ProtoChart' %>
+
+<script>
+	Event.observe(window, 'load', function() {
+		new Proto.Chart($('piechart_in'), 
+			[
+				<% write_comma = false %>
+				<% for pair in @income %>
+				<% if write_comma %>
+				,
+				<% end %>
+				<% write_comma = true %>
+				{
+					label: "<%= pair[0] %>",
+				        data: <%= Chart.array_to_pie_json(pair[1]) %>
+				}
+				<% end %>
+			],
+			{
+				legend: {show: true},
+				pies: {show: true, autoScale: true}
+			});		
+
+		new Proto.Chart($('piechart_out'), 
+			[
+				<% write_comma = false %>
+				<% for pair in @expenses %>
+				<% if write_comma %>
+				,
+				<% end %>
+				<% write_comma = true %>
+				{
+					label: "<%= pair[0] %>",
+				        data: <%= Chart.array_to_pie_json(pair[1]) %>
+				}
+				<% end %>
+			],
+			{
+				legend: {show: true},
+				pies: {show: true, autoScale: true}
+			});		
+	});
+</script>
+
+<div class="listing">
+<%= error_messages_for 'category' %>
+
+<% if @account %>
+<h2>Account Cashflows by Category</h2>
+<% else %>
+<h2>User Cashflows by Category</h2>
+<% end %>
+
+<div>
+<table border=0>
+<tr>
+<td style="padding:0">
+<div id="piechart_in" style="width:540px;height:360px;"></div>
+</td>
+<td style="padding:0">
+<div id="piechart_out" style="width:540px;height:360px;"></div>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<div>
+<table border=0>
+<thead>
+<tr>
+<th id="name">Category Name</th>
+<th id="count">Count</th>
+<th id="amount">Amount</th>
+</tr>
+</thead>
+<tbody>
+<% for category_cf in @in_cashflows %>
+<% n = category_cf.size %>
+<% if n.nonzero? %>
+<% c = category_cf[0].category %>
+<tr>
+<td><%= c.name %></td>
+<% if @account %>
+<td><%= link_to n, account_category_path(@account, c, :days => @days.to_i) %></td>
+<% else %>
+<td><%= link_to n, category_path(c, :days => @days.to_i) %></td>
+<% end %>
+<td class="currency"><%= sum_amount(category_cf) %></td>
+</tr>
+<% end %>
+<% end %>
+</tbody>
+</table>
+</div>
+</td>
+<td valign="top">
+<div>
+<table border=0>
+<thead>
+<tr>
+<th id="name">Category Name</th>
+<th id="count">Count</th>
+<th id="amount">Amount</th>
+</tr>
+</thead>
+<tbody>
+<% for category_cf in @out_cashflows %>
+<% n = category_cf.size %>
+<% if n.nonzero? %>
+<% c = category_cf[0].category %>
+<tr>
+<td><%= c.name %></td>
+<td><%= link_to n, category_url_days(@account, c, @days) %></td>
+<td class="currency"><%= sum_amount(category_cf) %></td>
+</tr>
+<% end %>
+<% end %>
+</tbody>
+</table>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+
+<ul id="footmenu">
+<% if @account %>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<% else %>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+<% end %>
+<li><%= link_to '2W', category_url_days(@account, nil, 14) %></li>
+<li><%= link_to '1M', category_url_months(@account, nil, 1) %></li>
+<li><%= link_to '3M', category_url_months(@account, nil, 3) %></li>
+<li><%= link_to '6M', category_url_months(@account, nil, 6) %></li>
+<li><%= link_to '1Y', category_url_years(@account, nil, 1) %></li>
+<li><%= link_to '2Y', category_url_years(@account, nil, 2) %></li>
+<li><%= link_to 'YTD', category_url_days(@account, nil, 0) %></li>
+<li><%= link_to 'ALL', category_url_days(@account, nil, nil) %></li>
+<% if @account %>
+<li><%= link_to 'Custom Categories', account_user_categories_path(@account) %></li>
+<% else %>
+<li><%= link_to 'Custom Categories', user_categories_path %></li>
+<% end %>
+<li><%= link_to 'Tax Categories', tax_categories_path %></li>
+</ul>

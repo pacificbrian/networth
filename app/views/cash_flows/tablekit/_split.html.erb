@@ -1,0 +1,34 @@
+<%= error_messages_for 'split_cash_flow' %>
+<% cfs = cash_flow.split_cash_flows %>
+<% if !cfs.empty? %>
+<table id="tk_split_cash_flows" class="ledger resizable editable">
+<thead>
+<tr>
+<th id="date">Date</th>
+<th id="transnum">#</th>
+<th id="payee_name">Payee</th>
+<th id="category_id">Category</th>
+<th id="amount">Amount</th>
+<th class="noedit"></th>
+<th class="noedit"></th>
+</tr>
+</thead>
+<tbody>
+<% for c in cfs %>
+<tr id="<%= c.id %>">
+<td><%= c.date %></td>
+<td><%= c.short_transnum %></td>
+<td><%= c.get_payee_name %></td>
+<td><%= c.get_cat_name %></td>
+<td class="currency"><%= number_to_currency(c.amount) %></td>
+<td><%= link_to 'Edit', edit_cash_flow_path(c) %></td>
+<td><%= link_to 'Delete', cash_flow_path(c), :method => :delete %></td>
+</tr>
+<% end %>
+</tbody>
+</table>
+<% end %>
+
+<script type="text/javascript" charset="utf-8">
+    var cf_table = new TableKit('tk_split_cash_flows', { editAjaxURI: '/cash_flows/tkupdate' });
+</script>

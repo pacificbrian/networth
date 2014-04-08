@@ -1,0 +1,117 @@
+<div class="show">
+<% if @account %>
+<h2><%= @account.name %> <%= @year %> Captial Gains</h2>
+<% else %>
+<h2><%= @year %> Captial Gains</h2>
+<% end %>
+
+<table class="ledger">
+<th>Account</th>
+<th>Security</th>
+<th>Type</th>
+<th>Date</th>
+<th>Shares</th>
+<th>Price</th>
+<th>Amount</th>
+<th>Basis</th>
+<th>Gain</th>
+<th></th>
+<% for t in @gains %>
+<tr>
+<% if @account %>
+<% if @year %>
+<td><%= link_to @account.name, year_account_gains_path(@year, @account) %></td>
+<% else %>
+<td><%= link_to @account.name, year_account_gains_path(@year, @account) %></td>
+<% end %>
+<% else %>
+<% if @year %>
+<td><%= link_to t.account.name, year_account_gains_path(@year, t.account) %></td>
+<% else %>
+<td><%= link_to t.account.name, account_gains_path(t.account) %></td>
+<% end %>
+<% end %>
+<td><%= link_to t.security.company.name, security_path(t.security) %></td>
+<% if @account %>
+<% if @year %>
+<td><%= link_to t.trade_type.name, year_account_trade_type_path(@year, @account, t.trade_type) %></td>
+<% else %>
+<td><%= link_to t.trade_type.name, account_trade_type_path(@account, t.trade_type) %></td>
+<% end %>
+<% else %>
+<% if @year %>
+<td><%= link_to t.trade_type.name, year_trade_type_path(@year, t.trade_type) %></td>
+<% else %>
+<td><%= link_to t.trade_type.name, trade_type_path(t.trade_type) %></td>
+<% end %>
+<% end %>
+<td><%= t.date %></td>
+<td><%= t.shares %></td>
+<td class="currency"><%= number_to_currency(t.price) %></td>
+<td class="currency"><%= number_to_currency(t.amount) %></td>
+<td class="currency"><%= number_to_currency(t.basis) %></td>
+<% if t.gain %>
+<% @gain += t.gain %>
+<% @taxable_gain += t.taxable_gain %>
+<td class="currency"><%= number_to_currency(t.gain) %></td>
+<% else %>
+<td></td>
+<% end %>
+<% if ! t.trade_gains.empty? %>
+<% if @year %>
+<% if @account %>
+<td><%= link_to 'Edit', year_account_gain_path(@year, @account, t) %></td>
+<% else %>
+<td><%= link_to 'Edit', year_gain_path(@year, t) %></td>
+<% end %>
+<% else %>
+<td></td> 
+<% end %>
+<% else %>
+<td></td> 
+<% end %>
+</tr>
+<% end %>
+
+<tr>
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td>Total Gain</td> 
+<td class="currency"><%= number_to_currency(@gain) %></td>
+<td></td> 
+</tr>
+<tr>
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td></td> 
+<td>Taxable Gain</td> 
+<td class="currency"><%= number_to_currency(@taxable_gain) %></td>
+<td></td> 
+</tr>
+</table>
+</div>
+
+<ul id="footmenu">
+<% if @account %>
+<% if @year %>
+<li><%= link_to 'Back to Gains', year_gains_url(@year) %></li>
+<% else %>
+<li><%= link_to 'Back to Gains', gains_url %></li>
+<% end %>
+<li><%= link_to 'Current Year Gains', year_gains_url(Date.today.year) %></li>
+<li><%= link_to 'Account Trades', year_account_trades_url(Date.today.year, @account) %></li>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<% else %>
+<li><%= link_to 'Current Year Gains', year_gains_url(Date.today.year) %></li>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+<% end %>
+</ul>

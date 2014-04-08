@@ -1,0 +1,36 @@
+<div class="edit">
+<%= error_messages_for 'category' %>
+
+<% if @user %>
+<h2>Edit Category</h2>
+
+<%= form_for @category, :url=>user_category_path(@category) do |f| %>
+<fieldset class="last">
+<label>Category Name</label>
+<%= f.text_field :name %>
+<%= f.collection_select :category_type_id, @category_types, :id, :name %>
+</fieldset>
+<fieldset class="submit">
+<%= submit_tag 'Update'%>
+</fieldset>
+<% end %>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<% if @account %>
+<li><%= link_to 'To Category', account_category_path(@account, @category) %></li>
+<li><%= link_to 'Custom Categories', account_user_categories_path(@account) %></li>
+<li><%= link_to 'All Categories', account_categories_path(@account) %></li>
+<% if @user and !@category.in_use? %>
+<li><%= link_to 'Delete Category', account_category_path(@account, @category), :method => :delete %></li>
+<% end %>
+<% else %>
+<li><%= link_to 'To Category', category_path(@category) %></li>
+<li><%= link_to 'Custom Categories', user_categories_path %></li>
+<li><%= link_to 'All Categories', categories_path %></li>
+<% if @user and !@category.in_use? %>
+<li><%= link_to 'Delete Category', category_path(@category), :method => :delete %></li>
+<% end %>
+<% end %>
+</ul>

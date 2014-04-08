@@ -1,0 +1,21 @@
+<div class="show">
+<h2>Tax Items Cashflows</h2>
+
+<div id="cash_flows">
+<%= render :partial => 'cash_flows/multi_account_cash_flow',
+	   :locals  => {:cash_flows => @tax_item_cash_flows} %> 
+</div>
+</div>
+
+<ul id="footmenu">
+<% if @account %>
+<li><%= link_to 'To Account', @account %></li>
+<li><%= link_to 'Back to Tax Items', year_tax_item_path(@year, @tax_item) %></li>
+<% end %>
+<li><%= link_to 'Back to Taxes', year_taxes_path(@year) %></li>
+<% if @account and @tax_item.has_trades?%>
+<li><%= link_to 'Account Gains', year_account_gains_path(@year, @account) %></li>
+<% elsif @tax_item.has_trades?%>
+<li><%= link_to 'Year Gains', year_gains_path(@year) %></li>
+<% end %>
+</ul>

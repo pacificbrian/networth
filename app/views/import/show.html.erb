@@ -1,0 +1,28 @@
+<div class="show">
+
+<% if !@import_trades.empty? %>
+<h2>Imported Trades</h2>
+<div id="trades">
+<%= render :partial => 'trades/trade',
+	   :locals  => {:account => @import.account, :security => nil, :trades => @import_trades} %>
+</div>
+<p>
+<% end %>
+
+<% if !@import_cash_flows.empty? %>
+<h2>Imported Cashflows</h2>
+<div id="cash_flows">
+<%= render :partial => 'cash_flows/cash_flow',
+	   :locals  => {:cash_flows => @import_cash_flows, :balance => nil} %> 
+</div>
+<% end %>
+
+</div>
+
+<ul id="footmenu">
+<% if @year %>
+<li><%= link_to 'To Account', year_account_path(@year, @account) %></li>
+<% else %>
+<li><%= link_to 'To Account', account_path(@account) %></li>
+<% end %>
+</ul>

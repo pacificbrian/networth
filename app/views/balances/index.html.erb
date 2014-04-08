@@ -1,0 +1,26 @@
+<div class="show">
+<h2><%= @account.name %></h2>
+
+<table class="ledger">
+<th>Date</th>
+<th>Balance</th>
+<% for b in @balances %>
+<tr>
+<td><%= b.date %></td>
+<td class="currency"><%= number_to_currency(b.balance) %></td>
+<td><%= link_to 'Delete', account_balance_path(@account, b), :method => :delete %></td>
+</tr>
+<% end %>
+</table>
+
+</div>
+
+<ul id="footmenu">
+<% if @year %>
+<li><%= link_to 'Back to Account', year_account_path(@year, @account) %></li>
+<li><%= link_to 'Back to Accounts', year_accounts_path(@year) %></li>
+<% else %>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+<% end %>
+</ul>

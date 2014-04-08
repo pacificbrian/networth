@@ -1,0 +1,60 @@
+<%= error_messages_for 'cash_flow' %>
+<% if !cash_flows.empty? %>
+<div class="dynamic">
+<table class="ledger">
+<tr>
+<th>Account</th>
+<th>Date</th>
+<th>Payee</th>
+<th>Category</th>
+<th>Amount</th>
+</tr>
+<% n =  0 %>
+<% total_amount = 0 %>
+<% for c in cash_flows %>
+<% if (n % 2) == 0 %>
+<tr>
+<% else %>
+<tr class="even">
+<% end %>
+<% n = n + 1 %>
+<% if c.account.nil? %>
+<td>AUTO</td>
+<% elsif @year %>
+<td><%= link_to c.account.name, year_account_tax_item_path(@year, c.account, @tax_item) %></td>
+<% else %>
+<td><%= link_to c.account.name, account_tax_item_path(c.account, @tax_item) %></td>
+<% end %>
+<td><%= c.date %></td>
+<% if c.account.nil? or c.payee.nil? %>
+<td><%= c.get_payee_name %></td>
+<% elsif c.trade? %>
+<td><%= link_to c.get_payee_name, account_security_path(c.account, c.trade.security) %></td>
+<% elsif @year %>
+<td><%= link_to c.get_payee_name, year_payee_tax_item_path(@year, c.payee, @tax_item) %></td>
+<% else %>
+<td><%= link_to c.get_payee_name, payee_tax_item_path(c.payee, @tax_item) %></td>
+<% end %>
+<td><%= c.get_cat_name %></td>
+<% total_amount += c.amount %>
+<td class="currency"><%= number_to_currency(c.amount) %></td>
+<% if c.account.nil? %>
+<td></td>
+<% elsif c.trade? %>
+<td><%= link_to 'Edit', edit_security_trade_path(c.trade.security, c.trade) %></td>
+<% else %>
+<td><%= link_to 'Edit', edit_cash_flow_path(c) %></td>
+<% end %>
+</tr>
+<% end %>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td class="currency"><%= number_to_currency total_amount %></td>
+<td></td>
+</tr>
+</table>
+</div>
+<% end %>

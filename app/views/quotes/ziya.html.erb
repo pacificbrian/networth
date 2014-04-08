@@ -1,0 +1,17 @@
+<script type="text/javascript" src="/javascripts/swfobject.js"></script>
+
+<h2>Quotes</h2>
+
+<strong><%= @symbol %></strong>
+
+<%= @graph %>
+
+<%= gen_chart( "CRAY", url_for( :controller => 'quotes', :action => 'fred' ), '#ffffff', 400, 300 ) %>
+
+
+<p>
+<div>
+<%= ziya_chart( url_for( :controller => 'quotes', :action => 'refresh_graph' ),
+	       :id => @symbol, :bgcolor => "transparent", 
+	       :width => 400, :height => 250 ) -%>
+</div>

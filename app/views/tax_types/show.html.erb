@@ -1,0 +1,12 @@
+<div class="show">
+<h2>Tax Types Cashflows</h2>
+
+<div id="cash_flows">
+<%= render :partial => 'cash_flows/long_cash_flow',
+	   :locals  => {:cash_flows => @tax_type_cash_flows} %> 
+</div>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Taxes', year_taxes_path(@year) %></li>
+</ul>

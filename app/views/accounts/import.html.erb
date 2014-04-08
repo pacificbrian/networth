@@ -1,0 +1,27 @@
+<div class="new">
+<h2>Account - Import Transactions</h2>
+
+<table>
+<%= form_for :import, :url=> { :controller=>"accounts", :action=>"file" },
+	    :html => { :multipart => true } do |f| %>
+<tr>
+<td><label> Choose Account: </label></td>
+<td><%= f.collection_select :account_id, @accounts, :id, :name %></td>
+</tr>
+<tr>
+<td><label for="dump_file"> Select a CSV File: </label></td>
+<td><%= f.file_field :file_csv %></td>
+<td> <%= submit_tag 'Import CSV' %> </td>
+</tr>
+<tr>
+<td><label for="dump_file"> Select a QIF File: </label></td>
+<td><%= f.file_field :file_qif %></td>
+<td> <%= submit_tag 'Import QIF' %> </td>
+</tr>
+<% end %>
+</table>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+</ul>

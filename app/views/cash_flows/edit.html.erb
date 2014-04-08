@@ -1,0 +1,78 @@
+<div class="edit">
+<h2>Edit Transaction</h2>
+
+<%= error_messages_for 'cash_flow' %>
+
+<label>Account Name:</label> <strong><%= @cash_flow.account.name %></strong>
+
+<div id="splits">
+<%= render :partial => 'cash_flows/split',
+	   :locals  => {:cash_flow => @cash_flow} %> 
+</div>
+
+<%= form_for [ @cash_flow ] do |f| %>
+<table>
+<tr>
+<td><br> <%= f.collection_select :cash_flow_type_id, @cash_flow_types, :id, :name %></td>
+<tr>
+<td>Tax Year<br> <%= f.text_field :tax_year %></td>
+<tr>
+<td><br> <%= f.date_select :date %></td>
+<td>Check/Number:<br> <%= f.text_field :transnum %></td>
+<tr>
+<td>Payee:<br> <%= f.text_field :payee_name %></td>
+<td>Amount:<br> <%= f.text_field :amount %></td>
+<tr>
+<td>Category:<br> <%= f.collection_select :category_id, @categories, :id, :name %></td>
+<td>Memo:<br> <%= f.text_field :memo %></td>
+</table>
+<!-- need to have fields w/defaults here as hidden -->
+<!-- need all CF fields here that are not editable but must be copied over to new CF -->
+<%= f.hidden_field :split_from %>
+<%= f.hidden_field :repeat_interval_id %>
+<%= f.hidden_field :import_id %>
+<p>
+  <%= submit_tag 'Update' %>
+</p>
+<% end %>
+
+
+<%= form_for [ @split_cash_flow ] do |f| %>
+
+<table>
+<tr>
+<td><br> <%= f.collection_select :cash_flow_type_id, @cash_flow_types, :id, :name %></td>
+<tr>
+<td>Payee:<br> <%= f.text_field :payee_name %></td>
+<td>Amount:<br> <%= f.text_field :amount %></td>
+<tr>
+<td>Category:<br> <%= f.collection_select :category_id, @categories, :id, :name %></td>
+<td>Memo:<br> <%= f.text_field :memo %></td>
+</table>
+<!-- these are set in controller -->
+<%= f.hidden_field :split_from %>
+<%= f.hidden_field :split %>
+<%= f.hidden_field :account_id %>
+<%= f.hidden_field :date %>
+<%= f.hidden_field :tax_year %>
+
+<p>
+  <%= submit_tag 'Add Split' %>
+</p>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Account', account_path(@cash_flow.account) %></li>
+<li><%= link_to 'Back to Payee', payee_path(@cash_flow.payee) %></li>
+<% if @cash_flow.import %>
+<li><%= link_to 'Back to Import', account_import_path(@cash_flow.account, @cash_flow.import) %></li>
+<% end %>
+<% if @cash_flow.parent %>
+<li><%= link_to 'Edit Parent CashFlow', edit_cash_flow_path(@cash_flow.parent) %></li>
+<% end %>
+<% if @cash_flow.from_repeat? %>
+<li><%= link_to 'Edit Scheduled CashFlow', edit_r_cash_flow_path(@cash_flow.repeat_interval_id) %></li>
+<% end %>
+<li><%= link_to 'Delete CashFlow', cash_flow_path(@cash_flow), :method => :delete %></li>
+</ul>

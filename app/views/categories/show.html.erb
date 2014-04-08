@@ -1,0 +1,54 @@
+<%= javascript_include_tag 'prototype' %>
+<%= javascript_include_tag 'ProtoChart' %>
+
+<script>
+	Event.observe(window, 'load', function() {
+		new Proto.Chart($('barchart_out'), 
+			[
+				{
+					label: "<%= @chart_name %>", color: "cadetblue",
+				        data: <%= @totals.to_json %>,
+				}
+			],
+			{
+				legend: {show: true},
+				bars: {show: true, fillColor: "yellowgreen",
+                                       barWidth: <%= @bar_width %>, autoScale: false},
+				points: {show: false},
+				xaxis: {mode: "time", minTickSize: [1, "month"],
+                                        min: <%= Category.monthly_min(@totals) - (@bar_width * 1.5) %>,
+                                        max: <%= Category.monthly_max(@totals) + (@bar_width * 1.5) %>},
+				yaxis: {min: <%= @totals_min %>, max: <%= @totals_max %>}
+			});		
+	});
+</script>
+
+<div class="show">
+<h2>Category CashFlows</h2>
+
+<h2><%= @chart_name %></h2>
+<p id="barchart_out" style="width:780px;height:480px"></p>
+
+<div id="cash_flows">
+<%= render :partial => 'cash_flows/long_cash_flow',
+	   :locals  => {:cash_flows => @cash_flows} %> 
+</div>
+</div>
+
+<ul id="footmenu">
+<% # don't add Category#Edit (read-only default Categories!) %>
+<% if @account %>
+<li><%= link_to 'Back to Account', account_path(@account) %></li>
+<li><%= link_to 'Back to Categories', category_url_days(@account, nil, @days) %></li>
+<% else %>
+<li><%= link_to 'Back to Categories', category_url_days(@account, nil, @days) %></li>
+<% end %>
+<li><%= link_to '1M', category_url_months(@account, @category, 1) %></li>
+<li><%= link_to '3M', category_url_months(@account, @category, 3) %></li>
+<li><%= link_to '6M', category_url_months(@account, @category, 6) %></li>
+<li><%= link_to '1Y', category_url_years(@account, @category, 1) %></li>
+<li><%= link_to '2Y', category_url_years(@account, @category, 1) %></li>
+<li><%= link_to 'YTD', category_url_days(@account, @category, 0) %></li>
+<li><%= link_to 'ALL', category_url_days(@account, @category, nil) %></li>
+</ul>
+

@@ -1,0 +1,50 @@
+<div class="listing">
+<h2>Securities Held Listing</h2>
+
+<table>
+<tr>
+<td><b>Stocks</b></td>
+</tr>
+<% for s in @securities %>
+<% if s.is_stock? %>
+<tr>
+<td><%= link_to s.company.name, security_path(s) %></td>
+<td><%= link_to s.company.symbol, security_charts_path(s) %></td>
+<td><%= link_to s.account.name, account_path(s.account) %></td>
+<td align="right"><%= s.shares %></td>
+<td align="right"><%= number_to_currency s.price %></td>
+<td align="right"><%= number_to_currency s.value %></td>
+<td align="right"><%= s.get_simple_roc %>%</td>
+<td><%= link_to 'Edit', edit_security_path(s) %></td>
+<td><%= link_to 'Alert', new_security_security_alert_path(s) %></td>
+</tr>
+<% end %>
+<% end %>
+<tr>
+<td></td>
+</tr>
+<tr>
+<td><b>Funds</b></td>
+</tr>
+<% for s in @securities %>
+<% if s.is_fund? %>
+<tr>
+<td><%= link_to s.company.name, security_path(s) %></td>
+<td><%= link_to s.company.symbol, security_charts_path(s) %></td>
+<td><%= link_to s.account.name, account_path(s.account) %></td>
+<td align="right"><%= s.shares %></td>
+<td align="right"><%= number_to_currency s.price %></td>
+<td align="right"><%= number_to_currency s.value %></td>
+<td align="right"><%= s.get_simple_roc %>%</td>
+<td><%= link_to 'Edit', edit_security_path(s) %></td>
+<td><%= link_to 'Alert', new_security_security_alert_path(s) %></td>
+</tr>
+<% end %>
+<% end %>
+</table>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'All Securities', all_securities_url %></li>
+<li><%= link_to 'Security Alerts', security_alerts_url %></li>
+</ul>

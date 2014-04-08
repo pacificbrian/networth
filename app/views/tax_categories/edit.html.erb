@@ -1,0 +1,25 @@
+<div class="edit">
+<h2>Edit Tax Category</h2>
+
+<%= error_messages_for 'tax_category' %>
+
+<%= form_for @tax_category do |f| %>
+<fieldset class="last">
+<label>Tax Category</label>
+<%= f.collection_select :tax_item_id, @tax_items, :id, :name %>
+<% if @tax_category.trade_type %>
+<%= f.collection_select :trade_type_id, @trade_types, :id, :name %>
+<% else %>
+<%= f.collection_select :category_id, @categories, :id, :name %>
+<% end %>
+</fieldset>
+<fieldset class="submit">
+<%= submit_tag 'Update'%>
+</fieldset>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Tax Categories', tax_categories_path %></li>
+<li><%= link_to 'Delete Tax Category', tax_category_path(@tax_category), :method => :delete %></li>
+</ul>

@@ -1,0 +1,74 @@
+<div class="show">
+<% if @company %>
+<h2><%= @company.name %> (<%= (@company.symbol) %>)</h2>
+<% else %>
+<h2>Quote Settings </h2>
+<% end %>
+
+<% if @quote_settings %>
+<table class="ledger">
+<th>Symbol</th>
+<th>Date Range</th>
+<th>Auto</th>
+<th></th>
+<th></th>
+<th></th>
+<% for q in @quote_settings %>
+<tr>
+<td><%= q.symbol %></td>
+<td><%= (q.begin..q.last).to_s %></td>
+<% if q.auto %>
+<td>True</td>
+<% else %>
+<td>False</td>
+<% end %>
+<td><%= link_to 'Edit', edit_quote_setting_path(q) %></td>
+<td><%= link_to 'Delete', quote_setting_path(q), :method => :delete %></td>
+<td><%= link_to 'Download New', quote_setting_path(q) %></td>
+</tr>
+<% end %>
+</table>
+
+<div class='form'>
+<%= form_for [ @quote_setting ], :remote => true do |f| %>
+<table>
+<tr>
+<td>Symbol:<br> <%= f.text_field :symbol %></td>
+<tr>
+<td>Begin Date:<br> <%= f.date_select :begin %></td>
+<tr>
+<td>Auto:<br> <%= f.check_box :auto %></td>
+</table>
+<p>
+<%= submit_tag 'Add' %>
+</p>
+<% end %>
+</div>
+<% end %>
+
+<% if @quotes %>
+<table class="ledger">
+<th>Date</th>
+<th>Price</th>
+<th>Adjusted</th>
+<% for q in @quotes %>
+<tr>
+<td><%= q.date %></td>
+<td class="currency"><%= number_to_currency(q.close) %></td>
+<td class="currency"><%= number_to_currency(q.adjclose) %></td>
+<td><%= link_to 'Delete', company_quote_path(@company, q), :method => :delete %></td>
+</tr>
+<% end %>
+</table>
+<% end %>
+
+</div>
+
+<ul id="footmenu">
+<% if @company %>
+<li><%= link_to 'Back to Companies', companies_path %></li>
+<li><%= link_to 'Download Quotes', company_quotes_path(@company), :method => :post %></li>
+<% else %>
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+<% end %>
+</ul>

@@ -1,0 +1,48 @@
+<div class="new">
+<h2>New Account</h2>
+
+<%= error_messages_for 'account' %>
+
+<%= form_for @account do |f| %>
+<fieldset>
+<table>
+<td>
+<label>Type</label>
+<%= f.collection_select :account_type_id, @account_types, :id, :name %>
+</td>
+<td>
+<label>Currency</label>
+<%= f.collection_select :currency_type_id, @currency_types, :id, :name %>
+</td>
+<td>
+<label>Taxable</label>
+<%= check_box_tag 'account[taxable]', true, true %>
+<%= f.hidden_field :taxable %>
+</td>
+<td>
+<label>Watchlist</label>
+<%= f.check_box :watchlist %>
+</td>
+</table>
+</fieldset>
+<fieldset>
+<label>Account Name</label>
+<%= f.text_field :name %>
+</fieldset>
+<fieldset>
+<label>Account Number</label>
+<%= f.text_field :number %>
+</fieldset>
+<fieldset class="last">
+<label>Routing Number</label>
+<%= f.text_field :routing %>
+</fieldset>
+<fieldset class="submit">
+<%= submit_tag 'Create Account' %>
+</fieldset>
+<% end %>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Accounts', accounts_path %></li>
+</ul>

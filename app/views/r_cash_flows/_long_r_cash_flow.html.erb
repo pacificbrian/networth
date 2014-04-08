@@ -1,0 +1,32 @@
+<%= javascript_include_tag 'best_in_place' %>
+<%= javascript_include_tag 'best_in_place.purr' %>
+
+<%= error_messages_for 'r_cash_flow' %>
+<% if !@r_cash_flows.empty? %>
+<table class="ledger">
+<th>Account</th>
+<th>Interval</th>
+<th>Repeats</th>
+<th>Date</th>
+<th>Payee</th>
+<th>Category</th>
+<th>Amount</th>
+<% for c in @r_cash_flows %>
+<tr>
+<td><%= c.account.name %></td>
+<td><%= c.repeat_interval.repeat_interval_type.name %></td>
+<td><%= c.repeat_interval.repeats_left %></td>
+<td><%= c.date %></td>
+<td><%= c.get_payee_name %></td>
+<td><%= c.get_cat_name %></td>
+<% if c.is_editable? %>
+<td class="currency"><%= number_to_currency best_in_place c, :amount, :display_as => :amount_to_f %></td>
+<% else %>
+<td class="currency"><%= number_to_currency(c.amount) %></td>
+<% end %>
+<td><%= link_to 'Edit', edit_r_cash_flow_path(c) %></td>
+<td><%= link_to 'Delete', r_cash_flow_path(c), :method => :delete %></td>
+</tr>
+<% end %>
+</table>
+<% end %>

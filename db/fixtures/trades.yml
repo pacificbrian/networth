@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  id: 1
+  date: 2010-04-02
+  security_id: 1
+  trade_type_id: 1
+  shares: 10
+  amount: 2000
+  price: 200
+

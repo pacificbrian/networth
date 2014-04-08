@@ -1,0 +1,81 @@
+<%= error_messages_for 'trade' %>
+
+<% allow_delete = true unless local_assigns.has_key? :allow_delete %>
+
+<% if !trades.empty? %>
+<table class="ledger">
+<% if security.nil? %>
+<% if account.nil? %>
+<th>Account</th>
+<% end %>
+<th>Security</th>
+<% end %>
+<th>Type</th>
+<th>Date</th>
+<th>Shares</th>
+<% if security and security.debug_shares? %>
+<th>Total Sh</th>
+<% sum_shares = 0 %>
+<% end %>
+<th>Price</th>
+<th>Basis</th>
+<th>Amount</th>
+<% for t in trades %>
+<tr>
+<% if security.nil? %>
+<% if account.nil? %>
+<td><%= link_to t.account.name, year_account_trade_type_path(t.date.year, t.account, t.trade_type) %></td>
+<% end %>
+<td><%= link_to t.security.company.name, security_path(t.security) %></td>
+<% end %>
+<% if t.sell? # and !t.trade_gains.empty? %>
+<td><%= link_to t.trade_type.name, year_account_gain_path(t.date.year, t.account, t) %></td>
+<% elsif !t.trade_type.nil? %>
+<td><%= t.trade_type.name %></td>
+<% else %>
+<td></td>
+<% end %>
+<td><%= t.date %></td>
+<td><%= t.shares %></td>
+<% if security and security.debug_shares? %>
+<% if t.buy? %>
+<td><%= sum_shares += t.shares.round(3) %></td>
+<% elsif t.sell? %>
+<td><%= sum_shares -= t.shares.round(3) %></td>
+<% else %>
+<td></td>
+<% end %>
+<% end %>
+<td class="currency"><%= number_to_currency(t.price) %></td>
+<td class="currency"><%= number_to_currency(t.get_basis) %></td>
+<td class="currency"><%= number_to_currency(t.amount) %></td>
+<td><%= link_to 'Edit', edit_security_trade_path(t.security, t) %></td>
+<% if allow_delete %>
+<td><%= link_to 'Delete', security_trade_path(t.security, t), :method => :delete %></td>
+<% end %>
+</tr>
+<% end %>
+<% if security %>
+<tr>
+<td align ="left">
+<strong>Totals:</strong>
+</td>
+<td>
+</td>
+<td>
+<%= security.shares %>
+</td>
+<td class="currency">
+<%= number_to_currency(security.basis / security.shares) %>
+</td>
+<td>
+</td>
+<td class="currency">
+<%= number_to_currency(security.basis) %>
+</td>
+<td colspan="2">
+</td>
+</tr>
+<% end %>
+</table>
+<% end %>

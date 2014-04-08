@@ -1,0 +1,52 @@
+<div class="show">
+<% if @trade %>
+<h2><%= @trade.security.company.name %></h2>
+<% end %>
+
+<h3>Gain</h3>
+<table class="ledger">
+<th>Date</th>
+<th>Shares</th>
+<th>Price</th>
+<th>Amount</th>
+<th>Basis</th>
+<th>Gain</th>
+<th></th>
+<% if @trade %>
+<tr>
+<td><%= @trade.date %></td>
+<td><%= @trade.shares %></td>
+<td class="currency"><%= number_to_currency(@trade.price) %></td>
+<td class="currency"><%= number_to_currency(@trade.amount) %></td>
+<td class="currency"><%= number_to_currency(@trade.basis) %></td>
+<td class="currency"><%= number_to_currency(@trade.amount - @trade.basis) %></td>
+<% if @account %>
+<td><%= link_to 'Update', year_account_gain_path(@year, @account, @trade), :method => :put %></td>
+<% else %>
+<td><%= link_to 'Update', year_gain_path(@year, @trade), :method => :put %></td>
+<% end %>
+</tr>
+<% end %>
+</table>
+
+<h3>Trades</h3>
+<div id="trades">
+<% if @account %>
+<%= render :partial => 'trades/trade',
+           :locals  => {:account => @account, :security => nil, :trades => @trades, :allow_delete => false} %>
+<% else %>
+<%= render :partial => 'trades/trade',
+           :locals  => {:account => nil, :security => nil, :trades => @trades, :allow_delete => false} %>
+<% end %>
+</div>
+</div>
+
+<% if @year %>
+<ul id="footmenu">
+<% if @account %>
+<li><%= link_to 'Back to Gains', year_account_gains_path(@year, @account) %></li>
+<% else %>
+<li><%= link_to 'Back to Gains', year_gains_path(@year) %></li>
+<% end %>
+</ul>
+<% end %>
