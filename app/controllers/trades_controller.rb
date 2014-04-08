@@ -42,10 +42,6 @@ class TradesController < ApplicationController
       symbol = params[:trade][:symbol]
       @account = Account.find(params[:account_id])
       @security = @account.find_security_by_symbol(symbol)
-    # TEMP, move to partial :locals
-    # TODO: for in_place_edit
-    #@user = User.find(session[:user_id])
-    #@categories = @user.all_categories
       source = @account
       source_js = "create_securities.rjs"
     elsif params[:security_id]
@@ -62,7 +58,6 @@ class TradesController < ApplicationController
       @security.add_trade(@trade)
       # can't use @account because stale?, would need to merge into above?
       #@security.account.add_trade_cash_flows(@trade)
-      #@cash_balance = @security.account.cash_balance
       @account = @security.account
       @account.add_trade_cash_flows(@trade)
       respond_to do |format|
@@ -71,8 +66,6 @@ class TradesController < ApplicationController
       end
     else
       redirect_to source
-      #render :controller => 'accounts', :action => 'show'
-      #render :controller => 'accounts', :action => 'show', :id => @account
     end
   end
 

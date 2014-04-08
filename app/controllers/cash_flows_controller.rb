@@ -17,8 +17,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class CashFlowsController < ApplicationController
-  protect_from_forgery :except => [:in_place_edit]
-
   def create
     @year = session[:year_id]
     cf = CashFlow.params_to_cf(params[:cash_flow])

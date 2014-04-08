@@ -6,6 +6,7 @@
 
 # Ignore bundler config
 /.bundle
+/vendor/bundle
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
@@ -14,6 +15,21 @@
 /log/*.log
 /tmp
 /vendor/rails
+
+*.rbc
+capybara-*.html
+.rspec
+/log
+/tmp
+/db/*.sqlite3
+/public/system
+/coverage/
+/spec/tmp
+**.orig
+rerun.txt
+pickle-email-*.html
+config/initializers/secret_token.rb
+config/secrets.yml
 
 *.gz
 *.tar

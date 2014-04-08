@@ -20,10 +20,8 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  # Rails2 comment:
   # See ActionController::RequestForgeryProtection for details
-  # Uncomment the :secret if you're not using the cookie session store
-  protect_from_forgery # :secret => '8ce3ba8e8765a56886e53c05db510d11'
+  protect_from_forgery
 
   helper :all # include all helpers, all the time
 

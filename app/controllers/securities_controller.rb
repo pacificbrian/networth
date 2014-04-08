@@ -26,10 +26,6 @@ class SecuritiesController < ApplicationController
     @trade_types = TradeType.find(:all)
 
     respond_to do |format|
-        format.json {
-            chart_json = to_json
-            render :json => chart_json.render
-        }
         format.html
     end
   end
@@ -69,93 +65,5 @@ class SecuritiesController < ApplicationController
     @account = @security.account
     #@security.destroy
     redirect_to @account
-  end
-
-  def to_json
-    days = nil
-    values = Array.new
-    dates = Array.new
-
-    security = Security.find(params[:id])
-    if params[:days]
-      days = params[:days].to_i
-      if days.zero?
-        days = nil
-      else
-        start_date = Date.today - days
-      end
-    end
-
-    unless days
-      start_date = Date.new(Date.today.year)
-      days = 365
-    end
-
-    quotes = Quote.range_from_security(security, start_date)
-
-    last_price = 0
-    vmin = vmax = nil
-    quotes.each do |q|
-      if (vmin.nil?)
-        vmin = vmax = q.adjclose
-        last_price = q.adjclose
-      end
-
-      values.insert(0, q.adjclose)
-      if q.adjclose < vmin
-        vmin = q.adjclose
-      end
-      if q.adjclose > vmax
-        vmax = q.adjclose
-      end
-
-      if days > 365
-        dates.insert(0, q.date.strftime("%y %b %d"))
-      else
-        dates.insert(0, q.date.strftime("%b %d"))
-      end
-    end
-    first_price = values.at(0)
-
-    puts first_price.to_s + " => "+ last_price.to_s
-    gain = ((last_price - first_price) / first_price) * 100
-
-    if (vmin.nil?)
-      vmin = vmax = 0
-    else
-      vrange = vmax - vmin
-      vmax = vmax + (vrange * 0.05)
-      vmin = vmin - (vrange * 0.05)
-      #vmax = (vmax * 10).round / 10
-      #vmin = (vmin * 10).round / 10
-    end
-
-    name = security.company.symbol
-    return Chart.dateline(name + " " + gain.round(2).to_s + "%",
-                          dates, values, vmin, vmax)
-  end
-
-  def json
-    chart_json = to_json
-    render :json => chart_json.render
-  end
-
-  def chart
-    if params[:id]
-      @security = Security.find(params[:id])
-    end
-
-    if params[:days]
-      json_url = "json?days="+ params[:days]
-    else
-      days = 1 + @security.days
-      start_date = Date.today - days
-      if start_date.wday.zero?
-        days += 2
-      end
-      json_url = "json?days=" + days.to_s
-    end
-
-    @graph = open_flash_chart_object(720, 400, json_url)
   end
 end
