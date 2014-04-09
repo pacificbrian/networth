@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/pacificbrian/ofx_for_ruby.git
+  revision: 23242bec2e279e202fe99aede2d38d81f1fecbef
+  specs:
+    ofx_for_ruby (0.2.0)
+      activesupport
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -65,8 +72,6 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.25.1)
     multi_json (1.8.4)
-    ofx_for_ruby (0.1.2)
-      activesupport
     orm_adapter (0.5.0)
     polyglot (0.3.3)
     prototype-rails (3.2.1)
@@ -135,7 +140,7 @@ DEPENDENCIES
   dynamic_form
   jquery-rails
   json
-  ofx_for_ruby
+  ofx_for_ruby!
   prototype-rails
   rails (= 3.2.14)
   sass-rails (~> 3.2.3)

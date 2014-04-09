@@ -15,7 +15,7 @@ gem 'prototype-rails'
 gem 'devise'
 gem 'best_in_place'
 gem 'dynamic_form'
-gem 'ofx_for_ruby'
+gem 'ofx_for_ruby', :git => 'git://github.com/pacificbrian/ofx_for_ruby.git'
 
 # Gems used only for assets and not required
 # in production environments by default.
