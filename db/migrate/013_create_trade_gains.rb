@@ -4,9 +4,9 @@ class CreateTradeGains < ActiveRecord::Migration
       t.integer :sell_id
       t.integer :buy_id
       t.integer :days_held
-      t.decimal :shares
-      t.decimal :adjusted_shares
-      t.decimal :basis
+      t.decimal :shares, :precision => 14, :scale => 4
+      t.decimal :adjusted_shares, :precision => 14, :scale => 4
+      t.decimal :basis, :precision => 16, :scale => 4
     end
   end
 

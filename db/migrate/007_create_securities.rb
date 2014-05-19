@@ -6,9 +6,9 @@ class CreateSecurities < ActiveRecord::Migration
       t.integer :security_basis_type_id, :default => 1
       t.integer :company_id
       t.integer :risk_type_id, :default => 3
-      t.decimal :shares, :default => 0
-      t.decimal :basis, :default => 0
-      t.decimal :value, :default => 0
+      t.decimal :shares, :default => 0, :precision => 14, :scale => 4
+      t.decimal :basis, :default => 0, :precision => 16, :scale => 4
+      t.decimal :value, :default => 0, :precision => 16, :scale => 4
       t.date    :last_quote_update
     end
 
@@ -20,7 +20,7 @@ class CreateSecurities < ActiveRecord::Migration
     create_table :security_alerts do |t|
       t.date :date
       t.integer :security_id
-      t.decimal :price
+      t.decimal :price, :precision => 16, :scale => 4
       t.integer :percent
       t.boolean :floating
       t.boolean :raised, :default => false

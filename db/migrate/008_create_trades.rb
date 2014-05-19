@@ -5,11 +5,11 @@ class CreateTrades < ActiveRecord::Migration
       t.integer :account_id
       t.integer :security_id
       t.integer :trade_type_id
-      t.decimal :shares
-      t.decimal :adjusted_shares
-      t.decimal :amount
-      t.decimal :price
-      t.decimal :basis
+      t.decimal :shares, :precision => 14, :scale => 4
+      t.decimal :adjusted_shares, :precision => 14, :scale => 4
+      t.decimal :amount, :precision => 16, :scale => 4
+      t.decimal :price, :precision => 16, :scale => 4
+      t.decimal :basis, :precision => 16, :scale => 4
       t.boolean :closed, :default => false
 
       t.timestamps

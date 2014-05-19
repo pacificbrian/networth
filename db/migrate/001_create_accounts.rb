@@ -6,8 +6,8 @@ class CreateAccounts < ActiveRecord::Migration
       t.integer :holder
       t.string :number
       t.integer :routing
-      t.decimal :cash_balance, :default => 0
-      t.decimal :balance, :default => 0
+      t.decimal :cash_balance, :default => 0, :precision => 16, :scale => 4
+      t.decimal :balance, :default => 0, :precision => 16, :scale => 4
       t.integer :currency_type_id, :default => 1
       t.integer :payee_length
       t.integer :transnum_shift, :default => 0

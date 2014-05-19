@@ -2,10 +2,11 @@ class CreateTaxes < ActiveRecord::Migration
   def self.up
     create_table :taxes do |t|
       t.date :year
-      t.decimal :amount
+      t.decimal :amount, :precision => 16, :scale => 4
       t.integer :user_id
       t.integer :tax_region_id
       t.integer :tax_item_id
+      t.integer :tax_type_id
       t.string :memo
     end
 
@@ -53,6 +54,7 @@ class CreateTaxes < ActiveRecord::Migration
       t.string :name
       t.string :type
       t.integer :tax_type_id
+      t.integer :tax_category_id
     end
     TaxIncomeItem.create(:name => 'Wages')
     TaxIncomeItem.create(:name => 'Interest Taxable')

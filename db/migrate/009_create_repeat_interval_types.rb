@@ -9,6 +9,7 @@ class CreateRepeatIntervalTypes < ActiveRecord::Migration
       t.integer :cash_flow_id
       t.integer :repeat_interval_type_id
       t.integer :repeats_left
+      t.decimal :rate,  :precision => 12, :scale => 4
     end
 
     add_column :cash_flows, :repeat_interval_id, :integer

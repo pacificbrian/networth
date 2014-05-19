@@ -8,6 +8,10 @@ gem 'thin'
 
 gem 'sqlite3'
 gem 'json'
+# for mysql
+#gem 'mysql2'
+# for sqlite-3 -> mysql conversion
+#gem 'yaml_db'
 
 gem 'jquery-rails'
 gem 'prototype-rails'

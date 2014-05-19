@@ -16,10 +16,10 @@ class EnhanceTaxes < ActiveRecord::Migration
       t.integer :exemption_mid_amount_mfs
       t.integer :exemption_mid_amount_mfj
       t.integer :exemption_mid_amount_hh
-      t.decimal :exemption_mid_rate
+      t.decimal :exemption_mid_rate, :precision => 12, :scale => 4
 
-      t.decimal :capgain_collectible_rate
-      t.decimal :capgain_unrecaptured_rate
+      t.decimal :capgain_collectible_rate, :precision => 12, :scale => 4
+      t.decimal :capgain_unrecaptured_rate, :precision => 12, :scale => 4
 
       t.integer :caploss_limit_s
       t.integer :caploss_limit_mfs
@@ -35,28 +35,28 @@ class EnhanceTaxes < ActiveRecord::Migration
       t.integer :amt_high_limit_mfj
       t.integer :amt_high_limit_hh
 
-      t.decimal :item_medical_rate
-      t.decimal :item_jobmisc_rate
+      t.decimal :item_medical_rate, :precision => 12, :scale => 4
+      t.decimal :item_jobmisc_rate, :precision => 12, :scale => 4
       t.integer :item_casualty_theft_min
-      t.decimal :item_casualty_theft_rate
-      t.decimal :item_limit_rate
-      t.decimal :item_limit_upper_rate
+      t.decimal :item_casualty_theft_rate, :precision => 12, :scale => 4
+      t.decimal :item_limit_rate, :precision => 12, :scale => 4
+      t.decimal :item_limit_upper_rate, :precision => 12, :scale => 4
 
-      t.decimal :amt_medical_rate
-      t.decimal :amt_low_rate
-      t.decimal :amt_mid_rate
+      t.decimal :amt_medical_rate, :precision => 12, :scale => 4
+      t.decimal :amt_low_rate, :precision => 12, :scale => 4
+      t.decimal :amt_mid_rate, :precision => 12, :scale => 4
 
       t.integer :tax_table_10
       t.integer :tax_table_25
       t.integer :tax_table_50
       t.integer :tax_table_max
 
-      t.decimal :tax_l1_rate
-      t.decimal :tax_l2_rate
-      t.decimal :tax_l3_rate
-      t.decimal :tax_l4_rate
-      t.decimal :tax_l5_rate
-      t.decimal :tax_l6_rate
+      t.decimal :tax_l1_rate, :precision => 12, :scale => 4
+      t.decimal :tax_l2_rate, :precision => 12, :scale => 4
+      t.decimal :tax_l3_rate, :precision => 12, :scale => 4
+      t.decimal :tax_l4_rate, :precision => 12, :scale => 4
+      t.decimal :tax_l5_rate, :precision => 12, :scale => 4
+      t.decimal :tax_l6_rate, :precision => 12, :scale => 4
     end
 
     create_table :tax_years do |t|
@@ -74,7 +74,7 @@ class EnhanceTaxes < ActiveRecord::Migration
 
       t.integer :exemption_amount
       t.integer :exemption_hi_amount
-      t.decimal :exemption_mid_rate
+      t.decimal :exemption_mid_rate, :precision => 12, :scale => 4
       t.integer :exemption_agi_s
       t.integer :exemption_agi_mfs
       t.integer :exemption_agi_mfj
@@ -84,10 +84,10 @@ class EnhanceTaxes < ActiveRecord::Migration
       t.integer :item_limit_mfs
       t.integer :item_limit_mfj
       t.integer :item_limit_hh
-      t.decimal :item_limit_rate
+      t.decimal :item_limit_rate, :precision => 12, :scale => 4
 
-      t.decimal :capgain_rate
-      t.decimal :capgain_ti_rate
+      t.decimal :capgain_rate, :precision => 12, :scale => 4
+      t.decimal :capgain_ti_rate, :precision => 12, :scale => 4
       t.integer :capgain_ti_limit_s
       t.integer :capgain_ti_limit_mfs
       t.integer :capgain_ti_limit_mfj
@@ -127,20 +127,20 @@ class EnhanceTaxes < ActiveRecord::Migration
       t.integer :filing_status
       t.integer :exemptions
       
-      t.decimal :income
-      t.decimal :agi_income
-      t.decimal :taxable_income
-      t.decimal :for_agi
-      t.decimal :from_agi
-      t.decimal :standard_deduction
-      t.decimal :itemized_deduction
-      t.decimal :exemption
-      t.decimal :credits
-      t.decimal :payments
-      t.decimal :base_tax
-      t.decimal :other_tax
-      t.decimal :owed_tax
-      t.decimal :unpaid_tax
+      t.decimal :income, :precision => 16, :scale => 4
+      t.decimal :agi_income, :precision => 16, :scale => 4
+      t.decimal :taxable_income, :precision => 16, :scale => 4
+      t.decimal :for_agi, :precision => 16, :scale => 4
+      t.decimal :from_agi, :precision => 16, :scale => 4
+      t.decimal :standard_deduction, :precision => 16, :scale => 4
+      t.decimal :itemized_deduction, :precision => 16, :scale => 4
+      t.decimal :exemption, :precision => 16, :scale => 4
+      t.decimal :credits, :precision => 16, :scale => 4
+      t.decimal :payments, :precision => 16, :scale => 4
+      t.decimal :base_tax, :precision => 16, :scale => 4
+      t.decimal :other_tax, :precision => 16, :scale => 4
+      t.decimal :owed_tax, :precision => 16, :scale => 4
+      t.decimal :unpaid_tax, :precision => 16, :scale => 4
     end
   end
 

@@ -2,8 +2,8 @@ class CreateCashFlows < ActiveRecord::Migration
   def self.up
     create_table :cash_flows do |t|
       t.date :date
-      t.decimal :amount
-      t.decimal :report_amount
+      t.decimal :amount, :precision => 16, :scale => 4
+      t.decimal :report_amount, :precision => 16, :scale => 4
       t.integer :account_id
       t.integer :payee_id
       t.integer :category_id

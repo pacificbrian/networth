@@ -4,7 +4,7 @@ class CreatePayees < ActiveRecord::Migration
       t.string :name
       t.string :address
       t.integer :category_id, :default => 1
-      t.decimal :cash_flow_count
+      t.integer :cash_flow_count
       t.boolean :skip_on_import
     end
   end

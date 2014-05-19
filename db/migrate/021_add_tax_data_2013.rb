@@ -1,6 +1,6 @@
 class AddTaxData2013 < ActiveRecord::Migration
   def self.up
-    add_column :tax_constants, :tax_l7_rate, :decimal
+    add_column :tax_constants, :tax_l7_rate, :decimal, :precision => 12, :scale => 4
 
     tc = TaxConstant.find(1)
     tc.tax_l7_rate  = 0.396
