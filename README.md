@@ -20,11 +20,11 @@ Screenshot of Account listing page:
 ![Networth Main](public/images/networth_main.png)
 
 If you have rubygems installed, this can be started with:
-  bundle install
-  rake db:migrate\_all
-  ./script/production   # starts with empty database
-or
-  ./script/demo         # starts with demo database
+*  bundle install
+*  rake db:migrate\_all
+*  ./script/production   # starts with empty database
+or:
+*  ./script/demo         # starts with demo database
 
 The code was written in bits and pieces over the years. Much of the codebase
 here is overdue to be refactored or rewritten, but is mostly stable.  It might
