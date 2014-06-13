@@ -51,11 +51,19 @@ class RCashFlow < CashFlow
   end
 
   def self.process_by_account(account)
-    r_cash_flows = account.r_cash_flows
-    unless r_cash_flows
+    r_cash_flows = account.ordered_r_cash_flows.reverse
+    if r_cash_flows.empty?
       return nil
     end
+    first_cf = r_cash_flows[0]
+    if (Date.today < first_cf.date)
+      # Scheduled CFs are in the future
+      return nil
+    end
+
+    account.delete_saved_balances(first_cf.date)
     r_cash_flows.each do |rcf|
+puts "processing Scheduled for Payee " + rcf.get_payee_name
       rcf.record_cash_flow
     end
   end

@@ -237,6 +237,7 @@ class CashFlow < ActiveRecord::Base
     #puts "Looking at"
     #puts rcf.inspect
     saved_splitf = rcf.split_from
+puts "processing Scheduled CF for Payee " + rcf.get_payee_name
 
     if (rcf[:split])
       cf = SplitCashFlow.new
@@ -259,7 +260,7 @@ class CashFlow < ActiveRecord::Base
     cf.account_id = rcf.account_id
     cf.repeat_interval_id = self.id
     rcf.payee_name = rcf.get_payee_name
-    cf.update_from(rcf)
+    cf.update_from(rcf, automated=true)
 
     rcf.split_from = saved_splitf
     rcf.split_cash_flows.each do |scf|
@@ -489,7 +490,7 @@ class CashFlow < ActiveRecord::Base
     end
   end
 
-  def update_transfer(t_cf)
+  def update_transfer(t_cf, prune_balances=true)
     cash_flow = self
     if cash_flow.payee_id.zero?
       return false
@@ -506,7 +507,7 @@ class CashFlow < ActiveRecord::Base
 
     #BUG
     #t_cf.account.add_cash_flow(t_cf)
-    Account.find(cash_flow.payee_id).add_cash_flow(t_cf)
+    Account.find(cash_flow.payee_id).add_cash_flow(t_cf, prune_balances)
     return true
   end
 
@@ -536,7 +537,8 @@ class CashFlow < ActiveRecord::Base
     cf.purge
   end
 
-  def update_from(new_cf)
+  def update_from(new_cf, automated=false)
+    prune_balances = (not automated)
     new_cf.account_id = self.account_id
 
     current_user = self.account.user
@@ -648,7 +650,7 @@ class CashFlow < ActiveRecord::Base
       end
 
       if t_cf
-        if !cash_flow.update_transfer(t_cf)
+        if !cash_flow.update_transfer(t_cf, prune_balances)
           t_cf.destroy
           if cash_flow.category_id
             cash_flow.category_id = nil
@@ -669,7 +671,7 @@ class CashFlow < ActiveRecord::Base
       end
 
       if cash_flow.base_class?
-        cash_flow.account.add_cash_flow(cash_flow)
+        cash_flow.account.add_cash_flow(cash_flow, prune_balances)
         # TODO - missing normalized balance action?
       end
 

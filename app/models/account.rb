@@ -383,9 +383,11 @@ puts "adding ForeignTax cashflow"
     self.save
   end
 
-  def add_cash_flow(cf)
+  def add_cash_flow(cf, prune_balances = true)
     if (!cf.split)
-      self.delete_saved_balances(cf.date)
+      if prune_balances
+        self.delete_saved_balances(cf.date)
+      end
       self.adjust_cash(cf.amount)
       self.save
     end
@@ -547,8 +549,10 @@ puts "skipping normalized_Balance updates..."
     #AccountBalance.delete_all(:account_id, id)
     #AccountBalance.destroy_all(["account_id = ? AND date > ?", id, from])
     if from.nil?
+puts "deleting ALL Balances"
       num = AccountBalance.delete_all(["account_id = ?", id])
     else
+puts "deleting Balances from " + from.to_s
       num = AccountBalance.delete_all(["account_id = ? AND date >= ?", id, from])
     end
 
