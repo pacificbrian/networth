@@ -143,7 +143,7 @@ class Security < ActiveRecord::Base
 
     # update security.value from Quotes if present
     svalue_diff = 0
-    q = Quote.current_from_security(self,nil)
+    q = Quote.current_from_security(self,false)
     if q && q.get_date >= trade.date
       svalue_diff = s.value
       s.value = s.shares * q.close

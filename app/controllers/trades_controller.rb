@@ -41,7 +41,7 @@ class TradesController < ApplicationController
     if params[:account_id]
       symbol = params[:trade][:symbol]
       @account = Account.find(params[:account_id])
-      @security = @account.find_security_by_symbol(symbol)
+      @security = @account.find_security_by_symbol(symbol, fast=true)
       source = @account
       source_js = "create_securities.rjs"
     elsif params[:security_id]

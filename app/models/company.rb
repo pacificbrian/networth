@@ -64,9 +64,11 @@ class Company < ActiveRecord::Base
       end
   end
 
-  def self.create_from_symbol(symbol)
+  def self.create_from_symbol(symbol, fast=false)
     symbol = Company.create(:name => symbol, :symbol => symbol)
-    symbol.update_historical_quotes
+    if not fast
+      symbol.update_historical_quotes
+    end
     return symbol
   end
 

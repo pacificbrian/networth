@@ -303,10 +303,10 @@ puts "adding ForeignTax cashflow"
     return security
   end
 
-  def find_security_by_symbol(sym, type=1)
+  def find_security_by_symbol(sym, type=1, fast=false)
     symbol = Company.find_by_symbol(sym)
     unless symbol
-      symbol = Company.create_from_symbol(sym)
+      symbol = Company.create_from_symbol(sym, fast)
     end
     security = _find_security(symbol, type)
   end

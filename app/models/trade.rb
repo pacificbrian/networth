@@ -24,7 +24,7 @@ class Trade < ActiveRecord::Base
   has_many :trade_gains, :foreign_key => "sell_id"
   validates_presence_of :shares
   validates_presence_of :amount
-  validates_presence_of :price
+  #validates_presence_of :price
 
   attr_accessor :security_name
   attr_accessor :symbol
@@ -47,6 +47,10 @@ class Trade < ActiveRecord::Base
     params[:price].gsub!(/[^0-9.]/, '\1')
     if params[:tax_year].nil?
       params[:tax_year] = params['date(1i)'];
+    end
+    if params[:price].empty?
+      p = params[:amount].to_f / params[:shares].to_f
+      params[:price] = p.round(2).to_s
     end
     return params
   end
