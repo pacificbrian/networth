@@ -23,7 +23,7 @@ class AccountsController < ApplicationController
     @year = Year.from_params(params)
     @user = User.find(session[:user_id])
     @user.refresh(session)
-    @accounts = @user.current_accounts.sort_by { |a| [a.account_type_id, a.id] }
+    @accounts = @user.current_accounts.sort_by { |a| [a.account_type_id, a.name] }
     @watchlist = @user.watchlist_accounts
 
     respond_to do |format|

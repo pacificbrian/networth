@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.14'
+gem 'rails', '3.2.17'
 gem 'thin'
 
 # Bundle edge Rails instead:
@@ -8,8 +8,7 @@ gem 'thin'
 
 gem 'sqlite3'
 gem 'json'
-# for mysql
-#gem 'mysql2'
+gem 'mysql2'
 # for sqlite-3 -> mysql conversion
 #gem 'yaml_db'
 
