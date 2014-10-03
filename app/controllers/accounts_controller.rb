@@ -27,11 +27,11 @@ class AccountsController < ApplicationController
     @watchlist = @user.watchlist_accounts
 
     respond_to do |format|
+        format.html
         format.json {
             accounts = for_sproutcore(@accounts)
             render :json => { :content => accounts }
         }
-        format.html
         format.xml  { render :xml => @accounts }
     end
   end

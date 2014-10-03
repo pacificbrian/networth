@@ -19,19 +19,21 @@
 class CashFlowsController < ApplicationController
   def create
     @year = session[:year_id]
-    cf = CashFlow.params_to_cf(params[:cash_flow])
+    cf_params = params[:cash_flow]
+    cf = CashFlow.params_to_cf(cf_params)
     @cash_flow = CashFlow.new()
-    @cash_flow.account_id = cf.account_id
+    @cash_flow.account_id = cf_params[:account_id]
     @account = @cash_flow.account
     @categories = @account.user.all_categories
     @inplace_categories = @categories.map {|c| [c.id, c.name]}
 
-    if @cash_flow.update_from(cf)
+    if cf and @cash_flow.update_from(cf)
       respond_to do |format|
         format.html { redirect_to @account }
         format.js
       end
     else
+      # TODO - catch validate errors
       redirect_to @account
     end
   end

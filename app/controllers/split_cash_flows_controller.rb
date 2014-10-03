@@ -30,12 +30,13 @@ class SplitCashFlowsController < CashFlowsController
   end
 
   def create
-    cf = SplitCashFlow.params_to_cf(params[:split_cash_flow])
-
-    @cash_flow = CashFlow.find(cf.split_from)
+    cf_params = params[:split_cash_flow]
+    split_from = cf_params[:split_from]
+    cf = SplitCashFlow.params_to_cf(cf_params)
+    @cash_flow = CashFlow.find(split_from)
     @split_cash_flow = SplitCashFlow.new()
     @split_cash_flow.account_id = @cash_flow.account_id
-    @split_cash_flow.update_from(cf)
+    cf and @split_cash_flow.update_from(cf)
 
     respond_to do |format|
       format.html { redirect_to_parent(@cash_flow) }

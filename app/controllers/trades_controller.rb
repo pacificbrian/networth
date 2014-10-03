@@ -65,7 +65,11 @@ class TradesController < ApplicationController
         format.js { render :action => source_js }
       end
     else
-      redirect_to source
+      # TODO - render to catch validate errors
+      respond_to do |format|
+        format.html { redirect_to source }
+        format.js { render :action => source_js }
+      end
     end
   end
 

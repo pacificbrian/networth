@@ -20,11 +20,12 @@ class RCashFlowsController < ApplicationController
   def create
     @r_cash_flow = RCashFlow.new()
 
-    cf = RCashFlow.params_to_cf(params[:r_cash_flow])
-    @r_cash_flow.account_id = cf.account_id
+    cf_params = params[:r_cash_flow]
+    cf = RCashFlow.params_to_cf(cf_params)
+    @r_cash_flow.account_id = cf_params[:account_id]
     @account = @r_cash_flow.account
 
-    if @r_cash_flow.update_from(cf)
+    if cf and @r_cash_flow.update_from(cf)
       # XXX repeat_interval_type_id cleared in update_from?
       @r_cash_flow.repeat_interval_type_id = cf.repeat_interval_type_id
       @r_cash_flow.repeats_left =  cf.repeats_left
