@@ -77,11 +77,7 @@ class Import < ActiveRecord::Base
       end
     end
 
-    scf = cf
-    if cf
-     scf = cf.sort_by {|c| (c.transnum.to_i)}
-    end
-    return scf
+    return cf.sort_by {|c| (c.transnum.to_i)}
   end
 
   def send_ofx_request(account, user_name, password, date_range=nil)

@@ -895,31 +895,34 @@ puts "computing balances for Account for days_remaining " + days_remaining.to_s
   def import_ofx(trans, skip_test=true)
     account = self
     n = 0
-    if true
-      import = Import.new
-      cfs = import.ofx_transactions_to_cashflows(account, trans)
-      if skip_test
-        u_payees = account.user.payees
-        cfs.delete_if { |cf| Payee.find(cf.get_payee_id(u_payees)).skip_on_import }
-        if cfs.size == 0
-          return nil
-        end
-      end
 
-      import = account.imports.create
-      cfs.each do |c|
-        if (c.split)
-          cash_flow = SplitCashFlow.new()
-        else
-          cash_flow = CashFlow.new()
-        end
-        cash_flow.account_id = account.id
-        c.needs_review = true
-        c.import_id = import.id
-        if cash_flow.update_from(c)
-          n = n + 1
-          GC.start if n%50 == 0
-        end
+    import = Import.new
+    cfs = import.ofx_transactions_to_cashflows(account, trans)
+    if skip_test
+      u_payees = account.user.payees
+      cfs.delete_if { |cf| Payee.find(cf.get_payee_id(u_payees)).skip_on_import }
+    end
+    if cfs.empty?
+      return nil
+    end
+
+    # delete cached account balances
+    account.delete_saved_balances(cfs[0].date)
+
+    import = account.imports.create
+    cfs.each do |c|
+      if (c.split)
+        cash_flow = SplitCashFlow.new()
+      else
+        cash_flow = CashFlow.new()
+      end
+      cash_flow.account_id = account.id
+      c.needs_review = true
+      c.import_id = import.id
+
+      if cash_flow.update_from(c, automated=true)
+        n = n + 1
+        GC.start if n%50 == 0
       end
     end
 
