@@ -97,7 +97,7 @@ class Account < ActiveRecord::Base
       first = Date.new(year)
       last = Date.new(year + 1) - 1
       cfs = find :all,
-	      	 :conditions => [ 'transfer == ? AND date >= ? AND date <= ?', true, first, last ],
+	      	 :conditions => [ 'transfer = ? AND date >= ? AND date <= ?', true, first, last ],
 	         :order => 'date DESC'
       cfs.delete_if { |cf| cf.repeat? }
     end
@@ -116,16 +116,16 @@ class Account < ActiveRecord::Base
       first = last - range.to_i
       if cat_id
       cfs = find :all,
-	      	 :conditions => [ 'transfer == ? AND date > ? AND date <= ? AND category_id == ?', false, first, last, cat_id ],
+	      	 :conditions => [ 'transfer = ? AND date > ? AND date <= ? AND category_id = ?', false, first, last, cat_id ],
 	         :order => 'date ASC'
       else
       cfs = find :all,
-	      	 :conditions => [ 'transfer == ? AND date > ? AND date <= ?', false, first, last ],
+	      	 :conditions => [ 'transfer = ? AND date > ? AND date <= ?', false, first, last ],
 	         :order => 'date ASC'
       end
      else
       if cat_id
-      cfs = find :all, :conditions => [ 'transfer == ? AND category_id == ?', false, cat_id ],
+      cfs = find :all, :conditions => [ 'transfer = ? AND category_id = ?', false, cat_id ],
 	         :order => 'date ASC'
       else
       cfs = find :all, :conditions => { :transfer => false },

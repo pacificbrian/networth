@@ -37,6 +37,7 @@ config/secrets.yml
 *.log
 *.bin
 *.sql*
+*.swp
 Makefile
 TODO
 git.txt

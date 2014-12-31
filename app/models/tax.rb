@@ -60,10 +60,10 @@ class Tax < ActiveRecord::Base
       d2 = Date.ordinal(year.to_i + 1)
       if item_id
       taxes.concat user.taxes.find :all,
-                   :conditions => [ 'year >= ? AND year < ? AND tax_item_id == ?' , d1, d2, item_id ]
+                   :conditions => [ 'year >= ? AND year < ? AND tax_item_id = ?' , d1, d2, item_id ]
       elsif type_id
       taxes.concat user.taxes.find :all,
-                   :conditions => [ 'year >= ? AND year < ? AND tax_type_id == ?' , d1, d2, type_id ]
+                   :conditions => [ 'year >= ? AND year < ? AND tax_type_id = ?' , d1, d2, type_id ]
       else
       taxes.concat user.taxes.find :all,
                    :conditions => [ 'year >= ? AND year < ?' , d1, d2 ]

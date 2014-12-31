@@ -29,9 +29,9 @@ class Category < ActiveRecord::Base
       last = Date.today
       first = last - range.to_i
       if (a.nil?)
-      cfs = all  :conditions => [ 'transfer == ? AND date > ? AND date <= ?', false, first, last ]
+      cfs = all  :conditions => [ 'transfer = ? AND date > ? AND date <= ?', false, first, last ]
       else
-      cfs = all  :conditions => [ 'transfer == ? AND account_id == ? AND date > ? AND date <= ?', false, a.id, first, last ]
+      cfs = all  :conditions => [ 'transfer = ? AND account_id = ? AND date > ? AND date <= ?', false, a.id, first, last ]
       end
     else
       if (a.nil?)
@@ -52,9 +52,9 @@ class Category < ActiveRecord::Base
       last = Date.today
       first = last - range.to_i
       if (a.nil?)
-      cfs = all  :conditions => [ 'transfer == ? AND date > ? AND date <= ?', false, first, last ]
+      cfs = all  :conditions => [ 'transfer = ? AND date > ? AND date <= ?', false, first, last ]
       else
-      cfs = all  :conditions => [ 'transfer == ? AND account_id == ? AND date > ? AND date <= ?', false, a.id, first, last ]
+      cfs = all  :conditions => [ 'transfer = ? AND account_id = ? AND date > ? AND date <= ?', false, a.id, first, last ]
       end
     else
       if (a.nil?)

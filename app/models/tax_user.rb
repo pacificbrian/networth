@@ -33,6 +33,7 @@ class TaxUser < ActiveRecord::Base
 # attr_accessor :unpaid_tax
   belongs_to :user
   belongs_to :tax_region
+  attr_accessible :year, :tax_region_id, :filing_status, :exemptions
 
   def self.filing_status_to_s
     return TaxFilingStatus.find(:all)

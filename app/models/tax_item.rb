@@ -114,11 +114,11 @@ class TaxItem < ActiveRecord::Base
 
         if year
           cfs.concat c_array.find :all, 
-                           :conditions => [ 'category_id == ? AND tax_year == ?',
+                           :conditions => [ 'category_id = ? AND tax_year = ?',
                                             tc.category_id, year.to_i ]
         else
           cfs.concat c_array.find :all, 
-                           :conditions => [ 'category_id == ?', tc.category_id ]
+                           :conditions => [ 'category_id = ?', tc.category_id ]
         end
       end
     end

@@ -41,11 +41,11 @@ class User < ActiveRecord::Base
       first = last - range.to_i
       if with_future.nil?
         cfs = find :all,
-	      	 :conditions => [ 'transfer == ? AND date > ? AND date <= ? AND category_id == ?', false, first, last, cat_id ],
+	      	 :conditions => [ 'transfer = ? AND date > ? AND date <= ? AND category_id = ?', false, first, last, cat_id ],
 	         :order => 'date ASC'
       else
         cfs = find :all,
-	      	 :conditions => [ 'transfer == ? AND date > ? AND category_id == ?', false, first, cat_id ],
+	      	 :conditions => [ 'transfer = ? AND date > ? AND category_id = ?', false, first, cat_id ],
 	         :order => 'date ASC'
       end
     else
@@ -145,15 +145,15 @@ class User < ActiveRecord::Base
 
       if type_id
         if use_tax_year
-          a = p.trades.find :all, :conditions => ['tax_year == ? AND trade_type_id == ?', year, type_id ]
+          a = p.trades.find :all, :conditions => ['tax_year = ? AND trade_type_id = ?', year, type_id ]
         elsif year_in
-          a = p.trades.find :all, :conditions => ['date >= ? AND date < ? AND trade_type_id == ?', Date.ordinal(year, 1), Date.ordinal(year+1, 1), type_id ]
+          a = p.trades.find :all, :conditions => ['date >= ? AND date < ? AND trade_type_id = ?', Date.ordinal(year, 1), Date.ordinal(year+1, 1), type_id ]
         else
-          a = p.trades.find :all, :conditions => ['trade_type_id == ?', type_id ]
+          a = p.trades.find :all, :conditions => ['trade_type_id = ?', type_id ]
         end
       else
         if use_tax_year
-          a = p.trades.find :all, :conditions => ['tax_year == ?', year ]
+          a = p.trades.find :all, :conditions => ['tax_year = ?', year ]
         elsif year_in
           a = p.trades.find :all, :conditions => ['date >= ? AND date < ?', Date.ordinal(year, 1), Date.ordinal(year+1, 1) ]
         else
