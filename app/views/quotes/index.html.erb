@@ -9,6 +9,7 @@
 <table class="ledger">
 <th>Symbol</th>
 <th>Date Range</th>
+<th>Shares</th>
 <th>Auto</th>
 <th></th>
 <th></th>
@@ -17,6 +18,7 @@
 <tr>
 <td><%= q.symbol %></td>
 <td><%= (q.begin..q.last).to_s %></td>
+<td><%= q.shares_held.to_s %></td>
 <% if q.auto %>
 <td>True</td>
 <% else %>

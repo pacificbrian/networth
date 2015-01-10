@@ -17,7 +17,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #require 'fastercsv'
-
 class QuotesController < ApplicationController
   def index
     days = nil
@@ -49,12 +48,13 @@ class QuotesController < ApplicationController
     else
       Quote.auto_update
     end
+    redirect_back
   end
 
   def destroy
     @quote = Quote.find(params[:id])
     @quote.destroy
-    redirect_back_or_default('/')
+    redirect_back
   end
 
   def chart

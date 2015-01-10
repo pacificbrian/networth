@@ -20,12 +20,27 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  before_filter :set_return_to, :only => [ :index, :show ]
+
   # See ActionController::RequestForgeryProtection for details
   protect_from_forgery
 
   helper :all # include all helpers, all the time
 
   protected
+
+  def redirect_back_or_default(default='/')
+    redirect_to(session[:return_to] || default)
+    session[:return_to] = nil
+  end
+
+  def redirect_back
+    redirect_back_or_default(nil)
+  end
+
+  def set_return_to
+    session[:return_to] = request.url
+  end
 
   def sum_amount(a)
     sum = 0

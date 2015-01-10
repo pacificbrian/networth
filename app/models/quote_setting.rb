@@ -33,4 +33,19 @@ class QuoteSetting < QuoteTable
       return false
     end
   end
+
+  def company
+    c = Company.find_by_symbol(self.symbol)
+    return c
+  end
+
+  def shares_held
+    c = company
+    shares = 0
+    shares = c.shares_held if c
+    if shares.zero?
+      shares = 0
+    end
+    return shares
+  end
 end
