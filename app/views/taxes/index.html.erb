@@ -15,7 +15,7 @@
 <th></th>
 <% for r in @tax_results %>
 <tr>
-<td><%= r.year %> : <%= r.tax_region.name %></td>
+<td><%= link_to r.year, year_taxes_path(r.year.to_i) %> : <%= r.tax_region.name %></td>
 <td><%= r.filing_status_label %>, <%= r.exemptions %></td>
 <td class="currency"><%= number_to_currency(r.agi_income) %></td>
 <td class="currency"><%= number_to_currency(r.from_agi) %></td>
@@ -65,6 +65,7 @@
 </fieldset>
 <% end %>
 
+<% if @show_tax_items %>
 <h2>Tax Items</h2>
 <table class="standard">
 <% for t in @taxes %>
@@ -130,15 +131,20 @@
 </fieldset>
 <% end %>
 <% end %>
+<% end %>
 </div>
 
 <ul id="footmenu">
 <li><%= link_to 'Tax Categories', tax_categories_path %></li>
 <% if @year && @account %>
-<li><%= link_to 'All Taxes', year_taxes_path(@year) %></li>
+<li><%= link_to 'All Account Taxes', year_taxes_path(@year) %></li>
 <li><%= link_to 'Last Year Taxes', year_account_taxes_path(@year.to_i - 1, @account) %></li>
-</ul>
 <% elsif @year %>
 <li><%= link_to 'Last Year Taxes', year_taxes_path(@year.to_i - 1) %></li>
+<li><%= link_to 'All Taxes', taxes_path %></li>
+<% else %>
+<li><%= link_to 'Current Year Taxes', year_taxes_path(Date.today.year.to_i) %></li>
+<li><%= link_to 'Last Year Taxes', year_taxes_path(Date.today.year.to_i - 1) %></li>
 <% end %>
+<li><%= link_to 'Tax Year Data', tax_years_path %></li>
 </ul>

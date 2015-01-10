@@ -1,0 +1,199 @@
+<div class="listing">
+<h2>Tax Years</h2>
+
+<table class="ledger">
+<tr>
+<td>Year</td>
+<% for t in @tax_years %>
+<td><%= link_to t.year, tax_year_path(t) %></td>
+<% end %>
+</tr>
+<tr>
+<td>Exemption Amount</td>
+<% for t in @tax_years %>
+<td><%= t.exemption_amount %></td>
+<% end %>
+</tr>
+<tr>
+<td>Standard Deduction S</td>
+<% for t in @tax_years %>
+<td><%= t.standard_deduction_s %></td>
+<% end %>
+</tr>
+<tr>
+<td>Standard Deduction MFS</td>
+<% for t in @tax_years %>
+<td><%= t.standard_deduction_mfs %></td>
+<% end %>
+</tr>
+<tr>
+<td>Standard Deduction MFJ</td>
+<% for t in @tax_years %>
+<td><%= t.standard_deduction_mfj %></td>
+<% end %>
+</tr>
+<tr>
+<td>Standard Deduction HH</td>
+<% for t in @tax_years %>
+<td><%= t.standard_deduction_hh %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L1 S</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l1_s %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L2 S</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l2_s %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L3 S</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l3_s %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L4 S</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l4_s %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L5 S</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l5_s %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L6 S</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l6_s %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L1 MFS</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l1_mfs %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L2 MFS</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l2_mfs %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L3 MFS</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l3_mfs %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L4 MFS</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l4_mfs %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L5 MFS</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l5_mfs %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L6 MFS</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l6_mfs %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L1 MFJ</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l1_mfj %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L2 MFJ</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l2_mfj %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L3 MFJ</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l3_mfj %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L4 MFJ</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l4_mfj %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L5 MFJ</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l5_mfj %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L6 MFJ</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l6_mfj %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L1 HH</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l1_hh %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L2 HH</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l2_hh %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L3 HH</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l3_hh %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L4 HH</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l4_hh %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L5 HH</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l5_hh %></td>
+<% end %>
+</tr>
+<tr>
+<td>Tax Income L6 HH</td>
+<% for t in @tax_years %>
+<td><%= t.tax_income_l6_hh %></td>
+<% end %>
+</tr>
+
+<!--
+<tr>
+<td></td>
+<% for t in @tax_years %>
+<td><%= link_to 'Delete', tax_year_path(t), :method => :delete %></td>
+<% end %>
+</tr>
+-->
+</table>
+</div>
+
+<ul id="footmenu">
+<li><%= link_to 'Back to Taxes', taxes_path %></li>
+</ul>

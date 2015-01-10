@@ -32,6 +32,7 @@ class TaxesController < ApplicationController
     end
 
     if @year
+      @show_tax_items = true
       @tax.year = Date.ordinal(@year.to_i)
       @tax_results = current_user.tax_users.find_all_by_year(@year)
     else

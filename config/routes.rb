@@ -60,6 +60,7 @@ NwGit::Application.routes.draw do
   resources :tax_items
   resources :tax_types
   resources :tax_categories
+  resources :tax_years
   resources :years do
     resources :import
     resources :taxes
