@@ -27,8 +27,8 @@ class RCashFlow < CashFlow
   validates_numericality_of :amount
 
   attr_accessor :repeat_interval_type_id
-  attr_accessor :repeats_left
-  attr_accessible :repeat_interval_type_id, :repeats_left
+  attr_accessor :repeats_left, :rate
+  attr_accessible :repeat_interval_type_id, :repeats_left, :rate
 
   #self.inheritance_column = "cash_flow_type"
 
@@ -94,6 +94,9 @@ puts "processing Scheduled for Payee " + rcf.get_payee_name
 
   def update_repeat_interval
     ri = self.repeat_interval
+    if ri.nil?
+      return self.add_repeat_interval
+    end
     ri.repeat_interval_type_id = self.repeat_interval_type_id
     ri.repeats_left =  self.repeats_left
     ri.cash_flow_id = self.id

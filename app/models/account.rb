@@ -592,8 +592,10 @@ puts "used normalized Account balances...."
 
    if use_saved_values
     if validate_saved_values
-      if self.account_balances.size > ((Date.today - self.date_opened) + 1)
+      date_total = ((Date.today - self.date_opened) + 1)
+      if self.account_balances.size > date_total
 puts "AccountBalances is corrupt with too many days!"
+puts "AccountBalances is corrupt " + self.account_balances.size.to_s + " > " + date_total.to_s
         self.write_saved_balances(true)
       end
     end

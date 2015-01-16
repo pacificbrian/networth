@@ -29,6 +29,7 @@ class RCashFlowsController < ApplicationController
       # XXX repeat_interval_type_id cleared in update_from?
       @r_cash_flow.repeat_interval_type_id = cf.repeat_interval_type_id
       @r_cash_flow.repeats_left =  cf.repeats_left
+      @r_cash_flow.rate =  cf.rate
       @r_cash_flow.add_repeat_interval
 
       respond_to do |format|
@@ -71,6 +72,11 @@ class RCashFlowsController < ApplicationController
 
   def edit
     @r_cash_flow = RCashFlow.fetch(params[:id])
+    @rpi = @r_cash_flow.repeat_interval
+    if @rpi
+      @r_cash_flow.repeats_left = @rpi.repeats_left
+      @r_cash_flow.rate = @rpi.rate
+    end
     @split_cash_flows = @r_cash_flow.get_split_cash_flows
 
     @r_split_cash_flow = SplitCashFlow.new()
@@ -106,6 +112,8 @@ class RCashFlowsController < ApplicationController
     respond_to do |format|
       if (not no_edit) and @r_cash_flow.update_from(cf)
 	@r_cash_flow.repeat_interval_type_id = cf.repeat_interval_type_id
+        @r_cash_flow.repeats_left =  cf.repeats_left
+        @r_cash_flow.rate =  cf.rate
         @r_cash_flow.update_repeat_interval
         format.html { redirect_to @r_cash_flow.account }
         format.json { head :ok }
