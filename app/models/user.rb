@@ -69,18 +69,16 @@ class User < ActiveRecord::Base
   validates_uniqueness_of   :email, :allow_blank => true
 # validates_format_of       :email, :with => Authentication.email_regex, :message => Authentication.bad_email_message, :allow_blank => true
 
-  # HACK HACK HACK -- how to do attr_accessible from here?
-  # prevents a user from submitting a crafted form that bypasses activation
-  # anything else you want your user to change should be added here.
+  attr_accessor :password
+  attr_accessor :password_confirmation
   attr_accessible :login, :email, :first_name, :last_name, :password, :password_confirmation
-
 
   # Activates the user in the database.
   def activate!
     @activated = true
     self.activated_at = Time.now.utc
     self.activation_code = nil
-    save(false)
+    self.save
   end
 
   # Returns true if the user has just been activated.
@@ -93,16 +91,30 @@ class User < ActiveRecord::Base
     activation_code.nil?
   end
 
-  # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
-  #
-  # uff.  this is really an authorization, not authentication routine.  
-  # We really need a Dispatch Chain here or something.
-  # This will also let us return a human error message.
-  #
+  # Authenticates a user by their login name and unencrypted password.
+  # Returns the user or nil.
   def self.authenticate(login, password)
-    return nil if login.blank? || password.blank?
-    u = find :first, :conditions => ['login = ? and activated_at IS NOT NULL', login] # need to get the salt
+    #return nil if login.blank? || password.blank?
+    return nil if login.blank?
+    if password.blank?
+      password = nil
+    end
+    u = find :first, :conditions => ['login = ? and activated_at IS NOT NULL', login]
     u && u.authenticated?(password) ? u : nil
+  end
+
+  def authenticated?(password)
+    # TODO: replace with encrypted password
+    c_password = password
+    if (self.crypted_password == c_password)
+      return true
+    end
+    return false
+  end
+
+  def encrypt_save(send_code)
+    # TODO: save encrypted password
+    self.save
   end
 
   def login=(value)

@@ -25,12 +25,19 @@ class UsersController < ApplicationController
   end
  
   def create
-    logout_keeping_session!
+    send_code=false
+    #logout_keeping_session!
     @user = User.new(params[:user])
-    success = @user && @user.save
+    success = @user && @user.encrypt_save(send_code)
     if success && @user.errors.empty?
-      redirect_back_or_default('/')
-      flash[:notice] = "Thanks for signing up!  We're sending you an email with your activation code."
+      if send_code
+        flash[:notice] = "Thanks for signing up!  We're sending you an email with your activation code."
+        redirect_to activate_user_path
+      else
+        @user.activate!
+        flash[:notice] = "Thanks for registering!"
+        redirect_to new_session_path
+      end
     else
       flash[:error]  = "We couldn't set up that account, sorry.  Please try again, or contact an admin (link is above)."
       render :action => 'new'
@@ -38,16 +45,16 @@ class UsersController < ApplicationController
   end
 
   def activate
-    logout_keeping_session!
+    #logout_keeping_session!
     user = User.find_by_activation_code(params[:activation_code]) unless params[:activation_code].blank?
     case
-    when (!params[:activation_code].blank?) && user && !user.active?
-      user.activate!
-      flash[:notice] = "Signup complete! Please sign in to continue."
-      redirect_to '/login'
     when params[:activation_code].blank?
       flash[:error] = "The activation code was missing.  Please follow the URL from your email."
       redirect_back_or_default('/')
+    when user && !user.active?
+      user.activate!
+      flash[:notice] = "Signup complete! Please sign in to continue."
+      redirect_to '/login'
     else 
       flash[:error]  = "We couldn't find a user with that activation code -- check your email? Or maybe you've already activated -- try signing in."
       redirect_back_or_default('/')
@@ -72,13 +79,6 @@ class UsersController < ApplicationController
     redirect_to dashboard_user_path(user)
   end
 
-  def login
-    @user = User.find(1)
-    redirect_to dashboard_user_path(@user)
-    # isn't Restful
-    # doesn't work since Submit button does an Update
-  end
-
   def dashboard
     redirect_to accounts_path
   end
@@ -86,7 +86,6 @@ class UsersController < ApplicationController
   def refresh
     user = User.find(params[:id])
     user.refresh(session, true)
-    redirect_to accounts_path
-    #render :controller => 'accounts', :action => 'index'
+    redirect_back_or_default('/')
   end
 end

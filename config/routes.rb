@@ -89,18 +89,19 @@ NwGit::Application.routes.draw do
       resources :gains 
     end
   end
-  #resource :session
+  resources :sessions
+  resources :session, :controller => 'sessions'
   resources :users do
-    get 'login', :on => :collection
     get 'dashboard', :on => :member
     get 'refresh', :on => :member
   end
-  resource :home
 
-  #logout '/logout', :controller => 'sessions', :action => 'destroy'
-  #login '/login', :controller => 'sessions', :action => 'new'
-  #register '/register', :controller => 'users', :action => 'create'
-  #signup '/signup', :controller => 'users', :action => 'new'
+  match "login" => "session#new"
+  match "logout" => "session#destroy"
+  match "home" => "users#dashboard"
+  match "register" => "users#new"
+  match "signup" => "users#new"
+  match "activate/:activation_code" => "users#activate"
 
   # Activation:
   # activate '/activate/:activation_code', :controller => 'users', :action => 'activate', :activation_code => nil
@@ -155,8 +156,6 @@ NwGit::Application.routes.draw do
   # just remember to delete public/index.html.
   # root :to => 'welcome#index'
   root :to => 'accounts#index'
-  #root :home
-  #root :login
 
   # See how all your routes lay out with "rake routes"
 

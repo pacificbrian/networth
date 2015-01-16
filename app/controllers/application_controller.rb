@@ -55,10 +55,16 @@ class ApplicationController < ActionController::Base
     session[:security_values_updated] = true
   end
 
-  def set_current_user
-    unless session[:user_id]
-      user = User.find(1)
-      session[:user_id] = user.id
+  # Set current_user if unset or allow specified user to override current
+  def set_current_user(_set_user=nil)
+    if session[:user_id].nil? or _set_user
+      # TODO move DefaultUser lookup to get_current_user
+      # uid = Global.find_by_name("DefaultUser")
+      uid = 1
+      if _set_user.nil?
+        _set_user = User.find(uid)
+      end
+      session[:user_id] = _set_user.id
       session[:security_values_updated] = false
       #user.update_security_values
     end
