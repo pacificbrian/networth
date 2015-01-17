@@ -59,12 +59,11 @@ class ApplicationController < ActionController::Base
   def set_current_user(_set_user=nil)
     if session[:user_id].nil? or _set_user
       # TODO move DefaultUser lookup to get_current_user
-      # uid = Global.find_by_name("DefaultUser")
-      uid = 1
-      if _set_user.nil?
-        _set_user = User.find(uid)
+      uid = GlobalSettings.value_by_name("DefaultUser")
+      if _set_user.nil? and uid
+        _set_user = User.find(uid.to_i)
       end
-      session[:user_id] = _set_user.id
+      session[:user_id] = _set_user.id if _set_user
       session[:security_values_updated] = false
       #user.update_security_values
     end

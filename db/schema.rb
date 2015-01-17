@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 1023) do
+ActiveRecord::Schema.define(:version => 1024) do
 
   create_table "account_balances", :force => true do |t|
     t.integer "account_id"
@@ -115,6 +115,11 @@ ActiveRecord::Schema.define(:version => 1023) do
     t.date    "last"
     t.date    "begin"
     t.boolean "auto"
+  end
+
+  create_table "global_settings", :force => true do |t|
+    t.string  "name"
+    t.decimal "value", :precision => 12, :scale => 4
   end
 
   create_table "imports", :force => true do |t|
@@ -443,6 +448,12 @@ ActiveRecord::Schema.define(:version => 1023) do
 
   add_index "trades", ["import_id"], :name => "index_trades_on_import_id"
   add_index "trades", ["security_id"], :name => "index_trades_on_security_id"
+
+  create_table "user_settings", :force => true do |t|
+    t.integer "user_id"
+    t.string  "name"
+    t.decimal "value",   :precision => 12, :scale => 4
+  end
 
   create_table "users", :force => true do |t|
     t.string   "login"

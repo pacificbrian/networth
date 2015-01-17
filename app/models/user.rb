@@ -19,6 +19,7 @@
 require 'digest/sha1'
 
 class User < ActiveRecord::Base
+  has_many :user_settings
   has_many :accounts
   has_many :bugs
   has_many :categories
