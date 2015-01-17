@@ -61,12 +61,22 @@ class UsersController < ApplicationController
     end
   end
 
+  def lookup_user(params)
+    user_id = params[:id].to_i
+    current_user = User.find(session[:user_id])
+    if current_user.nil? or current_user.id != user_id
+      logger.warn "Attempt to lookup non-current User " + user_id.to_s + " (" + (current_user.id if current_user).to_s + ")"
+      redirect_back_or_default('/')
+    end
+    @user = current_user
+  end
+
   def edit
-    @user = User.find(params[:id])
+    @user = lookup_user(params)
   end
 
   def update
-    @user = User.find(params[:id])
+    @user = lookup_user(params)
     if @user.update_attributes(params[:user])
       redirect_to @user
     else
@@ -75,7 +85,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    user = User.find(params[:id])
+    user = lookup_user(params)
     redirect_to dashboard_user_path(user)
   end
 
@@ -84,7 +94,7 @@ class UsersController < ApplicationController
   end
 
   def refresh
-    user = User.find(params[:id])
+    user = lookup_user(params)
     user.refresh(session, true)
     redirect_back_or_default('/')
   end
