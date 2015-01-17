@@ -106,7 +106,7 @@ ActiveRecord::Schema.define(:version => 1024) do
   create_table "forex", :force => true do |t|
     t.string  "symbol"
     t.date    "date"
-    t.decimal "close",  :precision => 10, :scale => 0
+    t.decimal "close",  :precision => 16, :scale => 4
   end
 
   create_table "forex_symbols", :force => true do |t|
@@ -170,12 +170,12 @@ ActiveRecord::Schema.define(:version => 1024) do
   create_table "quotes", :force => true do |t|
     t.string  "symbol"
     t.date    "date"
-    t.decimal "open",     :precision => 10, :scale => 0
-    t.decimal "high",     :precision => 10, :scale => 0
-    t.decimal "low",      :precision => 10, :scale => 0
-    t.decimal "close",    :precision => 10, :scale => 0
-    t.decimal "volume",   :precision => 10, :scale => 0
-    t.decimal "adjclose", :precision => 10, :scale => 0
+    t.decimal "open",     :precision => 16, :scale => 4
+    t.decimal "high",     :precision => 16, :scale => 4
+    t.decimal "low",      :precision => 16, :scale => 4
+    t.decimal "close",    :precision => 16, :scale => 4
+    t.decimal "volume",   :precision => 16, :scale => 4
+    t.decimal "adjclose", :precision => 16, :scale => 4
   end
 
   create_table "repeat_interval_types", :force => true do |t|
