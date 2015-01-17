@@ -86,10 +86,6 @@ class UsersController < ApplicationController
 
   def show
     user = lookup_user(params)
-    redirect_to dashboard_user_path(user)
-  end
-
-  def dashboard
     redirect_to accounts_path
   end
 

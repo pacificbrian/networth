@@ -92,13 +92,12 @@ NwGit::Application.routes.draw do
   resources :sessions
   resources :session, :controller => 'sessions'
   resources :users do
-    get 'dashboard', :on => :member
     get 'refresh', :on => :member
   end
 
   match "login" => "session#new"
   match "logout" => "session#destroy"
-  match "home" => "users#dashboard"
+  match "home" => "users#show"
   match "register" => "users#new"
   match "signup" => "users#new"
   match "activate/:activation_code" => "users#activate"
