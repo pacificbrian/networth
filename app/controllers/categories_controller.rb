@@ -127,7 +127,7 @@ class CategoriesController < ApplicationController
 
 
   def index
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @account = Account.from_params(params)
     @days = (params[:days])
 
@@ -143,6 +143,7 @@ class CategoriesController < ApplicationController
     in_categories = current_user.get_categories(2)
     out_categories = current_user.get_categories(1)
     if @account
+      authenticate_user(@account.user_id) or return
       @in_cashflows = @account.cashflows_by_category(2, days, true)
       @out_cashflows = @account.cashflows_by_category(1, days, true)
       @chart_name = @account.name
@@ -171,7 +172,7 @@ class CategoriesController < ApplicationController
     @cash_flows = nil
     @account = Account.from_params(params)
     @year = Year.from_params(params)
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @days = (params[:days])
     @categories = current_user.all_categories
     @inplace_categories = @categories.map {|c| [c.id, c.name]}
@@ -195,6 +196,7 @@ class CategoriesController < ApplicationController
     end
 
     if @account
+      authenticate_user(@account.user_id) or return
       @cash_flows = @account.cash_flows.by_range(last, days, cid)
       @chart_name = @account.name + " :: " + @category.name
     else
@@ -235,12 +237,13 @@ class CategoriesController < ApplicationController
   end
 
   def json_pie(params)
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @account = Account.from_params(params)
     category_type = params[:category_type_id]
     days = (params[:days])
 
     if @account
+      authenticate_user(@account.user_id) or return
       chart_categories = @account.get_categories(category_type.to_i)
       chart_cashflows = @account.cashflows_by_category(category_type.to_i, days)
       name = @account.name + ":" + CategoryType.find(category_type.to_i).name
@@ -261,7 +264,7 @@ class CategoriesController < ApplicationController
 
   def json_bar(params)
     @category = Category.find(params[:id])
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @account = Account.from_params(params)
     days = (params[:days])
 
@@ -275,6 +278,7 @@ class CategoriesController < ApplicationController
     end
 
     if @account
+      authenticate_user(@account.user_id) or return
       cash_flows = @account.cash_flows.by_range(last, days, @category.id)
       #cash_flows = @account.cash_flows.find_all_by_category_id(params[:id])
       name = @account.name + ":" + @category.name

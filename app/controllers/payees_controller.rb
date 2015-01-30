@@ -28,9 +28,10 @@ class PayeesController < ApplicationController
   end
 
   def index
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @account = Account.from_params(params)
     if @account
+      authenticate_user(@account.user_id) or return
       @payees = @account.payees.uniq.sort_by { |p| -p.use_count(@account) }
     else
       @payees = current_user.payees.sort_by { |p| -p.use_count }
@@ -40,7 +41,7 @@ class PayeesController < ApplicationController
   end
 
   def create
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @account = Account.from_params(params)
     @payee = current_user.payees.new(params[:payee])
     if @payee.save
@@ -57,14 +58,15 @@ class PayeesController < ApplicationController
   end
 
   def show
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @account = Account.from_params(params)
     @year = Year.from_params(params)
     @payee = Payee.find(params[:id])
+    authenticate_user(@payee.user_id) or return
     @tax_item = TaxItem.from_params(params)
     if @tax_item
       # XXX - no route for this currently, do payee/x/tax_items/y instead
-      @payee_cash_flows = @tax_item.cash_flows_by_year(@year, @account, @payee, true)
+      @payee_cash_flows = @tax_item.cash_flows_by_year(current_user, @year, @account, @payee, true)
     else
       @payee_cash_flows = @payee.linked_cash_flows_by_year(@account, @year)
     end
@@ -73,16 +75,19 @@ class PayeesController < ApplicationController
   end
 
   def edit
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @account = Account.from_params(params)
     @payee = Payee.find(params[:id])
+    authenticate_user(@payee.user_id) or return
     @categories = current_user.all_categories
   end
 
   def update
+    current_user = get_current_user
     @account = Account.from_params(params)
     @year = Year.from_params(params)
     @payee = Payee.find(params[:id])
+    authenticate_user(@payee.user_id) or return
     if params[:commit] == "Update Unset"
       update_all = true
       with_override = false
@@ -99,7 +104,6 @@ class PayeesController < ApplicationController
       end
       redirect_to redirect_target(@account)
     else
-      current_user = User.find(session[:user_id])
       @account = Account.from_params(params)
       @categories = current_user.all_categories
       render :action => "edit"
@@ -112,6 +116,7 @@ class PayeesController < ApplicationController
   def destroy
     @account = Account.from_params(params)
     @payee = Payee.find(params[:id])
+    authenticate_user(@payee.user_id) or return
     if (@payee.use_count.zero?)
       @payee.destroy
     end

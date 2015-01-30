@@ -1,4 +1,6 @@
 class TaxYearsController < ApplicationController
+  before_filter :get_current_user
+
   def index
     @tax_years = TaxYear.all
   end

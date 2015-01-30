@@ -23,19 +23,22 @@ class ImportController < ApplicationController
   def index
     @year = Year.from_params(params)
     # will be nil if not from account/#/import
-    @account = @account_id = params[:account_id]
-    if @account_id
-      @account = Account.find(@account_id)
+    @account = Account.from_params(params)
+    if @account
+      authenticate_user(@account.user_id) or return
+      current_user = @account.user
       @recent_imports = @account.imports
+    else
+      current_user = get_current_user
     end
-    current_user = User.find(session[:user_id])
     @accounts = current_user.accounts
   end
 
   def show
     @year = Year.from_params(params)
     @import = Import.find(params[:id])
-    @account = Account.find(params[:account_id])
+    authenticate_user(@import.account.user_id) or return
+    @account = @import.account
     @import_cash_flows = @import.cash_flows
     @import_trades = @import.trades
     @categories = @account.user.all_categories
@@ -46,6 +49,7 @@ class ImportController < ApplicationController
   def create
     @year = Year.from_params(params)
     @account = Account.find(params[:import][:account_id])
+    authenticate_user((@account.user_id if @account)) or return
 
     if params[:commit] == "Import OFX"
       name = params[:import][:ofx_name]

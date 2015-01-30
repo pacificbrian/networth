@@ -74,6 +74,15 @@ class User < ActiveRecord::Base
   attr_accessor :password_confirmation
   attr_accessible :login, :email, :first_name, :last_name, :password, :password_confirmation
 
+  def self.authenticate_current_user(session, user_id)
+    current_user = self.find(session[:user_id])
+    if current_user.nil? or current_user.id != user_id
+      logger.warn "Attempt to lookup non-current User " + user_id.to_s + " (" + (current_user.id if current_user).to_s + ")"
+      current_user = nil
+    end
+    return current_user
+  end
+
   # Activates the user in the database.
   def activate!
     @activated = true
@@ -270,6 +279,10 @@ class User < ActiveRecord::Base
       session[:security_values_updated] = true
       refresh_account_balances
     end
+  end
+
+  def new_session(session)
+      refresh(session)
   end
 
   def taxable_gain_by_year(year)

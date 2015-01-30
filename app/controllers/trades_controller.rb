@@ -23,10 +23,11 @@ class TradesController < ApplicationController
     @year = params[:year_id]
     if params[:account_id]
       @account = Account.find(params[:account_id])
+      authenticate_user(@account.user_id) or return
       #@trades = @account.ordered_trades
       @trades = @account.ordered_trades.sort_by { |t| -t.id }
     else
-      user = User.find(session[:user_id])
+      user = get_current_user
       @account = nil
       #@trades = user.ordered_trades
       @trades = user.ordered_trades.sort_by { |t| -t.id }
@@ -41,12 +42,14 @@ class TradesController < ApplicationController
     if params[:account_id]
       symbol = params[:trade][:symbol]
       @account = Account.find(params[:account_id])
+      authenticate_user(@account.user_id) or return
       @security = @account.find_security_by_symbol(symbol, fast=true)
       source = @account
       source_js = "create_securities.rjs"
     elsif params[:security_id]
       @security = Security.find(params[:security_id])
       @account = @security.account
+      authenticate_user(@account.user_id) or return
       source = @security
       source_js = "create_trades.rjs"
     end
@@ -76,12 +79,14 @@ class TradesController < ApplicationController
   def edit
     @trade = Trade.find(params[:id])
     @account = @trade.account
+    authenticate_user(@account.user_id) or return
     @security = @trade.security
     @trade_types = TradeType.find(:all)
   end
 
   def update
     @trade = Trade.find(params[:id])
+    authenticate_user(@trade.account.user_id) or return
     old_trade = @trade.dup # clone is wrong here!
     if @trade.update_attributes(Trade.sanitize_params(params[:trade]))
       @trade.security.update_trade(old_trade, @trade)
@@ -95,6 +100,7 @@ class TradesController < ApplicationController
   def destroy
     @trade = Trade.find(params[:id])
     @security = @trade.security
+    authenticate_user(@security.account.user_id) or return
     @security.sub_trade(@trade)
     @trade.destroy
     redirect_to @security

@@ -20,7 +20,7 @@ class TaxTypesController < ApplicationController
   before_filter :set_current_user
 
   def show
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @year = params[:year_id]
     @tax_type = TaxType.find(params[:id])
     @tax_type_cash_flows = @tax_type.cash_flows_by_year(current_user, @year)

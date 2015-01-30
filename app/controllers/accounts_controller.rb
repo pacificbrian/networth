@@ -17,11 +17,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class AccountsController < ApplicationController
+  skip_before_filter :test_current_user, only: [:index, :create]
   before_filter :set_current_user, :only => [ :index, :create ]
 
   def index
+    @user = get_current_user
     @year = Year.from_params(params)
-    @user = User.find(session[:user_id])
     @user.refresh(session)
     @accounts = @user.current_accounts.sort_by { |a| [a.account_type_id, a.name] }
     @watchlist = @user.watchlist_accounts
@@ -40,6 +41,7 @@ class AccountsController < ApplicationController
     @year = Year.from_params(params)
     session[:year_id] = @year
     @account = Account.find(params[:id])
+    authenticate_user(@account.user_id) or return
     @account.refresh(session)
     # get updated balance if changed; @account.balance is stale?
     # TODO - why if same Object?; bug in refresh?
@@ -86,7 +88,7 @@ class AccountsController < ApplicationController
 
   def create
     @year = session[:year_id]
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @account = current_user.accounts.new(Account.sanitize_params(params[:account]))
     if @account.save
       redirect_to @account
@@ -101,6 +103,7 @@ class AccountsController < ApplicationController
     @year = Year.from_params(params)
     session[:year_id] = @year
     @account = Account.find(params[:id])
+    authenticate_user(@account.user_id) or return
     @account_types = AccountType.find(:all)
     @currency_types = CurrencyType.find(:all)
   end
@@ -108,6 +111,7 @@ class AccountsController < ApplicationController
   def update
     @year = session[:year_id]
     @account = Account.find(params[:id])
+    authenticate_user(@account.user_id) or return
     if @account.update_attributes(Account.sanitize_params(params[:account]))
       redirect_to @account
     else
@@ -120,6 +124,7 @@ class AccountsController < ApplicationController
   def destroy
     @year = session[:year_id]
     @account = Account.find(params[:id])
+    authenticate_user(@account.user_id) or return
     @user = @account.user
     @accounts = @user.accounts
     @account.purge
@@ -127,12 +132,12 @@ class AccountsController < ApplicationController
   end
 
   def watchlist
-    @user = User.find(session[:user_id])
+    @user = get_current_user
     @watchlist = @user.watchlist_accounts
   end
 
   def refresh
-    user = User.find(session[:user_id])
+    user = get_current_user
     user.refresh(session, true)
     redirect_to accounts_path
   end

@@ -2,6 +2,7 @@
 class SessionsController < ApplicationController
   # Be sure to include AuthenticationSystem in Application Controller instead
   #include AuthenticatedSystem
+  skip_before_filter :test_current_user, except: [:destroy]
 
   def index
     redirect_to new_session_path
@@ -13,6 +14,7 @@ class SessionsController < ApplicationController
 
   def create
     #logout_keeping_session!
+    clear_current_user
     cred = params[:session]
     user = User.authenticate(cred[:login], cred[:password])
     if user
@@ -37,8 +39,10 @@ class SessionsController < ApplicationController
 
   def destroy
     #logout_killing_session!
+    clear_current_user
     flash[:notice] = "You have been logged out."
-    redirect_back_or_default('/')
+    @session = Session.new
+    render :action => 'new'
   end
 
 protected

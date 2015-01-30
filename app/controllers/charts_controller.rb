@@ -28,11 +28,13 @@ class ChartsController < ApplicationController
   end
 
   def index
+    current_user = get_current_user
     use_roc = true
     @normalize = test_normalize(params)
 
     if params[:account_id]
       @account = Account.find(params[:account_id])
+      authenticate_user(@account.user_id) or return
       @name = @account.name
       if !@normalize || @account.credit?
         use_roc = false
@@ -42,10 +44,10 @@ class ChartsController < ApplicationController
       @name = @company.chart_label
     elsif params[:security_id]
       @security = Security.find(params[:security_id])
+      authenticate_user(@security.account.user_id) or return
       @company = @security.company
       @name = @company.chart_label
     else
-      current_user = User.find(session[:user_id])
       @name = current_user.name
     end
 
@@ -146,6 +148,7 @@ class ChartsController < ApplicationController
   end
 
   def to_points(params, company, days)
+    current_user = get_current_user
     normalize = test_normalize(params)
 
     use_roc = false
@@ -248,76 +251,10 @@ class ChartsController < ApplicationController
       end
       points = values_dates_to_points(values, dates, end_date)
     else # User
-      current_user = User.find(session[:user_id])
       values = current_user.by_date_range(end_date, days, normalize)
       points = values_to_points(values, end_date)
     end
 
     return points
-  end
-
-  def to_json
-    dates = Array.new
-    vmin = vmax = nil
-
-    0.upto(days - 1) do |d|
-      date = end_date - d
-
-      value = values[d]
-      if value.nil?
-        break
-      end
-
-      if (vmin.nil?)
-        vmin = vmax = value
-      end
-
-      if value < vmin
-        vmin = value
-      end
-      if value > vmax
-        vmax = value
-      end
-
-      if days > 365
-        dates.insert(0, date.strftime("%y %b %d"))
-        #dates.insert(0, date.strftime("%y%m%d"))
-      else
-        dates.insert(0, date.strftime("%b %d"))
-        #dates.insert(0, date.strftime("%m%d"))
-      end
-    end
-
-    Chart.dateline(name, dates, values, vmin, vmax)
-  end
-
-  def json_url_index
-    # target
-    if params[:account_id]
-      @account = Account.find(params[:account_id])
-    elsif params[:company_id]
-      @company = Company.find(params[:company_id])
-    elsif params[:security_id]
-      @security = Security.find(params[:security_id])
-      # TODO: see extra days calculation in SecurityController
-    end
-
-    # retrieve json data from target#json
-    if params[:days]
-      json_url = "json?days="+ params[:days]
-    else
-      json_url = "json"
-    end
-
-    @graph = Chart.from_json_url(720, 400, json_url)
-
-    respond_to do |format|
-        format.html
-        format.json {
-          # another way could have down json-pull style
-          # by calling Charts#index to retrieve json data
-          render :json => to_json.render
-        }
-    end
   end
 end

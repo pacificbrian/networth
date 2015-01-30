@@ -20,7 +20,7 @@ class GainsController < ApplicationController
   before_filter :set_current_user, :only => [ :index ]
 
   def index
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @year = params[:year_id]
     @account = Account.from_params(params)
     @gains = current_user.ordered_gains(@year, nil, @account)
@@ -35,6 +35,7 @@ class GainsController < ApplicationController
     @trade = Trade.find_by_id(params[:id])
     @trades = Array.new
     if @trade
+      authenticate_user(@trade.account.user_id) or return
       gains = @trade.trade_gains
       @trades = Array(@trade) + gains.map {|g| Trade.find(g.buy_id)}
     end
@@ -46,6 +47,7 @@ class GainsController < ApplicationController
     @trade = Trade.find_by_id(params[:id])
     @trades = Array.new
     if @trade
+      authenticate_user(@trade.account.user_id) or return
       @trade.security.update_trade(@trade, @trade, true) 
       @trade = Trade.find_by_id(params[:id])
       gains = @trade.trade_gains

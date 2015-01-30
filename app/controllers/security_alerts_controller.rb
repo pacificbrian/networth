@@ -20,13 +20,14 @@ class SecurityAlertsController < ApplicationController
   before_filter :set_current_user, :only => [ :index, :new ]
 
   def index
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @alerts = current_user.security_alerts
   end
 
   def new
     if params[:security_id]
       security = Security.find(params[:security_id])
+      authenticate_user(@security.account.user_id) or return
       @alert = security.security_alerts.new
     else
       @alert = SecurityAlert.new
@@ -35,6 +36,7 @@ class SecurityAlertsController < ApplicationController
 
   def create
     @alert = SecurityAlert.new(params[:security_alert])
+    authenticate_user((@alert.security.account.user_id if @alert.security)) or return
     if @alert.save
       respond_to do |format|
         format.html { redirect_to security_alerts_path }
@@ -47,10 +49,12 @@ class SecurityAlertsController < ApplicationController
 
   def edit
     @alert = SecurityAlert.find(params[:id])
+    authenticate_user(@alert.security.account.user_id) or return
   end
 
   def update
     @alert = SecurityAlert.find(params[:id])
+    authenticate_user(@alert.security.account.user_id) or return
     if @alert.update_attributes(params[:alert])
       redirect_to security_alerts_path
     else
@@ -60,6 +64,7 @@ class SecurityAlertsController < ApplicationController
 
   def destroy
     @alert = SecurityAlert.find(params[:id])
+    authenticate_user(@alert.security.account.user_id) or return
     @alert.destroy
     redirect_to security_alerts_path
   end

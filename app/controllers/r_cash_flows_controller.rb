@@ -24,6 +24,7 @@ class RCashFlowsController < ApplicationController
     cf = RCashFlow.params_to_cf(cf_params)
     @r_cash_flow.account_id = cf_params[:account_id]
     @account = @r_cash_flow.account
+    authenticate_user((@account.user_id if @account))
 
     if cf and @r_cash_flow.update_from(cf)
       # XXX repeat_interval_type_id cleared in update_from?
@@ -42,12 +43,14 @@ class RCashFlowsController < ApplicationController
   end
 
   def index
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @r_cash_flow = RCashFlow.new()
     # will be nil if not from account/#/r_cash_flow
     @r_cash_flow.account_id = params[:account_id]
-    if @r_cash_flow.account_id
-      @r_cash_flows = @r_cash_flow.account.r_cash_flows
+    account = @r_cash_flow.account
+    if account
+      authenticate_user(account.user_id)
+      @r_cash_flows = account.r_cash_flows
     else
       @r_cash_flows = current_user.r_cash_flows
     end
@@ -65,13 +68,14 @@ class RCashFlowsController < ApplicationController
     @r_cash_flow.account_id = params[:account_id]
     @cash_flow_types = CashFlowType.find(:all)
     @repeat_interval_types = RepeatIntervalType.find(:all)
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @accounts = current_user.accounts
     @categories = current_user.all_categories
   end
 
   def edit
     @r_cash_flow = RCashFlow.fetch(params[:id])
+    authenticate_user(@r_cash_flow.account.user_id)
     @rpi = @r_cash_flow.repeat_interval
     if @rpi
       @r_cash_flow.repeats_left = @rpi.repeats_left
@@ -94,6 +98,7 @@ class RCashFlowsController < ApplicationController
 
   def update
     @r_cash_flow = RCashFlow.find(params[:id])
+    authenticate_user(@r_cash_flow.account.user_id)
     in_params = params[:r_cash_flow]
     no_edit = false
 
@@ -134,6 +139,7 @@ class RCashFlowsController < ApplicationController
   def apply
     @r_cash_flow = RCashFlow.find(params[:id])
     @account = @r_cash_flow.account
+    authenticate_user(@account.user_id)
 
     if @r_cash_flow.record_single_cash_flow
       respond_to do |format|
@@ -148,6 +154,7 @@ class RCashFlowsController < ApplicationController
   def destroy
     @cash_flow = CashFlow.find(params[:id])
     @account = @cash_flow.account
+    authenticate_user(@account.user_id)
 
     # don't know.... a rails bug seems to require this.....
     @cash_flow.split = false

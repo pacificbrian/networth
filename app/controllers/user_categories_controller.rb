@@ -30,16 +30,14 @@ class UserCategoriesController < ApplicationController
   def index
     @account = Account.from_params(params)
     @category_types = CategoryType.find(:all)
-
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @user_categories = current_user.user_categories
     @category = Category.new
   end
 
   def create
     @account = Account.from_params(params)
-
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @category = current_user.categories.new(params[:category])
     if @category.save
       redirect_to redirect_target(@account)
@@ -53,22 +51,16 @@ class UserCategoriesController < ApplicationController
   def edit
     @account = Account.from_params(params)
     @category_types = CategoryType.find(:all)
-
-    @user = User.find(session[:user_id])
+    @user = get_current_user
     @category = Category.find(params[:id])
-    if @user.id != @category.user_id
-      @user = nil
-    end
+    authenticate_user(@category.user_id) or return
   end
 
   def update
     @account = Account.from_params(params)
-
-    @user = User.find(session[:user_id])
+    @user = get_current_user
     @category = Category.find(params[:id])
-    if @user.id != @category.user_id
-      @user = nil
-    end
+    authenticate_user(@category.user_id) or return
     if @user and @category.update_attributes(params[:category])
       redirect_to redirect_target(@acccount)
     else
@@ -79,12 +71,9 @@ class UserCategoriesController < ApplicationController
 
   def destroy
     @account = Account.from_params(params)
-
-    @user = User.find(session[:user_id])
+    @user = get_current_user
     @category = Category.find(params[:id])
-    if @user.id != @category.user_id
-      @user = nil
-    end
+    authenticate_user(@category.user_id) or return
     if @user and @category.use_count.zero?
       @category.destroy
     end

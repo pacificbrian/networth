@@ -20,6 +20,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  before_filter :test_current_user
   before_filter :set_return_to, :only => [ :index, :show ]
 
   # See ActionController::RequestForgeryProtection for details
@@ -28,6 +29,11 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
   protected
+
+  def test_model_lookup
+    #logger.warn "Controller model is: "
+    #put params
+  end
 
   def redirect_back_or_default(default='/')
     redirect_to(session[:return_to] || default)
@@ -55,27 +61,56 @@ class ApplicationController < ActionController::Base
     session[:security_values_updated] = true
   end
 
-  # Set current_user if unset or allow specified user to override current
-  def set_current_user(_set_user=nil)
-    if session[:user_id].nil? or _set_user
-      # TODO move DefaultUser lookup to get_current_user
-      uid = GlobalSettings.value_by_name("DefaultUser")
-      if _set_user.nil? and uid
-        _set_user = User.find(uid.to_i)
-      end
-      session[:user_id] = _set_user.id if _set_user
-      session[:security_values_updated] = false
-      #user.update_security_values
-    end
-    session[:user_id]
+  def clear_current_user
+    session[:user_id] = nil
+    @session_user = nil
   end
 
   def get_current_user
-    unless session[:user_id]
-      session[:return_to] = request.request_uri
-      redirect_to new_session_path
+    @session_user ||= User.find_by_id(session[:user_id])
+  end
+
+  # Set current_user if unset or allow specified user to override current
+  def set_current_user(new_user=nil)
+    if session[:user_id].nil? or new_user
+      if new_user.nil?
+         uid = GlobalSettings.value_by_name("DefaultUser")
+         if uid
+           new_user = User.find(uid.to_i)
+         end
+      end
+      session[:user_id] = new_user.id if new_user
+      session[:security_values_updated] = false
+      @session_user = User.find_by_id(new_user.id) if new_user
+      @session_user.new_session(session) if @session_user
     end
-    session[:user_id]
+    @session_user ||= User.find_by_id(session[:user_id])
+  end
+
+  def test_current_user
+    @session_user ||= User.find_by_id(session[:user_id])
+    unless @session_user
+      set_return_to
+      redirect_to login_path
+    end
+    @session_user
+  end
+
+  def test_sysadmin_user
+    if session[:user_id] != 1
+      set_return_to
+      redirect_to login_path
+      return false
+    end
+    return true
+  end
+
+  def authenticate_user(user_id)
+    user = User.authenticate_current_user(session, user_id) if user_id
+    if user.nil?
+      redirect_back_or_default('/')
+    end
+    return user
   end
 
   def for_sproutcore(objs)

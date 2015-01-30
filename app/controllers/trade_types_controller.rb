@@ -20,19 +20,21 @@ class TradeTypesController < ApplicationController
   before_filter :set_current_user, :only => [ :show ]
 
   def show
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     trade_type_id = params[:id]
     @trade_type = TradeType.find(trade_type_id)
     @year = params[:year_id]
     @account = Account.from_params(params)
     if @year
       if @account
+        authenticate_user(@account.user_id) or return
         @trades = @account.ordered_trades(@year, trade_type_id)
       else
         @trades = current_user.ordered_trades(@year, trade_type_id)
       end
     else
       if @account
+        authenticate_user(@account.user_id) or return
         @trades = @account.ordered_trades(nil, trade_type_id)
       else
         @trades = []

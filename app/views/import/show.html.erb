@@ -21,8 +21,8 @@
 
 <ul id="footmenu">
 <% if @year %>
-<li><%= link_to 'To Account', year_account_path(@year, @account) %></li>
+<li><%= link_to 'To Account', year_account_path(@year, @import.account) %></li>
 <% else %>
-<li><%= link_to 'To Account', account_path(@account) %></li>
+<li><%= link_to 'To Account', account_path(@import.account) %></li>
 <% end %>
 </ul>

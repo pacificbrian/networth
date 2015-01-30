@@ -540,9 +540,7 @@ puts "processing Scheduled CF for Payee " + rcf.get_payee_name
   def update_from(new_cf, automated=false)
     prune_balances = (not automated)
     new_cf.account_id = self.account_id
-
     current_user = self.account.user
-    #current_user = User.find(session[:user_id])
 
     if (self[:split])
       old_split = true

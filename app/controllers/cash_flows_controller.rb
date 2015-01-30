@@ -24,6 +24,7 @@ class CashFlowsController < ApplicationController
     @cash_flow = CashFlow.new()
     @cash_flow.account_id = cf_params[:account_id]
     @account = @cash_flow.account
+    authenticate_user((@account.user_id if @account)) or return
     @categories = @account.user.all_categories
     @inplace_categories = @categories.map {|c| [c.id, c.name]}
 
@@ -45,7 +46,7 @@ class CashFlowsController < ApplicationController
     # will be nil if not from account/#/cash_flow
     @cash_flow.account_id = params[:account_id]
     @cash_flow_types = CashFlowType.find(:all)
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @accounts = current_user.accounts
     @categories = current_user.all_categories
   end
@@ -54,6 +55,7 @@ class CashFlowsController < ApplicationController
     @year = Year.from_params(params)
     session[:year_id] = @year
     @cash_flow = CashFlow.fetch(params[:id])
+    authenticate_user(@cash_flow.account.user_id) or return
     @split_cash_flows = @cash_flow.get_split_cash_flows
     @split_cash_flow = SplitCashFlow.new()
     @split_cash_flow.split_from = @cash_flow.id
@@ -70,6 +72,7 @@ class CashFlowsController < ApplicationController
     edit_hash = params[:in_place_edit]
 
     user_cf = CashFlow.fetch(params[:id])
+    authenticate_user(user_cf.account.user_id) or return
     user_cf.params_to_cf(edit_hash)
 
     edit_cash_flow = CashFlow.find(params[:id])
@@ -86,6 +89,7 @@ class CashFlowsController < ApplicationController
     @year = session[:year_id]
     @cash_flow = CashFlow.find(params[:id])
     @account = @cash_flow.account
+    authenticate_user(@account.user_id) or return
     in_params = params[:cash_flow]
     no_edit = false
 
@@ -124,6 +128,7 @@ class CashFlowsController < ApplicationController
     @year = session[:year_id]
     @cash_flow = CashFlow.find(params[:id])
     @account = @cash_flow.account
+    authenticate_user(@account.user_id) or return
     @cash_flow.remove_from_account
     redirect_to @account
   end

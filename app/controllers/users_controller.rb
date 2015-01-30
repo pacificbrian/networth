@@ -17,8 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class UsersController < ApplicationController
-  # Be sure to include AuthenticationSystem in Application Controller instead
-  #include AuthenticatedSystem
+  skip_before_filter :test_current_user, only: [:new, :create, :activate]
 
   def new
     @user = User.new
@@ -28,7 +27,7 @@ class UsersController < ApplicationController
     send_code=false
     #logout_keeping_session!
     @user = User.new(params[:user])
-    success = @user && @user.encrypt_save(send_code)
+    success = @user && @user.secured_save(send_code)
     if success && @user.errors.empty?
       if send_code
         flash[:notice] = "Thanks for signing up!  We're sending you an email with your activation code."
@@ -36,7 +35,7 @@ class UsersController < ApplicationController
       else
         @user.activate!
         flash[:notice] = "Thanks for registering!"
-        redirect_to new_session_path
+        redirect_to login_path
       end
     else
       flash[:error]  = "We couldn't set up that account, sorry.  Please try again, or contact an admin (link is above)."
@@ -54,30 +53,22 @@ class UsersController < ApplicationController
     when user && !user.active?
       user.activate!
       flash[:notice] = "Signup complete! Please sign in to continue."
-      redirect_to '/login'
+      redirect_to login_path
     else 
       flash[:error]  = "We couldn't find a user with that activation code -- check your email? Or maybe you've already activated -- try signing in."
       redirect_back_or_default('/')
     end
   end
 
-  def lookup_user(params)
-    user_id = params[:id].to_i
-    current_user = User.find(session[:user_id])
-    if current_user.nil? or current_user.id != user_id
-      logger.warn "Attempt to lookup non-current User " + user_id.to_s + " (" + (current_user.id if current_user).to_s + ")"
-      redirect_back_or_default('/')
-    end
-    @user = current_user
-  end
-
   def edit
-    @user = lookup_user(params)
+    uid = params[:id].to_i
+    @user = authenticate_user(uid) or return
   end
 
   def update
-    @user = lookup_user(params)
-    if @user.update_attributes(params[:user])
+    uid = params[:id].to_i
+    @user = authenticate_user(uid) or return
+    if @user.secured_update(params[:user])
       redirect_to @user
     else
       render :action => "edit"
@@ -85,12 +76,14 @@ class UsersController < ApplicationController
   end
 
   def show
-    user = lookup_user(params)
+    uid = params[:id].to_i
+    (authenticate_user(uid) or return) if uid.nonzero?
     redirect_to accounts_path
   end
 
   def refresh
-    user = lookup_user(params)
+    uid = params[:id].to_i
+    user = authenticate_user(uid) or return
     user.refresh(session, true)
     redirect_back_or_default('/')
   end

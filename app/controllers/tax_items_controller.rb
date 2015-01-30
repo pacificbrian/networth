@@ -20,7 +20,7 @@ class TaxItemsController < ApplicationController
   before_filter :set_current_user
 
   def show
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @year = params[:year_id]
     @account = Account.from_params(params)
     @payee = Payee.from_params(params)

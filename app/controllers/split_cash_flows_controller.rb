@@ -34,6 +34,7 @@ class SplitCashFlowsController < CashFlowsController
     split_from = cf_params[:split_from]
     cf = SplitCashFlow.params_to_cf(cf_params)
     @cash_flow = CashFlow.find(split_from)
+    authenticate_user(@cash_flow.account.user_id) or return
     @split_cash_flow = SplitCashFlow.new()
     @split_cash_flow.account_id = @cash_flow.account_id
     cf and @split_cash_flow.update_from(cf)
@@ -48,6 +49,7 @@ class SplitCashFlowsController < CashFlowsController
     @year = session[:year_id]
     @split_cash_flow = CashFlow.find(params[:id])
     @account = @split_cash_flow.account
+    authenticate_user(@account.user_id) or return
     in_params = params[:split_cash_flow]
     no_edit = false
 
@@ -77,6 +79,7 @@ class SplitCashFlowsController < CashFlowsController
   def destroy
     @cash_flow = CashFlow.find(params[:id])
     @account = @cash_flow.account
+    authenticate_user(@account.user_id) or return
     @cash_flow.destroy
     redirect_to @account
   end

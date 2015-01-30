@@ -20,11 +20,13 @@ class BalancesController < ApplicationController
   def index
     @year = Year.from_params(params)
     @account = Account.find(params[:account_id])
+    authenticate_user(@account.user_id) or return
     @balances = @account.account_balances
   end
 
   def destroy
     @ab = AccountBalance.find(params[:id])
+    authenticate_user(@ab.account.user_id) or return
     @ab.destroy
     redirect_back_or_default('/')
   end

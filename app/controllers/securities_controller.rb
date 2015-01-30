@@ -21,6 +21,7 @@ class SecuritiesController < ApplicationController
 
   def show
     @security = Security.find(params[:id])
+    authenticate_user(@security.account.user_id) or return
     @security.update_value
     @trade = Trade.new
     @trade_types = TradeType.find(:all)
@@ -31,13 +32,13 @@ class SecuritiesController < ApplicationController
   end
 
   def index
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     securities = current_user.update_security_values
     @securities = securities.sort_by { |s| [s.account_id, s.get_name] }
   end
 
   def all
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     current_user.update_security_values
     securities = current_user.securities.find(:all)
     @securities = securities.sort_by { |s| [s.account_id, s.get_class, s.get_name] }
@@ -45,6 +46,7 @@ class SecuritiesController < ApplicationController
 
   def edit
     @security = Security.find(params[:id])
+    authenticate_user(@security.account.user_id) or return
     @security.symbol = @security.company.symbol
     @security.name = @security.company.name
     @security_types = SecurityType.find(:all)
@@ -53,16 +55,24 @@ class SecuritiesController < ApplicationController
 
   def update
     @security = Security.find(params[:id])
+    authenticate_user(@security.account.user_id) or return
     @security.company.update_attributes(params[:security])
     @security.update_attributes(params[:security])
-    @securities = @security.account.user.active_securities
-    render :action => "index"
-    # or :action => "show"
+    yes = @security.update_attributes(params[:security])
+    if yes
+      @securities = @security.account.user.active_securities
+      render :action => "index"
+    else
+      @trade = Trade.new
+      @trade_types = TradeType.find(:all)
+      render :action => "show"
+    end
   end
 
   def destroy
     @security = Security.find(params[:id])
     @account = @security.account
+    authenticate_user(@account.user_id) or return
     #@security.destroy
     redirect_to @account
   end

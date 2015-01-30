@@ -18,6 +18,9 @@
 
 #require 'fastercsv'
 class QuotesController < ApplicationController
+  before_filter :get_current_user
+  before_filter :test_sysadmin_user, only: [:create, :destroy]
+
   def index
     days = nil
     if params[:company_id]

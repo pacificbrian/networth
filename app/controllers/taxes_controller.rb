@@ -20,12 +20,12 @@ class TaxesController < ApplicationController
   before_filter :set_current_user, :only => [ :index, :create ]
 
   def index
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @tax = current_user.taxes.new
     @year = params[:year_id]
-    #@taxes = current_user.taxes.by_year(@year, true)
     @account = Account.from_params(params)
     if @account
+      authenticate_user(@account.user_id) or return
       @taxes = @tax.auto_tax(@year, nil, @account)
     else
       @taxes = @tax.taxes_by_year(@year, true)
@@ -50,7 +50,7 @@ class TaxesController < ApplicationController
   end
 
   def create
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @tax = current_user.taxes.new(params[:tax])
     @year = params[:year_id]
     if @tax.save
@@ -70,6 +70,7 @@ class TaxesController < ApplicationController
 
   def edit
     @tax = Tax.find(params[:id])
+    authenticate_user(@tax.user_id) or return
     @year = params[:year_id]
     @tax_regions = TaxRegion.find(:all)
     @tax_types = TaxType.find(:all)
@@ -78,6 +79,7 @@ class TaxesController < ApplicationController
 
   def update
     @tax = Tax.find(params[:id])
+    authenticate_user(@tax.user_id) or return
     @year = params[:year_id]
     if @tax.update_attributes(params[:tax])
       if @year
@@ -95,6 +97,7 @@ class TaxesController < ApplicationController
 
   def destroy
     @tax = Tax.find(params[:id])
+    authenticate_user(@tax.user_id) or return
     @year = params[:year_id]
     @tax.destroy
     if @year

@@ -20,7 +20,7 @@ class TaxUsersController < ApplicationController
   before_filter :set_current_user, :only => [ :create ]
 
   def create
-    current_user = User.find(session[:user_id])
+    current_user = get_current_user
     @tax_user = current_user.tax_users.new(params[:tax_user])
     @year = params[:year_id]
     @tax_user.save
@@ -33,6 +33,7 @@ class TaxUsersController < ApplicationController
 
   def edit
     @tax_user = TaxUser.find(params[:id])
+    authenticate_user(@tax_user.user_id) or return
     @year = params[:year_id]
     @tax_filing_status = TaxUser.filing_status_to_s
     @tax_regions = TaxRegion.find(:all)
@@ -40,6 +41,7 @@ class TaxUsersController < ApplicationController
 
   def update
     @tax_user = TaxUser.find(params[:id])
+    authenticate_user(@tax_user.user_id) or return
     @year = params[:year_id]
     redirect_to_taxes_path = false
 
@@ -68,6 +70,7 @@ class TaxUsersController < ApplicationController
 
   def destroy
     @tax_user = TaxUser.find(params[:id])
+    authenticate_user(@tax_user.user_id) or return
     @year = params[:year_id]
     @tax_user.destroy
     if @year

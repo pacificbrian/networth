@@ -17,6 +17,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class TaxCategoriesController < ApplicationController
+  before_filter :test_sysadmin_user
+
   def index
     @tax_category = TaxCategory.new
     @tax_categories = TaxCategory.find(:all)

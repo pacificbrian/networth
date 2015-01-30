@@ -17,6 +17,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class QuoteSettingsController < ApplicationController
+  before_filter :test_sysadmin_user
+
   def create
     @quote_setting = QuoteSetting.new(params[:quote_setting])
     @quote_setting.save
