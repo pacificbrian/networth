@@ -28,7 +28,7 @@ class Tax < ActiveRecord::Base
     amount + obj.amount
   end
 
-  def self.auto_tax(year, type_id=nil, account=nil)
+  def self.auto_tax(user, year, type_id=nil, account=nil)
     taxes = Array.new
     if year.nil?
       return taxes
@@ -38,7 +38,7 @@ class Tax < ActiveRecord::Base
     tax_items.each do |ti|
       tax = nil
       if !type_id || (type_id == ti.tax_type_id)
-        tax = ti.auto_tax(year, account)
+        tax = ti.auto_tax(user, year, account)
       end
 
       if tax
@@ -48,46 +48,28 @@ class Tax < ActiveRecord::Base
     return taxes
   end
 
-  def self.taxes_by_year(year, auto_taxes=false, type_id=nil, item_id=nil)
+  def self.taxes_by_year(user, year, auto_taxes=false, type_id=nil, item_id=nil)
     taxes = Array.new
     if auto_taxes
-      taxes.concat auto_tax(year, type_id)
+      taxes.concat self.auto_tax(user, year, type_id)
     end
-
-    user = User.find(1)
-    if (year)
-      d1 = Date.ordinal(year.to_i)
-      d2 = Date.ordinal(year.to_i + 1)
-      if item_id
-      taxes.concat user.taxes.find :all,
-                   :conditions => [ 'year >= ? AND year < ? AND tax_item_id = ?' , d1, d2, item_id ]
-      elsif type_id
-      taxes.concat user.taxes.find :all,
-                   :conditions => [ 'year >= ? AND year < ? AND tax_type_id = ?' , d1, d2, type_id ]
-      else
-      taxes.concat user.taxes.find :all,
-                   :conditions => [ 'year >= ? AND year < ?' , d1, d2 ]
-      end
-    else
-      taxes.concat user.taxes
-    end
-
+    taxes.concat user.taxes_by_year(year, type_id, item_id)
     return taxes
   end
 
   def auto_tax(year, type_id=nil, account=nil)
-    Tax.auto_tax(year, type_id, account)
+    Tax.auto_tax(user, year, type_id, account)
   end
 
   def taxes_by_year(year, auto_taxes=false, type_id=nil, item_id=nil)
-    Tax.taxes_by_year(year, auto_taxes, type_id, item_id)
+    Tax.taxes_by_year(user, year, auto_taxes, type_id, item_id)
   end
 
   def cash_flows_by_year(year)
     unless tax_item.tax_categories
       return Array.new
     end
-    cfs = tax_item.cash_flows_by_year(year)
+    cfs = tax_item.cash_flows_by_year(user, year)
     return cfs.sort_by { |cf| cf.date.jd }
   end
 end

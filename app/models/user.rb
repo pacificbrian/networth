@@ -305,4 +305,26 @@ class User < ActiveRecord::Base
     end
     return values
   end
+
+  def taxes_by_year(year, type_id=nil, item_id=nil)
+    _taxes = Array.new
+    if (year)
+      d1 = Date.ordinal(year.to_i)
+      d2 = Date.ordinal(year.to_i + 1)
+      if item_id
+      _taxes.concat self.taxes.find :all,
+                   :conditions => [ 'year >= ? AND year < ? AND tax_item_id = ?' , d1, d2, item_id ]
+      elsif type_id
+      _taxes.concat self.taxes.find :all,
+                   :conditions => [ 'year >= ? AND year < ? AND tax_type_id = ?' , d1, d2, type_id ]
+      else
+      _taxes.concat self.taxes.find :all,
+                   :conditions => [ 'year >= ? AND year < ?' , d1, d2 ]
+      end
+    else
+      _taxes.concat self.taxes
+    end
+
+    return _taxes
+  end
 end

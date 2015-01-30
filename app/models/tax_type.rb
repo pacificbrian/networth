@@ -29,15 +29,15 @@ class TaxType < ActiveRecord::Base
     end
   end
 
-  def cash_flows_by_year(year)
+  def cash_flows_by_year(user, year)
     cfs = Array.new
     tax_items.each do |i|
-      cfs.concat i.cash_flows_by_year(year)
+      cfs.concat i.cash_flows_by_year(user, year)
     end
     return cfs.sort_by { |cf| cf.date.jd }
   end
 
-  def cash_flows
-    cash_flows_by_year(nil)
+  def cash_flows(user)
+    cash_flows_by_year(user, nil)
   end
 end

@@ -38,7 +38,7 @@ class TaxItem < ActiveRecord::Base
     return true if name == "Capital Gain"
   end
 
-  def auto_tax(year, account=nil)
+  def auto_tax(user, year, account=nil)
     new_tax = nil
 
     unless year
@@ -46,9 +46,8 @@ class TaxItem < ActiveRecord::Base
     end
     d1 = Date.ordinal(year.to_i)
     d2 = Date.ordinal(year.to_i + 1)
-    user = User.find(1)
 
-    ti_cf = cash_flows_by_year(year, account)
+    ti_cf = cash_flows_by_year(user, year, account)
     if !ti_cf.empty?
       new_tax = user.taxes.new
       new_tax.tax_type_id = tax_type_id
@@ -74,7 +73,7 @@ class TaxItem < ActiveRecord::Base
     return new_tax
   end
 
-  def cash_flows_by_year(year, account=nil, payee=nil, include_user_ti=false)
+  def cash_flows_by_year(user, year, account=nil, payee=nil, include_user_ti=false)
     cfs = Array.new
     unless tax_categories
       return cfs
@@ -82,14 +81,12 @@ class TaxItem < ActiveRecord::Base
 
     # if not account specific, include user provided TI if requested
     if (account.nil? && include_user_ti)
-      user = User.find(1)
-      ti_array = Tax.taxes_by_year(year, false, nil, id)
-      ti_array.each do |ti|
+      tax_array = user.taxes_by_year(year, nil, id)
+      tax_array.each do |t|
         new_cf = user.cash_flows.new
-        new_cf.date = Date.new(ti.year.year, 12, 31)
-        new_cf.amount = ti.amount
-        new_cf.memo = ti.memo
-        #new_cf.account_id = ti.account_id
+        new_cf.date = Date.new(t.year.year, 12, 31)
+        new_cf.amount = t.amount
+        new_cf.memo = t.memo
         new_cf.payee_name = "User Tax Item"
         new_cf.category_id = tax_categories[0].category_id
         cfs.push new_cf
@@ -101,7 +98,6 @@ class TaxItem < ActiveRecord::Base
       d2 = Date.ordinal(year.to_i + 1)
     end
 
-    user = User.find(1)
     tax_categories.each do |tc|
       if tc.trade_type_id
         cfs.concat user.ordered_gain_cashflows_by_year(year, tc.trade_type_id, account, true)
@@ -128,7 +124,7 @@ class TaxItem < ActiveRecord::Base
     return cfs.sort_by { |cf| cf.date.jd }
   end
 
-  def cash_flows
-    cash_flows_by_year(nil)
+  def cash_flows(user)
+    cash_flows_by_year(user, nil)
   end
 end

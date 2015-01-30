@@ -25,6 +25,6 @@ class TaxItemsController < ApplicationController
     @account = Account.from_params(params)
     @payee = Payee.from_params(params)
     @tax_item = TaxItem.find(params[:id])
-    @tax_item_cash_flows = @tax_item.cash_flows_by_year(@year, @account, @payee, true)
+    @tax_item_cash_flows = @tax_item.cash_flows_by_year(current_user, @year, @account, @payee, true)
   end
 end

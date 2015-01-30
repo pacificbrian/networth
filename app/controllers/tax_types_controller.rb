@@ -23,7 +23,7 @@ class TaxTypesController < ApplicationController
     current_user = User.find(session[:user_id])
     @year = params[:year_id]
     @tax_type = TaxType.find(params[:id])
-    @tax_type_cash_flows = @tax_type.cash_flows_by_year(@year)
+    @tax_type_cash_flows = @tax_type.cash_flows_by_year(current_user, @year)
     @categories = current_user.all_categories
     @inplace_categories = @categories.map {|c| [c.id, c.name]}
   end
