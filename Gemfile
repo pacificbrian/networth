@@ -1,10 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.17'
+#gem 'rails', '3.2.17'
+gem 'rails', github: "rails/rails", branch: "3-2-stable"
+gem 'test-unit'
 gem 'thin'
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3'
 gem 'json'
@@ -18,7 +17,7 @@ gem 'prototype-rails'
 gem 'devise'
 gem 'best_in_place'
 gem 'dynamic_form'
-gem 'ofx_for_ruby', :git => 'git://github.com/pacificbrian/ofx_for_ruby.git'
+gem 'ofx_for_ruby', :github => "pacificbrian/ofx_for_ruby"
 
 # Gems used only for assets and not required
 # in production environments by default.
