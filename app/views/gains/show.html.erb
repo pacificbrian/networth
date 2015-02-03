@@ -5,12 +5,14 @@
 
 <h3>Gain</h3>
 <table class="ledger">
-<th>Date</th>
-<th>Shares</th>
+<th>Sell Date</th>
+<th>Shares Sold</th>
 <th>Price</th>
 <th>Amount</th>
 <th>Basis</th>
+<th>Basis PS</th>
 <th>Gain</th>
+<th>Gain PS</th>
 <th></th>
 <% if @trade %>
 <tr>
@@ -19,7 +21,9 @@
 <td class="currency"><%= number_to_currency(@trade.price) %></td>
 <td class="currency"><%= number_to_currency(@trade.amount) %></td>
 <td class="currency"><%= number_to_currency(@trade.basis) %></td>
+<td class="currency"><%= number_to_currency(@trade.basis / @trade.shares) %></td>
 <td class="currency"><%= number_to_currency(@trade.amount - @trade.basis) %></td>
+<td class="currency"><%= number_to_currency((@trade.amount - @trade.basis) / @trade.shares) %></td>
 <% if @account %>
 <td><%= link_to 'Update', year_account_gain_path(@year, @account, @trade), :method => :put %></td>
 <% else %>
@@ -28,6 +32,46 @@
 </tr>
 <% end %>
 </table>
+
+<% if @gains %>
+<h3>Gain Detail</h3>
+<table class="ledger">
+<th>Buy Date</th>
+<th>Shares Sold</th>
+<th>Price</th>
+<th>Amount</th>
+<th>Basis</th>
+<th>Basis PS</th>
+<th>Gain</th>
+<th>Gain PS</th>
+<% tot_a = 0 %>
+<% tot_b = 0 %>
+<% for g in @gains %>
+<tr>
+<td><%= g.buy.date %></td>
+<td><%= g.get_shares %></td>
+<% tot_a += g.amount %>
+<% tot_b += g.basis %>
+<td class="currency"><%= number_to_currency(@trade.price) %></td>
+<td class="currency"><%= number_to_currency(g.amount) %></td>
+<td class="currency"><%= number_to_currency(g.basis) %></td>
+<td class="currency"><%= number_to_currency(g.basis / g.get_shares) %></td>
+<td class="currency"><%= number_to_currency(g.amount - g.basis) %></td>
+<td class="currency"><%= number_to_currency((g.amount - g.basis) / g.get_shares) %></td>
+</tr>
+<% end %>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td class="currency"><%= number_to_currency(tot_a) %></td>
+<td class="currency"><%= number_to_currency(tot_b) %></td>
+<td></td>
+<td class="currency"><%= number_to_currency(tot_a - tot_b) %></td>
+<td></td>
+</tr>
+</table>
+<% end %>
 
 <h3>Trades</h3>
 <div id="trades">
@@ -48,5 +92,6 @@
 <% else %>
 <li><%= link_to 'Back to Gains', year_gains_path(@year) %></li>
 <% end %>
+<li><%= link_to 'Back to Security', security_path(@trade.security) %></li>
 </ul>
 <% end %>

@@ -36,8 +36,8 @@ class GainsController < ApplicationController
     @trades = Array.new
     if @trade
       authenticate_user(@trade.account.user_id) or return
-      gains = @trade.trade_gains
-      @trades = Array(@trade) + gains.map {|g| Trade.find(g.buy_id)}
+      @gains = @trade.trade_gains
+      @trades = Array(@trade) + @gains.map {|g| Trade.find(g.buy_id)}
     end
   end
 

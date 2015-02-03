@@ -30,25 +30,23 @@ class TradeGain < ActiveRecord::Base
     Trade.find(self.buy_id)
   end
 
-  def get_basis
-    # use if not storing FIFO/AVGB computed basis
+  def shares_sold
+    # self.shares may not be set yet
     if shares.nil?
-      sell_shares = sell.shares
-    else
-      sell_shares = shares
+      return sell.shares
     end
-    # should be FIFO result
-    # bogus buy.amount if new splits since tg written
-    return buy.amount_ps * sell_shares
+    shares
+  end
+
+  # Can use if not storing FIFO/AVGB computed basis,
+  # calculates FIFO result
+  def get_basis
+    # bogus buy.amount if new splits since TradeGain written
+    return buy.amount_ps * shares_sold
   end
 
   def amount
-    if shares.nil?
-      sell_shares = sell.shares
-    else
-      sell_shares = shares
-    end
-    return (sell.amount/sell.shares) * sell_shares
+    return (sell.amount/sell.shares) * shares_sold
   end
 
   #

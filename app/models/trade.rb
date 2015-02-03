@@ -119,11 +119,9 @@ class Trade < ActiveRecord::Base
   end
 
   def basis_remaining
-    s = security
-    if s.security_basis_type.is_fifo
-      if basis
-        return (amount - basis)
-      end
+    # accumlates for both FIFO and AVGB
+    if basis
+      return (amount - basis)
     end
     return nil
   end

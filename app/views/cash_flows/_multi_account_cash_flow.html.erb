@@ -8,6 +8,7 @@
 <th>Payee</th>
 <th>Category</th>
 <th>Amount</th>
+<th>Total</th>
 </tr>
 <% n =  0 %>
 <% total_amount = 0 %>
@@ -38,6 +39,7 @@
 <td><%= c.get_cat_name %></td>
 <% total_amount += c.amount %>
 <td class="currency"><%= number_to_currency(c.amount) %></td>
+<td class="currency"><%= number_to_currency(total_amount) %></td>
 <% if c.account.nil? %>
 <td></td>
 <% elsif c.trade? %>
@@ -47,14 +49,6 @@
 <% end %>
 </tr>
 <% end %>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td class="currency"><%= number_to_currency total_amount %></td>
-<td></td>
-</tr>
 </table>
 </div>
 <% end %>
