@@ -14,7 +14,6 @@ gem 'mysql2'
 gem 'jquery-rails'
 gem 'prototype-rails'
 
-gem 'devise'
 gem 'best_in_place'
 gem 'dynamic_form'
 gem 'ofx_for_ruby', :github => "pacificbrian/ofx_for_ruby"
@@ -32,7 +31,7 @@ group :assets do
 end
 
 # To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
+gem 'bcrypt-ruby', '~> 3.0.0'
 
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'

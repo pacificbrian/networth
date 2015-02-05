@@ -95,8 +95,8 @@ NwGit::Application.routes.draw do
     get 'refresh', :on => :member
   end
 
-  match "login" => "session#new"
-  match "logout" => "session#destroy"
+  match "login" => "sessions#new"
+  match "logout" => "sessions#destroy"
   match "home" => "users#show"
   match "register" => "users#new"
   match "signup" => "users#new"

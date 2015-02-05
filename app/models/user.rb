@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'digest/sha1'
-
 class User < ActiveRecord::Base
   has_many :user_settings
   has_many :accounts
@@ -59,20 +57,16 @@ class User < ActiveRecord::Base
   validates_presence_of     :login
 # validates_length_of       :login,    :within => 3..40
   validates_uniqueness_of   :login
-# validates_format_of       :login,    :with => Authentication.login_regex, :message => Authentication.bad_login_message
-
-# validates_format_of       :first_name,     :with => Authentication.name_regex,  :message => Authentication.bad_name_message, :allow_nil => true, :allow_blank => true
-# validates_format_of       :last_name,     :with => Authentication.name_regex,  :message => Authentication.bad_name_message, :allow_nil => true, :allow_blank => true
 # validates_length_of       :name, :maximum => 100
 
 # validates_presence_of     :email, :allow_nil => true
 # validates_length_of       :email, :within => 6..100 #r@a.wk
   validates_uniqueness_of   :email, :allow_blank => true
-# validates_format_of       :email, :with => Authentication.email_regex, :message => Authentication.bad_email_message, :allow_blank => true
 
-  attr_accessor :password
-  attr_accessor :password_confirmation
-  attr_accessible :login, :email, :first_name, :last_name, :password, :password_confirmation
+  has_secure_password
+  attr_accessor :old_password
+  attr_accessible :login, :email, :first_name, :last_name, :cashflow_limit
+  attr_accessible :old_password, :password, :password_confirmation
 
   def self.authenticate_current_user(session, user_id)
     current_user = self.find(session[:user_id])
@@ -104,27 +98,24 @@ class User < ActiveRecord::Base
   # Authenticates a user by their login name and unencrypted password.
   # Returns the user or nil.
   def self.authenticate(login, password)
-    #return nil if login.blank? || password.blank?
     return nil if login.blank?
-    if password.blank?
-      password = nil
-    end
     u = find :first, :conditions => ['login = ? and activated_at IS NOT NULL', login]
-    u && u.authenticated?(password) ? u : nil
-  end
-
-  def authenticated?(password)
-    # TODO: replace with encrypted password
-    c_password = password
-    if (self.crypted_password == c_password)
-      return true
+    # allow empty password
+    if password.blank? and u and u.password_digest.nil?
+      return u
     end
-    return false
+    u && u.authenticate(password) ? u : nil
   end
 
-  def encrypt_save(send_code)
-    # TODO: save encrypted password
+  def secured_save(send_code=false)
     self.save
+  end
+
+  def secured_update(params)
+     if self.authenticate(params[:old_password])
+       return self.update_attributes(params)
+     end
+     return false
   end
 
   def login=(value)

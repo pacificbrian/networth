@@ -13,8 +13,12 @@
 <%= f.text_field :email %>
 </fieldset>
 <fieldset>
-<%= label_tag 'password' %>
-<%= f.text_field :password %>
+<%= label_tag 'old_password', 'Old Password' %>
+<%= f.password_field :old_password %></p>
+</fieldset>
+<fieldset>
+<%= label_tag 'password', 'New Password' %>
+<%= f.password_field :password %></p>
 </fieldset>
 <fieldset>
 <%= label_tag 'password_confirmation', 'Confirm Password' %>
