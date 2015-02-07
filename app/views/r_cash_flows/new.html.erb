@@ -16,8 +16,14 @@
 <tr>
 <td>Reoccurance: </td>
 <td><%= f.collection_select :repeat_interval_type_id, @repeat_interval_types, :id, :name %></td>
+</tr>
+<tr>
 <td>Repeats: </td>
 <td><%= f.text_field :repeats_left %></td>
+</tr>
+<tr>
+<td>Rate: </td>
+<td><%= f.text_field :rate %></td>
 </tr>
 </table>
 <table>
