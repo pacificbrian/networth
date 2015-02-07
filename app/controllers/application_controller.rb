@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
   def set_current_user(new_user=nil)
     if session[:user_id].nil? or new_user
       if new_user.nil?
-         uid = GlobalSettings.value_by_name("DefaultUser")
+         uid = GlobalSetting.value_by_name("DefaultUser")
          if uid
            new_user = User.find(uid.to_i)
          end

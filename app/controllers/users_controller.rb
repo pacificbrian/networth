@@ -63,6 +63,7 @@ class UsersController < ApplicationController
   def edit
     uid = params[:id].to_i
     @user = authenticate_user(uid) or return
+    @user.fetch_settings
   end
 
   def update

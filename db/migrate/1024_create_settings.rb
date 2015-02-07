@@ -1,25 +1,30 @@
 class CreateSettings < ActiveRecord::Migration
   def self.up
-    create_table :global_settings do |t|
+    create_table :global_setting do |t|
       t.string :name
       t.decimal "value",   :precision => 12, :scale => 4
     end
 
-    create_table :user_settings do |t|
+    create_table :user_setting do |t|
       t.integer :user_id
       t.string :name
       t.decimal "value",   :precision => 12, :scale => 4
     end
 
-    GlobalSettings.create(:name => 'DefaultUser', :value => 1)
-    UserSettings.create(:name => 'BalancesOnRefresh', :value => 0)
-    UserSettings.create(:name => 'ImportOnRefresh', :value => 0)
-    UserSettings.create(:name => 'SecuritiesOnRefresh', :value => 1)
-    UserSettings.create(:name => 'CashFlowShowLimit', :value => 200)
+    GlobalSetting.create(:name => 'DefaultUser', :value => 1)
+    UserSetting.create(:name => 'CashFlowDisplayLimit', :value => 200)
+    UserSetting.create(:name => 'AccountSecuritiesOnLogin', :value => 1)
+    UserSetting.create(:name => 'BalancesOnLogin', :value => 0)
+    UserSetting.create(:name => 'RefreshOnLogin', :value => 0)
+    UserSetting.create(:name => 'AccountSecuritiesOnRefresh', :value => 1)
+    UserSetting.create(:name => 'BalancesOnRefresh', :value => 0)
+    UserSetting.create(:name => 'ImportOnRefresh', :value => 0)
+    UserSetting.create(:name => 'QuotesOnRefresh', :value => 0)
+    UserSetting.create(:name => 'BalancesOnAccountShow', :value => 0)
   end
 
   def self.down
-    drop_table :global_settings
-    drop_table :user_settings
+    drop_table :global_setting
+    drop_table :user_setting
   end
 end

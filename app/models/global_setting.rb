@@ -1,4 +1,4 @@
-class GlobalSettings < ActiveRecord::Base
+class GlobalSetting < ActiveRecord::Base
   validates_presence_of :name
   validates_presence_of :value
   attr_accessible :name, :value

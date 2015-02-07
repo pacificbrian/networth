@@ -65,8 +65,15 @@ class User < ActiveRecord::Base
 
   has_secure_password
   attr_accessor :old_password
-  attr_accessible :login, :email, :first_name, :last_name, :cashflow_limit
+  attr_accessible :login, :email, :first_name, :last_name
   attr_accessible :old_password, :password, :password_confirmation
+
+  attr_accessor :cashflow_display_limit, :balances_on_refresh, :import_on_refresh
+  attr_accessor :account_securities_on_refresh, :quotes_on_refresh
+  attr_accessor :balances_on_account_show
+  attr_accessible :cashflow_display_limit, :balances_on_refresh, :import_on_refresh
+  attr_accessible :account_securities_on_refresh, :quotes_on_refresh
+  attr_accessible :balances_on_account_show
 
   def self.authenticate_current_user(session, user_id)
     current_user = self.find(session[:user_id])
@@ -112,10 +119,44 @@ class User < ActiveRecord::Base
   end
 
   def secured_update(params)
-     if self.authenticate(params[:old_password])
+     no_password_update = params[:old_password].blank? and params[:password].blank?
+     if no_password_update
+       params.delete("password")
+       params.delete("password_confirmation")
+       return self.update_attributes(params)
+     elsif self.authenticate(params[:old_password])
        return self.update_attributes(params)
      end
      return false
+  end
+
+  def settings_by_name(n)
+    set = user_settings.find_by_name(n)
+    if set
+      return set
+    else
+      set = self.user_settings.find_all_by_name(n)
+      set.delete_if { |s| s.user_id != nil }
+      if not set.empty?
+        return set[0]
+      end
+    end
+    return nil
+  end
+
+  def fetch_settings
+    setting = settings_by_name("CashFlowDisplayLimit");
+    cashflow_display_limit = setting.value if setting
+    setting = settings_by_name("BalancesOnRefresh");
+    balances_on_refresh = setting.value if setting
+    setting = settings_by_name("ImportOnRefresh");
+    import_on_refresh = setting.value if setting
+    setting = settings_by_name("AccountSecuritiesOnRefresh");
+    account_securities_on_refresh = setting.value if setting
+    setting = settings_by_name("QuotesOnRefresh");
+    quotes_on_refresh = setting.value if setting
+    setting = settings_by_name("BalancesOnAccountShow");
+    balances_on_account_show = setting.value if setting
   end
 
   def login=(value)
