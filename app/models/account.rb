@@ -474,7 +474,6 @@ puts "adding ForeignTax cashflow"
       scfs = scfs.take(limit)
     end
 
-
     # TODO - needed for ordered_cash_flows callers (charts)
     calculate_balance = true
     if (!calculate_balance)
@@ -579,6 +578,11 @@ puts "deleting Balances from " + from.to_s
     by_date_range(last, (last - start_date) + 1)
   end
 
+  def balances_for_n_days(days, use_saved_values=true)
+    last = Date.today
+    by_date_range(last, days, nil, use_saved_values)
+  end
+
   def by_date_range(last, days, flags=nil, use_saved_values=true, validate_saved_values=true)
     values = Array.new
     saved_values = Array.new
@@ -610,9 +614,12 @@ puts "AccountBalances had ALL days missing , 0 of " + days.to_s + " days"
         self.write_saved_balances
       else
         #self.write_saved_balances
-        # or more optimal, fetch last value and update since then 
-        update_days = (last - last_in_db.date) + 1
-        # TODO - can be negative if (viewing old year?)?
+        # more optimal than write all, fetch last value and update since then 
+        update_days = (last - last_in_db.date).to_i + 1
+        # negative if viewing old years before Account existed
+        if update_days <= 0
+          return values
+        end
 puts "AccountBalances had ALL days missing, testing prior saved values exist or not.. using " + update_days.to_s + " days"
         # trying to fill in missing dates, incl. prior to requested [last - days]
         saved_values = self.by_date_range(last, update_days)
@@ -625,10 +632,10 @@ puts "AccountBalances had ALL days missing, testing prior saved values exist or 
       days_remaining = days
       before_account_days = 0
     else
-      oldest_in_range = saved_values[0].date
-      before_account_days = oldest_in_range - first
+      earliest_in_range = saved_values[0].date
+      before_account_days = earliest_in_range - first
       if (before_account_days < 0)
-        # ERROR in by_date_range
+        # normal, requesting subset of saved Balances
         before_account_days = 0
       end
 
@@ -637,12 +644,12 @@ puts "AccountBalances had ALL days missing, testing prior saved values exist or 
 puts "AccountBalances is corrupt " + before_account_days.to_s + " lost days, repairing....!"
         self.write_saved_balances(true)
         saved_values = self.account_balances.by_date_range(last, days)
-        oldest_in_range = saved_values[0].date
-        before_account_days = oldest_in_range - first
+        earliest_in_range = saved_values[0].date
+        before_account_days = earliest_in_range - first
       end
-      days_remaining = days - saved_values.size - before_account_days
+      days_remaining = (days - saved_values.size - before_account_days).to_i
     end
-puts "AccountBalances had " + before_account_days.to_s + " days defunct, " + saved_values.size.to_s + " of " + days.to_s + " days"
+puts "AccountBalances had " + before_account_days.to_i.to_s + " days defunct, " + saved_values.size.to_s + " of " + days.to_s + " days, need " + days_remaining.to_s + " days"
 
     if days_remaining <= 0
       # just return saved_values[].balance
