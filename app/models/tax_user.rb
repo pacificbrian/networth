@@ -48,9 +48,15 @@ class TaxUser < ActiveRecord::Base
   end
 
   def calculate_tax(income)
+    calc_capgain_tax = false
     t = 0
     tc = TaxConstant.find(1)
     ty = TaxYear.find_by_year(year)
+
+    if has_attribute?(:long_capgain_income) and long_capgain_income
+      calc_capgain_tax = true
+      income -= long_capgain_income
+    end
 
     tax_income_l1 = ty.tax_income_l1_from_filing_status(filing_status)
     tax_income_l2 = ty.tax_income_l2_from_filing_status(filing_status)
@@ -96,6 +102,10 @@ class TaxUser < ActiveRecord::Base
       end
     end
 
+    if calc_capgain_tax
+      t += long_capgain_income * tc.capgain_rate
+    end
+
     if (income < tc.tax_table_max)
       t = t.round
     end
@@ -122,14 +132,28 @@ class TaxUser < ActiveRecord::Base
     return total
   end
 
-  def self.calculate_by_year(year)
-    r = TaxUser.new
-    r.user_id = 1
-    r.filing_status = 2
-    r.exemptions = 2
-    r.calculate_by_year(year)
-    r.save
-    return r
+  def long_capgains_by_year(year, dividends)
+    tax = user.taxes.new
+    items = tax.taxes_by_year(year, true, nil, TaxItem.find_by_name("Capital Gain").id)
+    capgain = sum(items)
+
+    items = tax.taxes_by_year(year, false, nil, TaxItem.find_by_name("Long Asset Gain").id)
+    items += tax.taxes_by_year(year, false, nil, TaxItem.find_by_name("Long Other").id)
+    items += tax.taxes_by_year(year, false, nil, TaxItem.find_by_name("Long Carryover").id)
+    items += tax.taxes_by_year(year, false, nil, TaxItem.find_by_name("Long K1").id)
+    items += tax.taxes_by_year(year, false, nil, TaxItem.find_by_name("Long Distributions").id)
+    lcapgain = sum(items) + dividends
+
+    scapgain = capgain - lcapgain
+    if scapgain < 0
+      net = capgain
+    else
+      net = lcapgain
+    end
+    if net < 0
+      net = 0
+    end
+    return net
   end
 
   def calculate_by_year(year)
@@ -147,8 +171,11 @@ class TaxUser < ActiveRecord::Base
     items = tax.taxes_by_year(year, true, TaxType.find_by_name("Income").id)
     r.income = sum(items)
     items = tax.taxes_by_year(year, false, nil, TaxItem.find_by_name("Qualified Dividends").id)
-    qualified_div = sum(items)
-    r.income -= qualified_div
+    qual_div_income = sum(items)
+    r.income -= qual_div_income # double-counted, so remove from Income
+    if r.has_attribute?(:long_capgain_income)
+      r.long_capgain_income = long_capgains_by_year(year, qual_div_income)
+    end
     items = tax.taxes_by_year(year, true, TaxType.find_by_name("Deductions for AGI").id)
     r.for_agi = sum(items)
     items = tax.taxes_by_year(year, true, TaxType.find_by_name("Tax Credits").id)
@@ -188,12 +215,7 @@ class TaxUser < ActiveRecord::Base
     # TODO - support saved tax
     need_base_tax = 1
     if need_base_tax
-      if (qualified_div && qualified_div > 0)
-        r.base_tax = r.calculate_tax(r.taxable_income - qualified_div)
-        r.base_tax += qualified_div * 0.15
-      else
-        r.base_tax = r.calculate_tax(r.taxable_income)
-      end
+      r.base_tax = r.calculate_tax(r.taxable_income)
     end
 
     r.owed_tax = r.base_tax + r.other_tax - r.credits

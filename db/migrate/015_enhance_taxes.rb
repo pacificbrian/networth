@@ -18,6 +18,8 @@ class EnhanceTaxes < ActiveRecord::Migration
       t.integer :exemption_mid_amount_hh
       t.decimal :exemption_mid_rate, :precision => 12, :scale => 4
 
+      t.decimal :capgain_rate, :precision => 12, :scale => 4
+      t.decimal :capgain_ti_rate, :precision => 12, :scale => 4
       t.decimal :capgain_collectible_rate, :precision => 12, :scale => 4
       t.decimal :capgain_unrecaptured_rate, :precision => 12, :scale => 4
 
@@ -141,6 +143,7 @@ class EnhanceTaxes < ActiveRecord::Migration
       t.decimal :other_tax, :precision => 16, :scale => 4
       t.decimal :owed_tax, :precision => 16, :scale => 4
       t.decimal :unpaid_tax, :precision => 16, :scale => 4
+      t.decimal :long_capgain_income, :precision => 16, :scale => 4
     end
   end
 

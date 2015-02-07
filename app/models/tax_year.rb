@@ -20,24 +20,100 @@ class TaxYear < ActiveRecord::Base
   attr_accessible :year
 
   def standard_deduction_from_filing_status(status)
+    tfs = TaxFilingStatus.find(status)
+    case tfs.label
+    when 'S'
+    standard_deduction_s
+    when 'MFJ'
     standard_deduction_mfj
+    when 'MFS'
+    standard_deduction_mfs
+    when 'HH'
+    standard_deduction_hh
+    end
   end
+
   def tax_income_l1_from_filing_status(status)
+    tfs = TaxFilingStatus.find(status)
+    case tfs.label
+    when 'S'
+    tax_income_l1_s
+    when 'MFJ'
     tax_income_l1_mfj
+    when 'MFS'
+    tax_income_l1_mfs
+    when 'HH'
+    tax_income_l1_hh
+    end
   end
+
   def tax_income_l2_from_filing_status(status)
+    tfs = TaxFilingStatus.find(status)
+    case tfs.label
+    when 'S'
+    tax_income_l2_s
+    when 'MFJ'
     tax_income_l2_mfj
+    when 'MFS'
+    tax_income_l2_mfs
+    when 'HH'
+    tax_income_l2_hh
+    end
   end
+
   def tax_income_l3_from_filing_status(status)
+    tfs = TaxFilingStatus.find(status)
+    case tfs.label
+    when 'S'
+    tax_income_l3_s
+    when 'MFJ'
     tax_income_l3_mfj
+    when 'MFS'
+    tax_income_l3_mfs
+    when 'HH'
+    tax_income_l3_hh
+    end
   end
+
   def tax_income_l4_from_filing_status(status)
+    tfs = TaxFilingStatus.find(status)
+    case tfs.label
+    when 'S'
+    tax_income_l4_s
+    when 'MFJ'
     tax_income_l4_mfj
+    when 'MFS'
+    tax_income_l4_mfs
+    when 'HH'
+    tax_income_l4_hh
+    end
   end
+
   def tax_income_l5_from_filing_status(status)
+    tfs = TaxFilingStatus.find(status)
+    case tfs.label
+    when 'S'
+    tax_income_l5_s
+    when 'MFJ'
     tax_income_l5_mfj
+    when 'MFS'
+    tax_income_l5_mfs
+    when 'HH'
+    tax_income_l5_hh
+    end
   end
+
   def tax_income_l6_from_filing_status(status)
+    tfs = TaxFilingStatus.find(status)
+    case tfs.label
+    when 'S'
+    tax_income_l6_s
+    when 'MFJ'
     tax_income_l6_mfj
+    when 'MFS'
+    tax_income_l6_mfs
+    when 'HH'
+    tax_income_l6_hh
+    end
   end
 end

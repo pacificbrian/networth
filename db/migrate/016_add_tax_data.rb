@@ -14,6 +14,7 @@ class AddTaxData < ActiveRecord::Migration
     tc.exemption_mid_amount_mfj = 2500
     tc.exemption_mid_amount_hh = 2500
     tc.exemption_mid_rate = 0.02
+    tc.capgain_rate = 0.15
     tc.capgain_collectible_rate = 0.28
     tc.capgain_unrecaptured_rate = 0.25
     tc.caploss_limit_s = 3000
