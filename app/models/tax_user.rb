@@ -47,6 +47,23 @@ class TaxUser < ActiveRecord::Base
     return income * 0.15
   end
 
+  def self.calculate_tax(year, status, taxable_income, capgain_income=nil)
+    tu = TaxUser.new
+    tu.year = year
+
+    tfs = TaxFilingStatus.find_by_label(status)
+    if tfs.nil?
+      return
+    end
+    tu.filing_status = tfs.id if tfs
+
+    if tu.has_attribute?(:long_capgain_income)
+      tu.long_capgain_income = capgain_income
+    end
+
+    tu.calculate_tax(taxable_income)
+  end
+
   def calculate_tax(income)
     calc_capgain_tax = false
     t = 0
