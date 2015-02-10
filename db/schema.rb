@@ -264,6 +264,8 @@ ActiveRecord::Schema.define(:version => 1024) do
     t.integer "exemption_mid_amount_mfj"
     t.integer "exemption_mid_amount_hh"
     t.decimal "exemption_mid_rate",        :precision => 12, :scale => 4
+    t.decimal "capgain_rate",              :precision => 12, :scale => 4
+    t.decimal "capgain_ti_rate",           :precision => 12, :scale => 4
     t.decimal "capgain_collectible_rate",  :precision => 12, :scale => 4
     t.decimal "capgain_unrecaptured_rate", :precision => 12, :scale => 4
     t.integer "caploss_limit_s"
@@ -326,20 +328,21 @@ ActiveRecord::Schema.define(:version => 1024) do
     t.integer "year"
     t.integer "filing_status"
     t.integer "exemptions"
-    t.decimal "income",             :precision => 16, :scale => 4
-    t.decimal "agi_income",         :precision => 16, :scale => 4
-    t.decimal "taxable_income",     :precision => 16, :scale => 4
-    t.decimal "for_agi",            :precision => 16, :scale => 4
-    t.decimal "from_agi",           :precision => 16, :scale => 4
-    t.decimal "standard_deduction", :precision => 16, :scale => 4
-    t.decimal "itemized_deduction", :precision => 16, :scale => 4
-    t.decimal "exemption",          :precision => 16, :scale => 4
-    t.decimal "credits",            :precision => 16, :scale => 4
-    t.decimal "payments",           :precision => 16, :scale => 4
-    t.decimal "base_tax",           :precision => 16, :scale => 4
-    t.decimal "other_tax",          :precision => 16, :scale => 4
-    t.decimal "owed_tax",           :precision => 16, :scale => 4
-    t.decimal "unpaid_tax",         :precision => 16, :scale => 4
+    t.decimal "income",              :precision => 16, :scale => 4
+    t.decimal "agi_income",          :precision => 16, :scale => 4
+    t.decimal "taxable_income",      :precision => 16, :scale => 4
+    t.decimal "for_agi",             :precision => 16, :scale => 4
+    t.decimal "from_agi",            :precision => 16, :scale => 4
+    t.decimal "standard_deduction",  :precision => 16, :scale => 4
+    t.decimal "itemized_deduction",  :precision => 16, :scale => 4
+    t.decimal "exemption",           :precision => 16, :scale => 4
+    t.decimal "credits",             :precision => 16, :scale => 4
+    t.decimal "payments",            :precision => 16, :scale => 4
+    t.decimal "base_tax",            :precision => 16, :scale => 4
+    t.decimal "other_tax",           :precision => 16, :scale => 4
+    t.decimal "owed_tax",            :precision => 16, :scale => 4
+    t.decimal "unpaid_tax",          :precision => 16, :scale => 4
+    t.decimal "long_capgain_income", :precision => 16, :scale => 4
   end
 
   add_index "tax_users", ["user_id"], :name => "index_tax_users_on_user_id"
@@ -461,8 +464,8 @@ ActiveRecord::Schema.define(:version => 1024) do
     t.string   "email"
     t.string   "first_name",                :limit => 80
     t.string   "last_name",                 :limit => 80
-    t.string   "crypted_password",          :limit => 40
-    t.string   "salt",                      :limit => 40
+    t.string   "password_digest",           :limit => 80
+    t.string   "salt",                      :limit => 80
     t.string   "remember_token",            :limit => 40
     t.datetime "remember_token_expires_at"
     t.string   "activation_code",           :limit => 40

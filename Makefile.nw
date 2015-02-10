@@ -35,6 +35,9 @@ db_clear:
 db_load:
 	rake db:schema:load
 
+db_save:
+	rake db:schema:dump
+
 db_reset:
 	rake db:migrate:reset
 
