@@ -7,4 +7,9 @@ module ApplicationHelper
     return sum
   end   
 
+  def sum_gain(a)
+    sum = 0
+    a.each {|v| sum += v.gain }
+    return sum
+  end
 end

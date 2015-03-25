@@ -14,7 +14,7 @@
 <td align="right"><%= s.shares %></td>
 <td align="right"><%= number_to_currency s.price %></td>
 <td align="right"><%= number_to_currency s.value %></td>
-<td align="right"><%= s.get_simple_roc %>%</td>
+<td align="right"><%= s.return_total %>%</td>
 <td><%= link_to 'Edit', edit_security_path(s) %></td>
 <td><%= link_to 'Alert', new_security_security_alert_path(s) %></td>
 </tr>
@@ -35,7 +35,7 @@
 <td align="right"><%= s.shares %></td>
 <td align="right"><%= number_to_currency s.price %></td>
 <td align="right"><%= number_to_currency s.value %></td>
-<td align="right"><%= s.get_simple_roc %>%</td>
+<td align="right"><%= s.return_total %>%</td>
 <td><%= link_to 'Edit', edit_security_path(s) %></td>
 <td><%= link_to 'Alert', new_security_security_alert_path(s) %></td>
 </tr>

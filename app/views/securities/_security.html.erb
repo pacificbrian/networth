@@ -9,7 +9,8 @@
 <th>Avg. Price</th>
 <th>Value</th>
 <th>Basis</th>
-<th>ROC</th>
+<th>Vested ROC</th>
+<th>Total ROC</th>
 <th></th>
 <th></th>
 <% for s in securities %>
@@ -23,6 +24,7 @@
 <td class="currency"><%= number_to_currency(s.value) %></td>
 <td class="currency"><%= number_to_currency(s.basis) %></td>
 <td class ="percentage"><%= s.return_simple %>%</td>
+<td class ="percentage"><%= s.return_total %>%</td>
 <td><%= link_to 'Info', account_security_path(account, s) %></td>
 <td><%= link_to 'Alert', new_security_security_alert_path(s) %></td>
 </tr>
@@ -37,6 +39,7 @@
 <td class="currency"><%= number_to_currency(account.portfolio.value) %></td>
 <td class="currency"><%= number_to_currency(account.portfolio.basis) %></td>
 <td class="percentage"><%= account.portfolio.return_simple %>%</td>
+<td class="percentage"><%= account.portfolio.return_total %>%</td>
 <td></td>
 <td></td>
 </tr>

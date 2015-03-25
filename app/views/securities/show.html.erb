@@ -3,7 +3,7 @@
 <br>Type: <%= @security.security_type.name %>
 <br>Basis: <%= number_to_currency(@security.basis) %>
 <br>Value: <%= number_to_currency(@security.value) %>
-<br>Return: <%= @security.get_simple_roc %>%
+<br>Return: <%= @security.return_total %>%
 
 <p>
 <div id="trades">

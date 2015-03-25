@@ -225,7 +225,7 @@ class User < ActiveRecord::Base
 
   def ordered_gains(year, type_id=nil, account=nil, use_tax_year=false)
     trades = ordered_trades(year, type_id, account, use_tax_year)
-    trades.delete_if { |t| !(t.income? || t.sell?)  }
+    trades = trades.select { |t| (t.income? || t.sell?) }
     trades.each do |t|
         t.set_gain
     end

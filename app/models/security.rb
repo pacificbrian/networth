@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class Security < ActiveRecord::Base
+  include ApplicationHelper
   belongs_to :account
   belongs_to :security_type
   belongs_to :security_basis_type
@@ -47,8 +48,16 @@ class Security < ActiveRecord::Base
     company.name
   end
 
+  def income_trades
+    trades.select { |t| t.income? }
+  end
+
+  def income_sum
+    sum_amount(income_trades)
+  end
+
   def sell_trades
-    trades.delete_if { |t| !t.sell? }
+    trades.select { |t| t.sell? }
   end
 
   def trade_gains
@@ -59,6 +68,10 @@ class Security < ActiveRecord::Base
       gains.concat TradeGain.find_all_by_sell_id(s.id)
     end
     return gains
+  end
+
+  def gain_sum
+    sum_gain(trade_gains)
   end
 
   def is_stock?
@@ -167,7 +180,7 @@ class Security < ActiveRecord::Base
 
   def active_buy_trades
     results = active_trades
-    results.delete_if { |t| !t.buy? }
+    results.select { |t| t.buy? }
     return results
   end
 
@@ -360,16 +373,19 @@ puts "updating Security:"+self.company.symbol+" from quotes"
     return value
   end
 
-  def get_simple_roc
-    self.return_simple
-  end
-
-  def return_simple
+  def return_simple(with_income=false, with_gains=false)
     if (self.basis.zero?)
       return 0
     end
-    v = ((self.value - self.basis) / self.basis) * 100
-    ((v * 100).round)/100
+    v = self.value
+    v = v + self.income_sum if with_income
+    v = v + self.gain_sum if with_gains
+    r = ((v - self.basis) / self.basis) * 100
+    ((r * 100).round)/100
+  end
+
+  def return_total
+    self.return_simple(true, true)
   end
 
   def days

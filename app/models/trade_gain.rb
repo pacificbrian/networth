@@ -45,8 +45,17 @@ class TradeGain < ActiveRecord::Base
     return buy.amount_ps * shares_sold
   end
 
-  def amount
+  def sell_amount
     return (sell.amount/sell.shares) * shares_sold
+  end
+
+  def gain
+    return sell_amount - basis
+  end
+
+  # TODO: is this used? should call gain?
+  def amount
+    sell_amount
   end
 
   #

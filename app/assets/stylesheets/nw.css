@@ -201,7 +201,7 @@ div.dynamic {
 table.standard, table.ledger {
   border-collapse: collapse;
   border: 4px solid #e5e5e5;
-  max-width: 680px;
+  max-width: 720px;
 }
 
 .dynamic table.ledger {
