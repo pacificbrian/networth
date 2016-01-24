@@ -1,11 +1,11 @@
 class CreateSettings < ActiveRecord::Migration
   def self.up
-    create_table :global_setting do |t|
+    create_table :global_settings do |t|
       t.string :name
       t.decimal "value",   :precision => 12, :scale => 4
     end
 
-    create_table :user_setting do |t|
+    create_table :user_settings do |t|
       t.integer :user_id
       t.string :name
       t.decimal "value",   :precision => 12, :scale => 4
@@ -24,7 +24,7 @@ class CreateSettings < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :global_setting
-    drop_table :user_setting
+    drop_table :global_settings
+    drop_table :user_settings
   end
 end
