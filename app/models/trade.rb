@@ -48,6 +48,13 @@ class Trade < ActiveRecord::Base
     if params[:tax_year].nil?
       params[:tax_year] = params['date(1i)'];
     end
+    if params[:shares].empty?
+      params[:shares] = "0"
+    end
+    if params[:shares].to_f.zero?
+      params[:price] = "0"
+      params[:basis] = "0"
+    end
     if params[:price].empty?
       p = params[:amount].to_f / params[:shares].to_f
       params[:price] = p.round(2).to_s
