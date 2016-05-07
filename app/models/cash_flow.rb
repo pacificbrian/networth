@@ -735,6 +735,14 @@ puts "processing Scheduled CF for Payee " + rcf.get_payee_name
   # for 'fixing' DB
   #
 
+  def revert
+    amount = self.amount
+    account.balance -= amount
+    account.cash_balance -= amount
+    account.save
+    self.destroy
+  end
+
   def self.destroy_split_from(id)
     if (CashFlow.find_by_id(id))
       return nil
