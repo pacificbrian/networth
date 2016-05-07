@@ -71,7 +71,7 @@
 <% for t in @taxes %>
 <tr>
 <td><%= t.year.year %></td>
-<td><%= t.tax_region.name %></td>
+<td><%= t.tax_region_name %></td>
 <% if @year %>
 <td><%= link_to t.tax_type.name, year_tax_type_path(@year, t.tax_type) %></td>
 <% if @account %>

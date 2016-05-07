@@ -130,6 +130,7 @@ class TaxUser < ActiveRecord::Base
   end
 
   def sum(items)
+    items.delete_if { |i| i.tax_region_id != self.tax_region_id }
     a = items.map { |i| i.amount }
     return a.sum
   end
@@ -149,9 +150,9 @@ class TaxUser < ActiveRecord::Base
     return total
   end
 
-  def long_capgains_by_year(year, dividends)
+  def long_capgains_by_year(year, region_id, dividends)
     tax = user.taxes.new
-    items = tax.taxes_by_year(year, true, nil, TaxItem.find_by_name("Capital Gain").id)
+    items = tax.taxes_by_year(year, region_id, nil, TaxItem.find_by_name("Capital Gain").id)
     capgain = sum(items)
 
     items = tax.taxes_by_year(year, false, nil, TaxItem.find_by_name("Long Asset Gain").id)
@@ -183,25 +184,25 @@ class TaxUser < ActiveRecord::Base
 
     tax = user.taxes.new
 
-    r.tax_region_id = 1
+    #r.tax_region_id = 1
     r.year = year
-    items = tax.taxes_by_year(year, true, TaxType.find_by_name("Income").id)
+    items = tax.taxes_by_year(year, r.tax_region_id, TaxType.find_by_name("Income").id)
     r.income = sum(items)
     items = tax.taxes_by_year(year, false, nil, TaxItem.find_by_name("Qualified Dividends").id)
     qual_div_income = sum(items)
     r.income -= qual_div_income # double-counted, so remove from Income
     if r.has_attribute?(:long_capgain_income)
-      r.long_capgain_income = long_capgains_by_year(year, qual_div_income)
+      r.long_capgain_income = long_capgains_by_year(year, r.tax_region_id, qual_div_income)
     end
-    items = tax.taxes_by_year(year, true, TaxType.find_by_name("Deductions for AGI").id)
+    items = tax.taxes_by_year(year, r.tax_region_id, TaxType.find_by_name("Deductions for AGI").id)
     r.for_agi = sum(items)
-    items = tax.taxes_by_year(year, true, TaxType.find_by_name("Tax Credits").id)
+    items = tax.taxes_by_year(year, r.tax_region_id, TaxType.find_by_name("Tax Credits").id)
     r.credits = sum(items)
-    items = tax.taxes_by_year(year, true, TaxType.find_by_name("Tax Payments").id)
+    items = tax.taxes_by_year(year, r.tax_region_id, TaxType.find_by_name("Tax Payments").id)
     r.payments = sum(items)
-    items = tax.taxes_by_year(year, true, TaxType.find_by_name("Tax").id)
+    items = tax.taxes_by_year(year, r.tax_region_id, TaxType.find_by_name("Tax").id)
     r.other_tax = sum(items)
-    items = tax.taxes_by_year(year, true, TaxType.find_by_name("Itemized Deductions").id)
+    items = tax.taxes_by_year(year, r.tax_region_id, TaxType.find_by_name("Itemized Deductions").id)
     r.itemized_deduction = sum(items)
 
     # handled in TaxItems.auto_tax
@@ -211,7 +212,7 @@ class TaxUser < ActiveRecord::Base
 
     r.exemption = t_info.exemptions * t_year.exemption_amount
     r.standard_deduction = t_year.standard_deduction_from_filing_status(r.filing_status) + 0
-    items = tax.taxes_by_year(year, true, TaxType.find_by_name("Deductions from AGI").id)
+    items = tax.taxes_by_year(year, r.tax_region_id, TaxType.find_by_name("Deductions from AGI").id)
     if items.empty?
       r.from_agi = [r.standard_deduction, r.itemized_deduction].max + r.exemption
     else

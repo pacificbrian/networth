@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class TaxItem < ActiveRecord::Base
+  belongs_to :tax_type
   has_many :tax_categories
   #has_many :categories, :through => :tax_categories
   #has_many :cash_flows, :through => :categories
@@ -38,7 +39,7 @@ class TaxItem < ActiveRecord::Base
     return true if name == "Capital Gain"
   end
 
-  def auto_tax(user, year, account=nil)
+  def auto_tax(user, year, tax_region_id=nil, account=nil)
     new_tax = nil
 
     unless year
@@ -52,16 +53,18 @@ class TaxItem < ActiveRecord::Base
       new_tax = user.taxes.new
       new_tax.tax_type_id = tax_type_id
       new_tax.tax_item_id = id
-      new_tax.tax_region_id = 1
+      if tax_region_id
+        new_tax.tax_region_id = tax_region_id
+      else
+        new_tax.tax_region_id = 0 # print as 'ANY'
+      end
       new_tax.year = d1
       new_tax_amount = 0
 
       ti_cf.each do |t|
+        # for some TaxTypes, reverse debits to credits
         if (new_tax.tax_type.negative_auto_values?)
-          # only accept negative values, and convert
-          if (t.amount < 0)
-            new_tax_amount += (t.amount * -1)
-          end
+          new_tax_amount += (t.amount * -1)
         else
           new_tax_amount += t.amount
         end
@@ -85,10 +88,14 @@ class TaxItem < ActiveRecord::Base
       tax_array.each do |t|
         new_cf = user.cash_flows.new
         new_cf.date = Date.new(t.year.year, 12, 31)
-        new_cf.amount = t.amount
+        if (t.tax_type.negative_auto_values?)
+          new_cf.amount = t.amount * -1
+        else
+          new_cf.amount = t.amount
+        end
         new_cf.memo = t.memo
         new_cf.payee_name = "User Tax Item"
-        new_cf.category_id = tax_categories[0].category_id
+        new_cf.category_id = tax_categories[0].category_id if tax_categories[0]
         cfs.push new_cf
       end
     end
@@ -109,13 +116,19 @@ class TaxItem < ActiveRecord::Base
         end
 
         if year
-          cfs.concat c_array.find :all, 
+          sub_cf = c_array.find :all,
                            :conditions => [ 'category_id = ? AND tax_year = ?',
                                             tc.category_id, year.to_i ]
         else
-          cfs.concat c_array.find :all, 
+          sub_cf = c_array.find :all,
                            :conditions => [ 'category_id = ?', tc.category_id ]
         end
+
+        # only accept negative values for reversed TaxTypes
+        if (tax_type.negative_auto_values?)
+          sub_cf.delete_if { |cf| cf.amount >= 0 }
+        end
+        cfs.concat sub_cf
       end
     end
 

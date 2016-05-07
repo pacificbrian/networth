@@ -49,15 +49,15 @@
 <% for g in @gains %>
 <tr>
 <td><%= g.buy.date %></td>
-<td><%= g.get_shares %></td>
+<td><%= g.shares_sold %></td>
 <% tot_a += g.amount %>
 <% tot_b += g.basis %>
 <td class="currency"><%= number_to_currency(@trade.price) %></td>
 <td class="currency"><%= number_to_currency(g.amount) %></td>
 <td class="currency"><%= number_to_currency(g.basis) %></td>
-<td class="currency"><%= number_to_currency(g.basis / g.get_shares) %></td>
+<td class="currency"><%= number_to_currency(g.basis / g.shares_sold) %></td>
 <td class="currency"><%= number_to_currency(g.amount - g.basis) %></td>
-<td class="currency"><%= number_to_currency((g.amount - g.basis) / g.get_shares) %></td>
+<td class="currency"><%= number_to_currency((g.amount - g.basis) / g.shares_sold) %></td>
 </tr>
 <% end %>
 <tr>

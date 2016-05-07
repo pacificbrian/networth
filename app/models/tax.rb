@@ -28,7 +28,7 @@ class Tax < ActiveRecord::Base
     amount + obj.amount
   end
 
-  def self.auto_tax(user, year, type_id=nil, account=nil)
+  def self.auto_tax(user, year, tax_region_id=nil, type_id=nil, account=nil)
     taxes = Array.new
     if year.nil?
       return taxes
@@ -38,7 +38,7 @@ class Tax < ActiveRecord::Base
     tax_items.each do |ti|
       tax = nil
       if !type_id || (type_id == ti.tax_type_id)
-        tax = ti.auto_tax(user, year, account)
+        tax = ti.auto_tax(user, year, tax_region_id, account)
       end
 
       if tax
@@ -51,14 +51,14 @@ class Tax < ActiveRecord::Base
   def self.taxes_by_year(user, year, auto_taxes=false, type_id=nil, item_id=nil)
     taxes = Array.new
     if auto_taxes
-      taxes.concat self.auto_tax(user, year, type_id)
+      taxes.concat self.auto_tax(user, year, auto_taxes, type_id)
     end
     taxes.concat user.taxes_by_year(year, type_id, item_id)
     return taxes
   end
 
   def auto_tax(year, type_id=nil, account=nil)
-    Tax.auto_tax(user, year, type_id, account)
+    Tax.auto_tax(user, year, false, type_id, account)
   end
 
   def taxes_by_year(year, auto_taxes=false, type_id=nil, item_id=nil)
@@ -71,5 +71,13 @@ class Tax < ActiveRecord::Base
     end
     cfs = tax_item.cash_flows_by_year(user, year)
     return cfs.sort_by { |cf| cf.date.jd }
+  end
+
+  def tax_region_name
+    if tax_region_id == 0
+      "ANY"
+    else
+      tax_region.name
+    end
   end
 end
