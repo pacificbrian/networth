@@ -70,17 +70,22 @@ class Qif < ActiveRecord::Base
         if account.payee_length
           limit = account.payee_length - 1
           cf.payee_name = col.slice!(0..limit).strip.squeeze(" ")
+          col = col.strip.squeeze(" ")
         else
-          cf.payee_name = col.strip.squeeze(" ")
+          col = col.strip.squeeze(" ")
+          cf.payee_name = col
         end
-        if !col.strip.empty?
-          cf.payee_address = col.strip.squeeze(" ")
+        if !col.empty?
+          cf.payee_address = col
         end
       when 'A'
         if !col.strip.empty?
           cf.payee_address = col.strip.squeeze(" ")
-          #cf.payee_name.slice!(cf.payee_address)
-          #cf.payee_name.strip!
+          if not account.payee_length
+            # prune address from payee name
+            cf.payee_name.chomp!(cf.payee_address)
+            cf.payee_name.strip!
+          end
         end
       when Qif.memo_field(account)
         if !col.nil?

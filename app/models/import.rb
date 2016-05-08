@@ -38,15 +38,18 @@ class Import < ActiveRecord::Base
       c.amount = t.amount
       c.date = t.date_posted
       c.tax_year = c.date.year
+
       p = t.payee
       if account.payee_length
         limit = account.payee_length - 1
         c.payee_name = p.slice!(0..limit).strip.squeeze(" ")
+        p = p.strip.squeeze(" ")
       else
-        c.payee_name = p.strip.squeeze(" ")
+        p = p.strip.squeeze(" ")
+        c.payee_name = p
       end
-      if !p.strip.empty?
-        c.payee_address = p.strip.squeeze(" ")
+      if !p.empty?
+        c.payee_address = p
       end
       c.memo = t.memo
 
