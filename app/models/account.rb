@@ -950,7 +950,7 @@ puts "computing balances for Account for days_remaining " + days_remaining.to_s
     end
   end
 
-  def import_ofx_with_cred(user_name=nil, passwd=nil)
+  def ofx_recent_trans(user_name=nil, passwd=nil, days=nil)
     i = Import.new
     if user_name.nil?
       user_name = self.ofx_login
@@ -961,8 +961,21 @@ puts "computing balances for Account for days_remaining " + days_remaining.to_s
     if user_name.nil? or passwd.nil?
       return i
     end
-    trans = i.send_ofx_request(self, user_name, passwd, nil)
-    import_ofx(trans)
+
+    date_range = nil
+    if days
+      date_range = ((Date.today - days).to_date..Date.today.to_date)
+    end
+    trans = i.send_ofx_request(self, user_name, passwd, date_range)
+  end
+
+  def import_ofx_with_cred(user_name=nil, passwd=nil, days=nil)
+    trans = ofx_recent_trans(user_name, passwd)
+    if trans.empty?
+      nil
+    else
+      import_ofx(trans)
+    end
   end
 
   def show_transfers_sum?
