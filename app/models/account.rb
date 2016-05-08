@@ -338,7 +338,7 @@ puts "adding ForeignTax cashflow"
   end
 
   def last_cashflow
-    cfs = cash_flows.ordered_by_date(60, false)
+    cfs = cash_flows.ordered_by_date(180, false)
     cfs.delete_if { |cf| cf.from_repeat? }
     if cfs
       return cfs[0]
@@ -970,7 +970,14 @@ puts "computing balances for Account for days_remaining " + days_remaining.to_s
   end
 
   def import_ofx_with_cred(user_name=nil, passwd=nil, days=nil)
-    trans = ofx_recent_trans(user_name, passwd)
+    if not days
+      last = last_cashflow
+      if last
+        days = (Date.today - last.date).to_i + 1
+      end
+    end
+
+    trans = ofx_recent_trans(user_name, passwd, days)
     if trans.empty?
       nil
     else
