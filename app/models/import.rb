@@ -89,8 +89,9 @@ class Import < ActiveRecord::Base
     institution = OFX::FinancialInstitution.get_institution(ofx_name)
     return trans if institution.nil? or not account.credit?
     
-    institution.set_client(user_name, password)
-    acc_number = institution.get_account_id
+    institution.set_client(user_name, password,
+			   account.institution.client_uid)
+    acc_number = institution.get_account_id(account.ofx_index)
 
     if acc_number
         acc_has_trans = true
