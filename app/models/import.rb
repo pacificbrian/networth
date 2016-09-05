@@ -103,4 +103,10 @@ class Import < ActiveRecord::Base
     end
     return trans
   end
+
+  def delete_cashflows
+    self.cash_flows.each do |cf|
+      cf.remove_from_account
+    end
+  end
 end
