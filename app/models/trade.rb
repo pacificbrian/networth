@@ -141,12 +141,16 @@ class Trade < ActiveRecord::Base
     if b.nil?
       b = basis
     end
-    return b
 
-    # or avoid nil return?
-    if b.nil?
-      b = 0
+    if buy?
+      if not closed and (b.nil? or basis.zero?)
+        b = nil
+      end
+    elsif dividend?
+      b = nil
     end
+
+    # can be nil and will not print in View
     return b
   end
 
@@ -292,9 +296,13 @@ class Trade < ActiveRecord::Base
     gains = TradeGain.find_all_by_sell_id(id)
     gains.each do |tg|
       buy = Trade.find(tg.buy_id)
-      buy.closed = false
-      buy.basis -= tg.basis
-      buy.save
+      if buy.buy?
+        buy.closed = false
+        if buy.basis and not buy.basis.zero?
+          buy.basis -= tg.basis
+        end
+        buy.save
+      end
       tg.destroy
     end
   end

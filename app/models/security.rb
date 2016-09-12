@@ -180,7 +180,7 @@ class Security < ActiveRecord::Base
 
   def active_buy_trades
     results = active_trades
-    results.select { |t| t.buy? }
+    results.delete_if { |t| !t.buy? }
     return results
   end
 
@@ -256,6 +256,29 @@ class Security < ActiveRecord::Base
     if (forced or Trade.requires_parent_update(old_trade, new_trade))
       self.sub_trade(old_trade, new_trade)
       self.add_trade(new_trade)
+    end
+  end
+
+  # Helper function to move Trade to different Security within same Account
+  # can use if Import makes new Security by mistake
+  def move_trade(trade_id)
+    _trade = Trade.find(trade_id)
+    if not _trade
+      return nil
+    end
+
+    old_s = _trade.security
+    if old_s.account_id != self.account_id
+      return nil
+    end
+
+    old_s.sub_trade(_trade)
+    _trade.security_id = self.id
+    _trade.save
+    self.add_trade(_trade)
+
+    if old_s.shares.zero?
+      old_s.destroy
     end
   end
 
@@ -339,7 +362,19 @@ class Security < ActiveRecord::Base
     SecurityValue.save_values(self, values)
   end
 
+  def latest_trade_with_price
+    ts = trades.desc_ordered_by_date
+    if not ts.empty?
+      t = ts[0]
+      if t.price and not t.price.zero?
+        return t
+      end
+    end
+    return nil
+  end
+
   def update_value(fetch=false)
+    old_value = self.value
     q = Quote.current_from_security(self,fetch)
     if (q)
       quote_date = q.get_date
@@ -362,15 +397,18 @@ class Security < ActiveRecord::Base
       else
         self.value = self.shares * q.adjclose
       end
-      self.save
-
-      if (old_value != self.value)
-puts "updating Security:"+self.company.symbol+" from quotes"
-        self.account.balance += (self.value - old_value)
-        self.account.save
-      end
+    elsif latest_trade_with_price
+      t = latest_trade_with_price
+      self.value = self.shares * t.price
     end
-    return value
+
+    if (old_value != self.value)
+      self.save
+puts "updating Security:"+self.company.name+" from latest Quote or Trade"
+      self.account.balance += (self.value - old_value)
+      self.account.save
+    end
+    return self.value
   end
 
   def return_simple(with_income=false, with_gains=false)
