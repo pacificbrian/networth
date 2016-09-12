@@ -124,8 +124,10 @@ class Quote < QuoteTable
   def self.from_company(c, date, limit)
     if c.is_forex
       self.table_name = "forex"
-    else
+    elsif c.has_valid_symbol
       self.table_name = "quotes"
+    else
+      return []
     end
     if !table_exists?
       return []

@@ -5,7 +5,11 @@
 <% for s in @securities %>
 <tr>
 <td><%= link_to s.company.name, security_path(s) %></td>
+<% if s.company.symbol %>
 <td><%= link_to s.company.symbol, security_charts_path(s) %></td>
+<% else %>
+<td></td>
+<% end %>
 <td><%= link_to s.account.name, account_path(s.account) %></td>
 <td align="right"><%= s.return_total %>%</td>
 <td><%= link_to 'Edit', edit_security_path(s) %></td>

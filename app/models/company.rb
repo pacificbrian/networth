@@ -40,12 +40,20 @@ class Company < ActiveRecord::Base
   end
 
   def is_forex
-    self.symbol.slice("=X")
+    if self.symbol
+      return self.symbol.slice("=X")
+    else
+      return nil
+    end
   end
 
   # XXX these two functions need to be replaced with something better
   def is_fund
-    return (self.symbol.split("-")[0].length > 4)
+    if self.symbol
+      return (self.symbol.split("-")[0].length > 4)
+    else
+      return nil
+    end
   end
 
   def has_valid_symbol

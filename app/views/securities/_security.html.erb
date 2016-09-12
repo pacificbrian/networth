@@ -17,7 +17,11 @@
 <% if s.shares.nonzero? %>
 <tr>
 <td><%= s.company.name %></td>
+<% if s.company.symbol %>
 <td><%= link_to s.company.symbol, security_charts_path(s) %></td>
+<% else %>
+<td></td>
+<% end %>
 <td><%= s.shares %></td>
 <td class="currency"><%= number_to_currency(s.value/s.shares) %></td>
 <td class="currency"><%= number_to_currency(s.basis / s.shares) %></td>

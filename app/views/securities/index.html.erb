@@ -9,7 +9,11 @@
 <% if s.is_stock? %>
 <tr>
 <td><%= link_to s.company.name, security_path(s) %></td>
+<% if s.company.symbol %>
 <td><%= link_to s.company.symbol, security_charts_path(s) %></td>
+<% else %>
+<td></td>
+<% end %>
 <td><%= link_to s.account.name, account_path(s.account) %></td>
 <td align="right"><%= s.shares %></td>
 <td align="right"><%= number_to_currency s.price %></td>
@@ -30,7 +34,11 @@
 <% if s.is_fund? %>
 <tr>
 <td><%= link_to s.company.name, security_path(s) %></td>
+<% if s.company.symbol %>
 <td><%= link_to s.company.symbol, security_charts_path(s) %></td>
+<% else %>
+<td></td>
+<% end %>
 <td><%= link_to s.account.name, account_path(s.account) %></td>
 <td align="right"><%= s.shares %></td>
 <td align="right"><%= number_to_currency s.price %></td>
