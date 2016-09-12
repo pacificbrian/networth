@@ -340,7 +340,7 @@ puts "adding ForeignTax cashflow"
   def last_cashflow
     cfs = cash_flows.ordered_by_date(180, false)
     cfs.delete_if { |cf| cf.from_repeat? }
-    if cfs
+    if cfs and not cfs.empty?
       return cfs[0]
     else
       return nil
@@ -349,7 +349,7 @@ puts "adding ForeignTax cashflow"
 
   def last_imported_transnum
     cf = imported_cash_flows
-    if cf
+    if cf and not cf.empty?
       scf = cf.sort_by {|c| -(c.adj_transnum.to_i)}
       t = scf[0].adj_transnum
     else
