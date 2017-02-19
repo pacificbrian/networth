@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 1024) do
+ActiveRecord::Schema.define(:version => 1026) do
 
   create_table "account_balances", :force => true do |t|
     t.integer "account_id"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(:version => 1024) do
     t.datetime "updated_at",                                                       :null => false
     t.integer  "user_id"
     t.integer  "institution_id"
+    t.integer  "ofx_index"
   end
 
   add_index "accounts", ["user_id"], :name => "index_accounts_on_user_id"
@@ -131,6 +132,7 @@ ActiveRecord::Schema.define(:version => 1024) do
 
   create_table "institutions", :force => true do |t|
     t.string "name"
+    t.string "client_uid", :limit => 32
   end
 
   create_table "ofx_accounts", :force => true do |t|
@@ -139,7 +141,8 @@ ActiveRecord::Schema.define(:version => 1024) do
     t.string  "login"
     t.string  "password"
     t.integer "payee_length"
-    t.integer "transnum_shift", :default => 0
+    t.integer "transnum_shift",               :default => 0
+    t.string  "client_uid",     :limit => 32
   end
 
   create_table "payees", :force => true do |t|
