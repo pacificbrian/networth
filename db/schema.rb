@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 1026) do
+ActiveRecord::Schema.define(:version => 1027) do
 
   create_table "account_balances", :force => true do |t|
     t.integer "account_id"
@@ -407,6 +407,13 @@ ActiveRecord::Schema.define(:version => 1026) do
     t.integer "tax_income_l6_mfs"
     t.integer "tax_income_l6_mfj"
     t.integer "tax_income_l6_hh"
+    t.decimal "tax_l1_rate",                  :precision => 12, :scale => 4
+    t.decimal "tax_l2_rate",                  :precision => 12, :scale => 4
+    t.decimal "tax_l3_rate",                  :precision => 12, :scale => 4
+    t.decimal "tax_l4_rate",                  :precision => 12, :scale => 4
+    t.decimal "tax_l5_rate",                  :precision => 12, :scale => 4
+    t.decimal "tax_l6_rate",                  :precision => 12, :scale => 4
+    t.decimal "tax_l7_rate",                  :precision => 12, :scale => 4
   end
 
   create_table "taxes", :force => true do |t|
