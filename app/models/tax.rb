@@ -28,13 +28,17 @@ class Tax < ActiveRecord::Base
     amount + obj.amount
   end
 
-  def self.auto_tax(user, year, tax_region_id=nil, type_id=nil, account=nil)
+  def self.auto_tax(user, year, tax_region_id=nil, type_id=nil, account=nil, item_id=nil)
     taxes = Array.new
     if year.nil?
       return taxes
     end
 
-    tax_items = TaxItem.find(:all)
+    if item_id
+      tax_items = TaxItem.find_all_by_id(item_id)
+    else
+      tax_items = TaxItem.find(:all)
+    end
     tax_items.each do |ti|
       tax = nil
       if !type_id || (type_id == ti.tax_type_id)
@@ -51,7 +55,7 @@ class Tax < ActiveRecord::Base
   def self.taxes_by_year(user, year, auto_taxes=false, type_id=nil, item_id=nil)
     taxes = Array.new
     if auto_taxes
-      taxes.concat self.auto_tax(user, year, auto_taxes, type_id)
+      taxes.concat self.auto_tax(user, year, auto_taxes, type_id, nil, item_id)
     end
     taxes.concat user.taxes_by_year(year, type_id, item_id)
     return taxes

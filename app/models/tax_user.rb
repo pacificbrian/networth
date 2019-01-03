@@ -204,6 +204,16 @@ class TaxUser < ActiveRecord::Base
     r.other_tax = sum(items)
     items = tax.taxes_by_year(year, r.tax_region_id, TaxType.find_by_name("Itemized Deductions").id)
     r.itemized_deduction = sum(items)
+    if r.itemized_deduction and t_year.salt_maximum
+      items = tax.taxes_by_year(year, r.tax_region_id, nil, TaxItem.find_by_name("State Local Income Taxes").id)
+      salt_total = sum(items)
+      items = tax.taxes_by_year(year, r.tax_region_id, nil, TaxItem.find_by_name("Real Estate Taxes").id)
+      salt_total += sum(items)
+      items = tax.taxes_by_year(year, r.tax_region_id, nil, TaxItem.find_by_name("Personal Property Taxes").id)
+      salt_total += sum(items)
+      r.itemized_deduction -= salt_total
+      r.itemized_deduction += [salt_total, t_year.salt_maximum].min
+    end
 
     # handled in TaxItems.auto_tax
     #r.credits *=  -1
