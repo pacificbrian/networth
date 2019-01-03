@@ -19,6 +19,10 @@
 class TaxYear < ActiveRecord::Base
   attr_accessible :year
 
+  def tc
+    return TaxConstant.find(1)
+  end
+
   def standard_deduction_from_filing_status(status)
     tfs = TaxFilingStatus.find(status)
     case tfs.label
@@ -115,5 +119,37 @@ class TaxYear < ActiveRecord::Base
     when 'HH'
     tax_income_l6_hh
     end
+  end
+
+  def tax_l1_rate
+    return super || tc.tax_l1_rate
+  end
+
+  def tax_l2_rate
+    return super || tc.tax_l2_rate
+  end
+
+  def tax_l3_rate
+    return super || tc.tax_l3_rate
+  end
+
+  def tax_l4_rate
+    return super || tc.tax_l4_rate
+  end
+
+  def tax_l5_rate
+    return super || tc.tax_l5_rate
+  end
+
+  def tax_l6_rate
+    return super || tc.tax_l6_rate
+  end
+
+  def tax_l7_rate
+    return super || tc.tax_l7_rate
+  end
+
+  def capgain_rate
+    return super || tc.capgain_rate
   end
 end

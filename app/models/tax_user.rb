@@ -88,39 +88,39 @@ class TaxUser < ActiveRecord::Base
     end
 
     if (income)
-      t += [income, tax_income_l1].min * tc.tax_l1_rate;
+      t += [income, tax_income_l1].min * ty.tax_l1_rate;
     end
     if (income > tax_income_l1)
       t += ([income, tax_income_l2].min - tax_income_l1) *
-           tc.tax_l2_rate;
+           ty.tax_l2_rate;
     end
     if (income > tax_income_l2)
       t += ([income, tax_income_l3].min - tax_income_l2) *
-           tc.tax_l3_rate;
+           ty.tax_l3_rate;
     end
     if (income > tax_income_l3)
       t += ([income, tax_income_l4].min - tax_income_l3) *
-           tc.tax_l4_rate;
+           ty.tax_l4_rate;
     end
     if (income > tax_income_l4)
       t += ([income, tax_income_l5].min - tax_income_l4) *
-           tc.tax_l5_rate;
+           ty.tax_l5_rate;
     end
 
     if (income > tax_income_l5)
       if (tax_income_l6.nil?)
-        t += (income - tax_income_l5) * tc.tax_l6_rate;
+        t += (income - tax_income_l5) * ty.tax_l6_rate;
       else
         t += ([income, tax_income_l6].min - tax_income_l5) *
-             tc.tax_l6_rate;
+             ty.tax_l6_rate;
         if (income > tax_income_l6)
-          t += (income - tax_income_l6) * tc.tax_l7_rate;
+          t += (income - tax_income_l6) * ty.tax_l7_rate;
         end
       end
     end
 
     if calc_capgain_tax
-      t += long_capgain_income * tc.capgain_rate
+      t += long_capgain_income * ty.capgain_rate
     end
 
     if (income < tc.tax_table_max)
