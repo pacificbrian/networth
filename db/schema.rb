@@ -414,6 +414,7 @@ ActiveRecord::Schema.define(:version => 1027) do
     t.decimal "tax_l5_rate",                  :precision => 12, :scale => 4
     t.decimal "tax_l6_rate",                  :precision => 12, :scale => 4
     t.decimal "tax_l7_rate",                  :precision => 12, :scale => 4
+    t.integer "salt_maximum"
   end
 
   create_table "taxes", :force => true do |t|

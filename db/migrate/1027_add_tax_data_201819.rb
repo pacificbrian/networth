@@ -7,6 +7,7 @@ class AddTaxData201819 < ActiveRecord::Migration
     add_column :tax_years, :tax_l5_rate, :decimal, :precision => 12, :scale => 4
     add_column :tax_years, :tax_l6_rate, :decimal, :precision => 12, :scale => 4
     add_column :tax_years, :tax_l7_rate, :decimal, :precision => 12, :scale => 4
+    add_column :tax_years, :salt_maximum, :integer
     TaxYear.reset_column_information
 
     tax_year = TaxYear.new(:year => 2018)
@@ -15,6 +16,7 @@ class AddTaxData201819 < ActiveRecord::Migration
     tax_year.standard_deduction_mfs = 12000
     tax_year.standard_deduction_mfj = 24000
     tax_year.standard_deduction_hh = 18000
+    tax_year.salt_maximum = 10000
     tax_year.tax_income_l1_s = 9525
     tax_year.tax_income_l2_s = 38700
     tax_year.tax_income_l3_s = 82500
@@ -55,6 +57,7 @@ class AddTaxData201819 < ActiveRecord::Migration
     tax_year.standard_deduction_mfs = 12200
     tax_year.standard_deduction_mfj = 24400
     tax_year.standard_deduction_hh = 18350
+    tax_year.salt_maximum = 10000
     tax_year.tax_income_l1_s = 9700
     tax_year.tax_income_l2_s = 39475
     tax_year.tax_income_l3_s = 84200
@@ -104,5 +107,6 @@ class AddTaxData201819 < ActiveRecord::Migration
     remove_column :tax_years, :tax_l5_rate
     remove_column :tax_years, :tax_l6_rate
     remove_column :tax_years, :tax_l7_rate
+    remove_column :tax_years, :salt_maximum
   end
 end
