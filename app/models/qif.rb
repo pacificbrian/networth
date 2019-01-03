@@ -60,7 +60,11 @@ class Qif < ActiveRecord::Base
       when 'D'
         if !col.nil? && !col.strip.empty?
           #cf.date = Date.parse(col, true)
-          cf.date = Date.strptime(col, '%m/%d/%Y')
+          if col['-']
+            cf.date = Date.strptime(col, '%m-%d-%Y')
+          else
+            cf.date = Date.strptime(col, '%m/%d/%Y')
+          end
         end
       when 'N'
         if !col.nil?

@@ -901,6 +901,11 @@ puts "computing balances for Account for days_remaining " + days_remaining.to_s
     return import
   end
 
+  def ofx_institution
+    return nil if not institution
+    return OFX::FinancialInstitution.get_institution(institution.name)
+  end
+
   def import_ofx(trans, skip_test=true)
     account = self
     n = 0
@@ -951,6 +956,13 @@ puts "computing balances for Account for days_remaining " + days_remaining.to_s
   end
 
   def ofx_recent_trans(user_name=nil, passwd=nil, days=nil)
+    if not days
+      last = last_cashflow
+      if last
+        days = (Date.today - last.date).to_i + 1
+      end
+    end
+
     i = Import.new
     if user_name.nil?
       user_name = self.ofx_login
@@ -970,13 +982,6 @@ puts "computing balances for Account for days_remaining " + days_remaining.to_s
   end
 
   def import_ofx_with_cred(user_name=nil, passwd=nil, days=nil)
-    if not days
-      last = last_cashflow
-      if last
-        days = (Date.today - last.date).to_i + 1
-      end
-    end
-
     trans = ofx_recent_trans(user_name, passwd, days)
     if trans.empty?
       nil

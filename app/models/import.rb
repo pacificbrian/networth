@@ -83,23 +83,23 @@ class Import < ActiveRecord::Base
     return cf.sort_by {|c| (c.transnum.to_i)}
   end
 
-  def send_ofx_request(account, user_name, password, date_range=nil)
+  def send_ofx_request(account, user_name, password, date_range=nil, want_sorted=true)
     trans = Array.new
-    ofx_name = account.institution.name
-    institution = OFX::FinancialInstitution.get_institution(ofx_name)
-    return trans if institution.nil? or not account.credit?
-    
-    institution.set_client(user_name, password,
-			   account.institution.client_uid)
-    acc_number = institution.get_account_id(account.ofx_index)
+    inst = account.ofx_institution
+    inst.set_client(user_name, password,
+		    account.institution.client_uid) if inst
+    acc_number = inst.get_account_id(account.ofx_index) if inst
 
     if acc_number
         acc_has_trans = true
-        req = institution.create_request_document_for_cc_statement(
+        req = inst.create_request_document_for_cc_statement(
 				              acc_number,
                                               date_range, acc_has_trans)
-        resp = institution.send(req) if req
-        trans = resp.message_sets[1].responses[0].transactions if resp
+        resp = inst.send(req) if req
+        ms = resp.message_sets[1] if resp
+        ms_resp = ms.responses[0] if ms
+        trans = ms_resp.transactions if ms_resp
+        trans = trans.sort_by { |t| t.date_posted } if trans and want_sorted
     end
     return trans
   end
