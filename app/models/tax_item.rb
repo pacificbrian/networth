@@ -132,6 +132,7 @@ class TaxItem < ActiveRecord::Base
       end
     end
 
+    cfs.delete_if { |cf| cf.repeat? }
     cfs.delete_if { |cf| cf.payee_id != payee.id } if payee
     cfs.delete_if { |cf| cf.account != nil && !cf.account.taxable }
     return cfs.sort_by { |cf| cf.date.jd }

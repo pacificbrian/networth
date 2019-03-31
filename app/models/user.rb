@@ -33,7 +33,6 @@ class User < ActiveRecord::Base
     def by_category(cat_id, range=nil, with_future=nil)
       # XXX need function that removes category with non-zero amount
       #     XXX need to use report_cashflows!!!
-      # XXX reads RCashFlows?
 
     if range
       last = Date.today
@@ -51,6 +50,8 @@ class User < ActiveRecord::Base
       cfs = find :all, :conditions => { :transfer => false, :category_id => cat_id },
 	         :order => 'date ASC'
     end
+    cfs.delete_if { |cf| cf.has_splits? }
+    cfs.delete_if { |cf| cf.repeat? }
     end
   end
 
