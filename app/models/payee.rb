@@ -62,7 +62,8 @@ class Payee < ActiveRecord::Base
     end
   end
 
-  def in_use?
+  def in_use?(update=false)
+    self.set_use_count if update
     if self.use_count.zero?
       false
     else

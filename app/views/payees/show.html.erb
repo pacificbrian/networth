@@ -49,7 +49,7 @@
 <% else %>
 <li><%= link_to 'Back to Payees', payees_path %></li>
 <li><%= link_to 'Edit Payee', edit_payee_path(@payee) %></li>
-<% if !@payee.in_use? %>
+<% if !@payee.in_use?(true) %>
 <li><%= link_to 'Delete Payee', payee_path(@payee), :method => :delete %></li>
 <% end %>
 <% end %>
