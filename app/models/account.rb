@@ -990,6 +990,16 @@ puts "computing balances for Account for days_remaining " + days_remaining.to_s
     end
   end
 
+  def import_ofx_from_file(f)
+    i = Import.new
+    trans = i.ofx_from_file(f)
+    if trans.empty?
+      nil
+    else
+      import_ofx(trans)
+    end
+  end
+
   def show_transfers_sum?
     return true if investment? or (deposit? and name.match('avings'))
   end

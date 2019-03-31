@@ -22,6 +22,10 @@
 <td><label for="dump_file"> Select a QIF File: </label></td>
 <td><%= f.file_field :qif_file %></td>
 <td> <%= submit_tag 'Import QIF' %> </td>
+<tr>
+<td><label for="dump_file"> Select a QFX File: </label></td>
+<td><%= f.file_field :qfx_file %></td>
+<td> <%= submit_tag 'Import QFX' %> </td>
 <% if not @account or (@account and @account.institution) %>
 <tr>
 <td><label>OFX ID, Password: </label></td>

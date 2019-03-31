@@ -58,6 +58,10 @@ class ImportController < ApplicationController
     elsif params[:commit] == "Import CSV"
       file = params[:import][:csv_file]
       @import = @account.import_csv(file)
+    elsif params[:commit] == "Import QFX"
+      file = params[:import][:qfx_file]
+      puts file.original_filename
+      @import = @account.import_ofx_from_file(file)
     else
       file = params[:import][:qif_file]
       @import = @account.import_qif(file)

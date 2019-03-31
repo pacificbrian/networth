@@ -25,7 +25,7 @@ class Import < ActiveRecord::Base
     created_on.to_date
   end
 
-  def ofx_transactions_to_cashflows(account, trans, test_date=true)
+  def ofx_transactions_to_cashflows(account, trans, test_date=true, force=false)
     cf = Array.new
     last_transnum = account.last_imported_transnum
     last_cf = account.last_cashflow
@@ -64,7 +64,7 @@ class Import < ActiveRecord::Base
 
       do_import = true
       if last_transnum
-        if c.adj_transnum <= last_transnum
+        if c.adj_transnum.to_i <= last_transnum.to_i
           do_import = false
         end
       end
@@ -75,12 +75,23 @@ class Import < ActiveRecord::Base
         end
       end
 
-      if do_import
+      if do_import or force
         cf.push c
       end
     end
 
     return cf.sort_by {|c| (c.transnum.to_i)}
+  end
+
+  def ofx_response_to_trans(resp, want_sorted=true)
+    trans = Array.new
+    ms = resp.message_sets[1]
+    if ms
+      ms_resp = ms.responses[0]
+      trans = ms_resp.transactions if ms_resp
+      trans = trans.sort_by { |t| t.date_posted } if trans and want_sorted
+    end
+    return trans
   end
 
   def send_ofx_request(account, user_name, password, date_range=nil, want_sorted=true)
@@ -96,12 +107,21 @@ class Import < ActiveRecord::Base
 				              acc_number,
                                               date_range, acc_has_trans)
         resp = inst.send(req) if req
-        ms = resp.message_sets[1] if resp
-        ms_resp = ms.responses[0] if ms
-        trans = ms_resp.transactions if ms_resp
-        trans = trans.sort_by { |t| t.date_posted } if trans and want_sorted
+        trans = ofx_response_to_trans(resp, wanted_sorted) if resp
     end
     return trans
+  end
+
+  def ofx_from_string(s)
+    trans = Array.new
+    ser = OFX::OFX102::Serializer.new
+    resp = ser.from_http_response_body(s) if ser
+    trans = ofx_response_to_trans(resp) if resp
+    trans
+  end
+
+  def ofx_from_file(f)
+    ofx_from_string(f.read)
   end
 
   def delete_cashflows
