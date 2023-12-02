@@ -32,5 +32,5 @@ be too fragile for general use as your own bookkeeping solution, although it
 does currently serve as mine.
 Feel free to contact me if you find this project interesting to you.
 
-Copyright © 2010-2014 Brian Welty <pacificbrian@zoho.com>
+Copyright © 2010-2014 Brian Welty
 Released under the GPLv3 license, see LICENSE for more information.
